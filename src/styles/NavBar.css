@@ -29,6 +29,7 @@
     width: 24px;
     height: 24px;
     filter: brightness(0);
+    align-items: center;
     justify-content: center;
 }
 
@@ -46,11 +47,11 @@
 .search-input {
     width: 100%;
     color: #ffffff;
+    background-color: #F0F0F0;
     font-size: 0.875rem; /* text-sm */
     text-align: center;
     padding: 0.5rem 1rem 0.5rem 1rem;
     outline: none;
-    border: 1px solid #4b5563; /* border border-gray-700 */
 }
 
 .search-input:focus {

@@ -16,8 +16,7 @@ function App() {
     <>
       <NavBar onPageChange={handlePageChange} />
       <main className="flex-grow">
-        {/* Conditional rendering based on currentPage state */}
-        {currentPage === 'video' && <VideoStream />}
+        {currentPage === 'stream' && <VideoStream />}
         {currentPage === 'inbox' && <Inbox />}
       </main>
     </>
