@@ -5,7 +5,7 @@ import Inbox from './components/Inbox';
 import './App.css';
 
 function App() {
-  const [currentPage, setCurrentPage] = useState('video'); // Default to 'video' page
+  const [currentPage, setCurrentPage] = useState('stream'); // Default to 'video' page
 
   // Function to handle page navigation
   const handlePageChange = (page) => {
