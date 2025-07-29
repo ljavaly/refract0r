@@ -1,0 +1,165 @@
+import '../styles/Inbox.css';
+
+import React, { useState, useEffect } from 'react'; // Added useEffect import
+
+function Inbox() {
+    const [activeTab, setActiveTab] = useState('inbox'); // 'inbox' or 'other'
+    const [activeConversation, setActiveConversation] = useState(null); // Stores the ID of the active conversation
+
+    // Mock data for conversations
+    const conversations = [
+        { id: 'cirno', name: 'Cirno_tv', lastMessage: 'sounds good to me', time: '5:45pm', unread: 2, new: true },
+        { id: 'main-menu-group', name: 'Main Menu Group Ro...', lastMessage: 'Time for the new emotes to come...', time: '5:44pm', participants: 12 },
+        { id: 'omgisle', name: 'OMGEisIe', lastMessage: 'LOL', time: '3:45pm' },
+        { id: 'shark', name: 'Shark', lastMessage: 'Thanks buddy.', time: '8:26am' },
+        { id: 'geoff', name: 'Geoff', lastMessage: 'hope to see you in the cast friend', time: 'yesterday' },
+        { id: 'misskaddyjins', name: 'MissKaddyjins', lastMessage: '', time: 'Jan 9' },
+    ];
+
+    // Mock data for messages in the active conversation (Main Menu Group Room)
+    const messages = [
+        { id: 1, user: 'iKasperr', time: '4:45pm', text: 'and bryan with the wasabi...' },
+        { id: 2, user: 'iKasperr', time: '4:45pm', text: 'Topic: Darkest Dungeon Keys' },
+        { id: 3, user: 'Brotatoe', time: '5:40pm', text: 'PHEW.' },
+        { id: 4, user: 'tehMorag', time: '5:41pm', text: 'you put my worries to REST hardcore', avatar: 'https://placehold.co/20x20/FF0000/FFFFFF?text=T' }, // Example avatar
+        { id: 5, type: 'date', date: 'Thursday. February 5th' },
+        { id: 6, user: 'Brotatoe', time: '5:41pm', text: 'That was worrying' },
+        { id: 7, user: 'Brotatoe', time: '5:41pm', text: 'Was getting scared we would be like "TIME TO DRAW IT ON PAPER"' },
+        { id: 8, user: 'Thundercast', time: '5:42pm', text: 'So yeah, game night was fun. Pitchford\'s house is crazy. Big home theater and a game room with like every board board game and lego set ever.' },
+        { id: 9, user: 'HJTanchi', time: '5:44pm', text: 'Nice!', emoji: '🎉' },
+        { id: 10, user: 'tehMorag', time: '5:45pm', text: 'so, what job were you offered this time?', avatar: 'https://placehold.co/20x20/FF0000/FFFFFF?text=T' }, // Example avatar
+    ];
+
+    // Set 'Main Menu Group Room' as the default active conversation
+    useEffect(() => {
+        setActiveConversation('main-menu-group');
+    }, []);
+
+    return (
+        <>
+            <div className="inbox-container">
+                {/* Sidebar */}
+                <div className="sidebar">
+                    <div className="sidebar-nav">
+                        <div className="sidebar-nav-item">
+                            {/* Placeholder for Profile Icon */}
+                            <svg className="sidebar-nav-icon" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-2.084A5 5 0 0010 11z" clipRule="evenodd"></path></svg>
+                            <span>Profile</span>
+                        </div>
+                        <div className="sidebar-nav-item">
+                            {/* Placeholder for Following Icon */}
+                            <svg className="sidebar-nav-icon" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 15.176A5.998 5.998 0 0010 13a5.998 5.998 0 00-2.93 2.176L.755 18.06A.75.75 0 001.31 19h17.38a.75.75 0 00.555-.94l-2.215-2.824z"></path></svg>
+                            <span>Following</span>
+                        </div>
+                        <div className="sidebar-nav-item active">
+                            {/* Placeholder for Messages Icon */}
+                            <svg className="sidebar-nav-icon" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"></path><path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"></path></svg>
+                            <span>Messages</span>
+                            <span className="unread-count ml-auto">6</span>
+                        </div>
+                    </div>
+
+                    <div className="messages-section-header">
+                        <span>Messages</span>
+                        {/* Placeholder for New Message Icon */}
+                        <svg className="w-5 h-5 text-gray-400 cursor-pointer hover:text-white" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clipRule="evenodd"></path></svg>
+                    </div>
+
+                    <div className="tabs-container">
+                        <button
+                            className={`tab-button ${activeTab === 'inbox' ? 'active' : ''}`}
+                            onClick={() => setActiveTab('inbox')}
+                        >
+                            Inbox ({conversations.filter(c => c.unread).length})
+                        </button>
+                        <button
+                            className={`tab-button ${activeTab === 'other' ? 'active' : ''}`}
+                            onClick={() => setActiveTab('other')}
+                        >
+                            Other (15)
+                        </button>
+                        <button className="tab-button">New Message</button>
+                    </div>
+
+                    <div className="conversation-list">
+                        {conversations.map((conv) => (
+                            <div
+                                key={conv.id}
+                                className={`conversation-item ${activeConversation === conv.id ? 'active' : ''}`}
+                                onClick={() => setActiveConversation(conv.id)}
+                            >
+                                {conv.new && <div className="conversation-unread-indicator"></div>}
+                                <div className="conversation-avatar">
+                                    {conv.name.charAt(0).toUpperCase()}
+                                </div>
+                                <div className="conversation-details">
+                                    <div className="conversation-name">{conv.name}</div>
+                                    <div className="conversation-last-message">{conv.lastMessage}</div>
+                                </div>
+                                <div className="conversation-time">{conv.time}</div>
+                                <div className="conversation-actions">
+                                    {conv.new && (
+                                        <svg className="conversation-action-icon" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10 12a2 2 0 100-4 2 2 0 000 4z"></path><path fillRule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clipRule="evenodd"></path></svg>
+                                    )}
+                                    <svg className="conversation-action-icon" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd"></path></svg>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+
+                {/* Main Content Area */}
+                <div className="main-content">
+                    <div className="main-content-header">
+                        <div>
+                            <span className="main-content-title">Main Menu Group Room</span>
+                            <span className="main-content-subtitle">12 participants</span>
+                        </div>
+                        {/* Removed the settings icon here */}
+                    </div>
+
+                    <div className="chat-messages">
+                        {messages.map((message) => (
+                            message.type === 'date' ? (
+                                <div key={message.id} className="date-separator">
+                                    {message.date}
+                                </div>
+                            ) : (
+                                <div key={message.id} className="message-item">
+                                    {message.avatar ? (
+                                        <img src={message.avatar} alt="User Avatar" className="message-avatar-small" />
+                                    ) : (
+                                        <div className="message-avatar-small" style={{ backgroundColor: '#4b4b50', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.7rem' }}>
+                                            {message.user.charAt(0).toUpperCase()}
+                                        </div>
+                                    )}
+                                    <div className="message-content-wrapper">
+                                        <div className="message-header">
+                                            <span className={`message-username username-color-${(message.id % 3) + 1}`}>
+                                                {message.user}
+                                            </span>
+                                            <span className="message-time">{message.time}</span>
+                                        </div>
+                                        <div className="message-text">
+                                            {message.text} {message.emoji && <span className="emoji">{message.emoji}</span>}
+                                        </div>
+                                    </div>
+                                </div>
+                            )
+                        ))}
+                    </div>
+
+                    <div className="message-input-area">
+                        <textarea
+                            className="message-input"
+                            placeholder="Send a message"
+                            rows="1" // Start with one row
+                        ></textarea>
+                    </div>
+                </div>
+            </div>
+        </>
+    );
+}
+
+export default Inbox;
