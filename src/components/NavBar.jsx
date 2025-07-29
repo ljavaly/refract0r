@@ -6,19 +6,19 @@ function NavBar({onPageChange}) {
     <>
         <header className="header-main">
             <div className="grid grid-cols-4">
-                <a href="#" className="nav-link col-span-1" onClick={() => onPageChange('stream')}>
+                <a href="#" className="nav-link col-span-1 px-6" onClick={() => onPageChange('stream')}>
                     <img 
                         src={ghostIcon} 
                         alt="Ghost" 
                         className="ghost-icon block h-6 w-6"
                     />
                 </a>   
-                <a href="#" className="nav-link col-span-1" onClick={() => onPageChange('stream')}>Stream</a>
-                <a href="#" className="nav-link col-span-1" onClick={() => onPageChange('browse')}>Browse</a>
-                <a href="#" className="nav-link col-span-1" onClick={() => onPageChange('inbox')}>Inbox</a>
+                <a href="#" className="nav-link col-span-1 px-6" onClick={() => onPageChange('stream')}>Stream</a>
+                <a href="#" className="nav-link col-span-1 px-6" onClick={() => onPageChange('browse')}>Browse</a>
+                <a href="#" className="nav-link col-span-1 px-6" onClick={() => onPageChange('inbox')}>Inbox</a>
             </div>
 
-            <div className="flex-grow max-w-md mx-4">
+            <div className="search-section flex-grow max-w-md mx-4">
                 <input type="text" placeholder="Search" className="search-input"/>
             </div>
 
