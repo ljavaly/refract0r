@@ -40,43 +40,22 @@ function Inbox() {
             <div className="inbox-container">
                 {/* Sidebar */}
                 <div className="sidebar">
-                    <div className="sidebar-nav">
-                        <div className="sidebar-nav-item">
-                            {/* Placeholder for Profile Icon */}
-                            <svg className="sidebar-nav-icon" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-2.084A5 5 0 0010 11z" clipRule="evenodd"></path></svg>
-                            <span>Profile</span>
-                        </div>
-                        <div className="sidebar-nav-item">
-                            {/* Placeholder for Following Icon */}
-                            <svg className="sidebar-nav-icon" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 15.176A5.998 5.998 0 0010 13a5.998 5.998 0 00-2.93 2.176L.755 18.06A.75.75 0 001.31 19h17.38a.75.75 0 00.555-.94l-2.215-2.824z"></path></svg>
-                            <span>Following</span>
-                        </div>
-                        <div className="sidebar-nav-item active">
-                            {/* Placeholder for Messages Icon */}
-                            <svg className="sidebar-nav-icon" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"></path><path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"></path></svg>
-                            <span>Messages</span>
-                            <span className="unread-count ml-auto">6</span>
-                        </div>
+                    <div>
+                        <button className="tab-button">New Message</button>
                     </div>
-
-                    <div className="messages-section-header">
-                        <span>Messages</span>
-                    </div>
-
-                    <div className="tabs-container">
+                    <div className="tabs-container grid grid-cols-2">
                         <button
-                            className={`tab-button ${activeTab === 'inbox' ? 'active' : ''}`}
+                            className={`tab-button col-span-2 ${activeTab === 'inbox' ? 'active' : ''}`}
                             onClick={() => setActiveTab('inbox')}
                         >
                             Inbox ({conversations.filter(c => c.unread).length})
                         </button>
                         <button
-                            className={`tab-button ${activeTab === 'other' ? 'active' : ''}`}
+                            className={`tab-button col-span-2 ${activeTab === 'other' ? 'active' : ''}`}
                             onClick={() => setActiveTab('other')}
                         >
                             Other (15)
                         </button>
-                        <button className="tab-button">New Message</button>
                     </div>
 
                     <div className="conversation-list">
