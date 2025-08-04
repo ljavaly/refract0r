@@ -3,6 +3,7 @@ import NavBar from './components/NavBar';
 import VideoStream from './components/VideoStream';
 import Inbox from './components/Inbox';
 import './App.css';
+import VideoFeed from './components/VideoFeed';
 
 function App() {
   const [currentPage, setCurrentPage] = useState('stream'); // Default to 'video' page
@@ -17,6 +18,7 @@ function App() {
       <NavBar onPageChange={handlePageChange} />
       <main className="flex-grow">
         {currentPage === 'stream' && <VideoStream />}
+        {currentPage === 'browse' && <VideoFeed />}
         {currentPage === 'inbox' && <Inbox />}
       </main>
     </>
