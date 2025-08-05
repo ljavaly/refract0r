@@ -50,7 +50,11 @@ export const ConversationSchema = {
   time: 'string',
   unread: 'number?',
   new: 'boolean?',
-  participants: 'number?'
+  participants: 'number?',
+  avatar: 'string?',
+  isGroup: 'boolean?',
+  lastMessageTime: 'string?',
+  status: 'string?' // 'online', 'offline', 'away'
 };
 
 // API Response types
