@@ -13,10 +13,10 @@
 }
 
 .nav-link {
-    font-size: 0.875rem; /* text-sm */
+    font-size: 1rem; /* text-sm */
     font-weight: 600; /* font-semibold */
-    color: #d1d5db; /* text-gray-300 */
-    padding: 0.5rem; /* p-2 */
+    color: #606060;
+    padding: 0.5rem;
     transition: color 0.2s ease-in-out; /* transition */
     cursor: pointer; /* Indicate clickable */
 }
@@ -46,11 +46,13 @@
 
 .search-input {
     width: 100%;
+    padding: 8px 12px;
     color: #ffffff;
     background-color: #F0F0F0;
+    border: 1px solid #ccc;
+    border-radius: 2px;
     font-size: 0.875rem; /* text-sm */
     text-align: center;
-    padding: 0.5rem 1rem 0.5rem 1rem;
     outline: none;
 }
 
