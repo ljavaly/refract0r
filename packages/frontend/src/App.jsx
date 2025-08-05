@@ -14,14 +14,14 @@ function App() {
   };
 
   return (
-    <>
+    <div className="h-screen flex flex-col overflow-hidden">
       <NavBar onPageChange={handlePageChange} />
-      <main className="flex-grow">
+      <main className="flex-1 overflow-hidden">
         {currentPage === 'stream' && <VideoStream />}
         {currentPage === 'browse' && <VideoFeed />}
         {currentPage === 'inbox' && <Inbox />}
       </main>
-    </>
+    </div>
   )
 }
 
