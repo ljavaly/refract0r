@@ -43,15 +43,15 @@ function Inbox() {
                     <div>
                         <button className="tab-button">New Message</button>
                     </div>
-                    <div className="tabs-container grid grid-cols-2">
+                    <div className="tabs-container">
                         <button
-                            className={`tab-button col-span-2 ${activeTab === 'inbox' ? 'active' : ''}`}
+                            className={`tab-button ${activeTab === 'inbox' ? 'active' : ''}`}
                             onClick={() => setActiveTab('inbox')}
                         >
                             Inbox ({conversations.filter(c => c.unread).length})
                         </button>
                         <button
-                            className={`tab-button col-span-2 ${activeTab === 'other' ? 'active' : ''}`}
+                            className={`tab-button ${activeTab === 'other' ? 'active' : ''}`}
                             onClick={() => setActiveTab('other')}
                         >
                             Other (15)
