@@ -83,7 +83,7 @@ function Inbox() {
         <>
             <div className="inbox-container">
                 {/* Sidebar */}
-                <div className="sidebar">
+                <div className="inbox-sidebar">
                     <div>
                         <button className="tab-button">New Message</button>
                     </div>
