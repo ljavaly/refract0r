@@ -1,20 +1,21 @@
 .header-main {
-    padding: 0.75rem; /* p-3 */
+    padding: 0.75rem;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1); /* shadow-md */
+    background-color: #E7E7E7;
 }
 
 .nav-links-container {
     display: flex;
     align-items: center;
-    gap: 1.5rem; /* space-x-6 */
+    gap: 1.5rem;
 }
 
 .nav-link {
-    font-size: 1rem; /* text-sm */
+    font-size: 32;
     font-weight: 600; /* font-semibold */
+    text-transform: uppercase;
     color: #606060;
     padding: 0.5rem;
     transition: color 0.2s ease-in-out; /* transition */
@@ -26,57 +27,37 @@
 }
 
 .ghost-icon {
-    width: 24px;
-    height: 24px;
-    filter: brightness(0);
-    align-items: center;
-    justify-content: center;
+    width: 36px;
+    height: 36px;
+    padding: 0.5rem;
+    margin-right: 2rem; /* TODO LAUREN FIX THIS */
 }
 
 .search-section {
-    flex-grow: 1; /* flex-grow */
     max-width: 28rem; /* max-w-md */
     margin-left: 1rem; /* mx-4 */
     margin-right: 1rem; /* mx-4 */
 }
 
-.search-input-wrapper {
-    position: relative;
-}
-
 .search-input {
     width: 100%;
     padding: 8px 12px;
-    color: #ffffff;
+    color: #252525;
     background-color: #F0F0F0;
     border: 1px solid #ccc;
     border-radius: 2px;
-    font-size: 0.875rem; /* text-sm */
     text-align: center;
-    outline: none;
+    font-size: 16px;
 }
 
 .search-input:focus {
-    ring-width: 2px; /* focus:ring-2 */
-    ring-color: #9333ea; /* focus:ring-purple-600 */
-    ring-opacity: 0.75; /* focus:ring-opacity-75 */
+    outline: 2px solid #9333ea;
+    outline-offset: 2px;
 }
 
-.action-buttons-container {
-    display: flex;
-    align-items: center;
-    gap: 1rem; /* space-x-4 */
-}
-
-.icon-button {
-    padding: 0.5rem; /* p-2 */
-    color: #d1d5db; /* text-gray-300 */
-    transition: background-color 0.2s ease-in-out; /* transition */
-}
-
-.icon-button:hover {
-    background-color: #374151; /* hover:bg-gray-700 */
-}
+.search-input:focus::placeholder {
+    color: transparent;
+  }
 
 .profile-avatar {
     width: 2rem; /* w-8 */
@@ -91,9 +72,4 @@
     font-weight: 700; /* font-bold */
     cursor: pointer;
     transition: ring-width 0.2s ease-in-out, ring-color 0.2s ease-in-out; /* transition */
-}
-
-.profile-avatar:hover {
-    ring-width: 2px; /* hover:ring-2 */
-    ring-color: #9333ea; /* hover:ring-purple-600 */
 }

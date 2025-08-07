@@ -5,21 +5,22 @@ function NavBar({onPageChange}) {
   return (
     <>
         <header className="header-main">
-            <div className="grid grid-cols-4">
-                <a href="#" className="nav-link col-span-1 px-6" onClick={() => onPageChange('stream')}>
+            <div className="flex gap-4">
+                <a href="#" className="" onClick={() => onPageChange('stream')}>
                     <img 
                         src={ghostIcon} 
                         alt="Ghost" 
-                        className="ghost-icon block h-6 w-6"
+                        className="ghost-icon block"
                     />
-                </a>   
-                <a href="#" className="nav-link col-span-1 px-6" onClick={() => onPageChange('stream')}>Stream</a>
-                <a href="#" className="nav-link col-span-1 px-6" onClick={() => onPageChange('browse')}>Browse</a>
-                <a href="#" className="nav-link col-span-1 px-6" onClick={() => onPageChange('inbox')}>Inbox</a>
+                </a>  
+                <div className="nav-links-container grid grid-cols-3"> 
+                    <a href="#" className="nav-link col-span-1" onClick={() => onPageChange('stream')}>Stream 🔽</a>
+                    <a href="#" className="nav-link col-span-1" onClick={() => onPageChange('browse')}>Browse 🔍</a>
+                    <a href="#" className="nav-link col-span-1" onClick={() => onPageChange('inbox')}>Inbox 📨</a>
+                </div>
             </div>
-
-            <div className="search-section flex-grow max-w-md mx-4">
-                <input type="text" placeholder="Search" className="search-input"/>
+            <div className="search-section flex-grow">
+                <input id="search" type="text" placeholder="Search" className="search-input"/>
             </div>
 
             <div className="flex items-center space-x-4">
