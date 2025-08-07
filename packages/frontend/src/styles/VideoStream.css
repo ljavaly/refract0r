@@ -1,11 +1,12 @@
 .video-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 90%;
-    color: #ffffff; /* text-white */
-    padding: 1rem; /* p-4 */
+    display: grid;
+    grid-template-columns: 4fr 1fr;
+    gap: 1rem;
+    height: 100%;
+    width: 100%;
+    padding: 1rem;
+    box-sizing: border-box;
+    overflow: hidden;
 }
 
 .video-title {
@@ -16,31 +17,28 @@
 
 .video-box {
     position: relative;
-    width: 90%;
-    height: 90%;
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* shadow-lg */
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background-color: #000;
+    border-radius: 0.5rem;
+    overflow: hidden;
 }
 
 .video-element {
     width: 100%;
     height: 100%;
-    object-fit: contain;
-    border: 2px solid #6b46c1; /* purple-600 */
+    object-fit: cover;
+    border: 2px solid #6b46c1;
     background-color: #000;
-}
-
-.stream-label {
-    position: absolute;
-    bottom: 0.5rem; /* bottom-2 */
-    left: 0.5rem; /* left-2 */
-    background-color: rgba(31, 41, 55, 0.75); /* bg-gray-800 bg-opacity-75 */
-    padding: 0.25rem 0.75rem; /* px-3 py-1 */
-    border-radius: 0.375rem; /* rounded-md */
-    font-size: 0.875rem; /* text-sm */
+    border-radius: 0.5rem;
 }
 
 .camera-toggle-button {
-    margin-top: 1rem; /* mt-4 */
+    position: absolute;
+    bottom: 1rem;
+    left: 1rem;
     padding: 0.75rem 1.5rem; /* px-6 py-3 */
     background-color: #8b5cf6; /* bg-purple-600 */
     color: #ffffff; /* text-white */
