@@ -83,6 +83,11 @@ class ApiClient {
     async getVideo(videoId) {
         return this.get(`/videos/${videoId}`);
     }
+
+    // Comment-specific methods
+    async getComments() {
+        return this.get('/comments');
+    }
 }
 
 // Create and export a default instance

@@ -57,6 +57,16 @@ export const ConversationSchema = {
   status: 'string?' // 'online', 'offline', 'away'
 };
 
+/**
+ * Comment object structure
+ */
+export const CommentSchema = {
+  id: 'string',
+  user: 'string',
+  message: 'string',
+  timestamp: 'string',
+};
+
 // API Response types
 export const ApiResponse = {
   success: 'boolean',

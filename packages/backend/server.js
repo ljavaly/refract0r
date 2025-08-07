@@ -8,6 +8,7 @@ const PORT = process.env.PORT || 3001;
 // Import routes
 const videoRoutes = require('./routes/videos');
 const conversationRoutes = require('./routes/conversations');
+const commentRoutes = require('./routes/comments');
 
 // Middleware
 app.use(cors());
@@ -34,6 +35,7 @@ app.get('/health', (req, res) => {
 // Use routes
 app.use('/api/videos', videoRoutes);
 app.use('/api/conversations', conversationRoutes);
+app.use('/api/comments', commentRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
