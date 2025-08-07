@@ -58,9 +58,15 @@ function VideoStream() {
         };
     }, [isCameraOn]); // Add isCameraOn to the dependency array
 
-    // Load comments on component mount
+    // Load comments and setup WebSocket on component mount
     useEffect(() => {
         loadComments();
+        setupWebSocket();
+        
+        // Cleanup WebSocket on unmount
+        return () => {
+            apiClient.disconnectWebSocket();
+        };
     }, []);
 
     const loadComments = async () => {
@@ -76,6 +82,26 @@ function VideoStream() {
         }
     };
 
+    const setupWebSocket = () => {
+        // Connect to WebSocket
+        apiClient.connectWebSocket();
+        
+        // Listen for new comments
+        apiClient.onWebSocketMessage('new_comment', (data) => {
+            setComments(prevComments => [...prevComments, data.comment]);
+        });
+        
+        // Listen for connection status
+        apiClient.onWebSocketMessage('connection', (data) => {
+            console.log('WebSocket connected:', data.message);
+        });
+        
+        // Listen for errors
+        apiClient.onWebSocketMessage('error', (data) => {
+            console.error('WebSocket error:', data.message);
+        });
+    };
+
     // Auto-scroll to bottom of chat when new comments arrive
     useEffect(() => {
         if (chatContainerRef.current) {
@@ -86,14 +112,23 @@ function VideoStream() {
     const handleSendComment = (e) => {
         e.preventDefault();
         if (newComment.trim()) {
-            const newCommentObj = {
-                id: comments.length + 1,
-                user: 'You',
-                message: newComment.trim(),
-                timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-            };
-            setComments([...comments, newCommentObj]);
-            setNewComment('');
+            // Send comment through WebSocket
+            const success = apiClient.sendComment('You', newComment.trim());
+            
+            if (success) {
+                // Clear input field
+                setNewComment('');
+            } else {
+                // Fallback: add comment locally if WebSocket fails
+                const newCommentObj = {
+                    id: Date.now(),
+                    user: 'You',
+                    message: newComment.trim(),
+                    timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                };
+                setComments(prevComments => [...prevComments, newCommentObj]);
+                setNewComment('');
+            }
         }
     };
 
@@ -117,6 +152,24 @@ function VideoStream() {
                     </div>
                     
                     <div className="chat-comments" ref={chatContainerRef}>
+                        {loading && (
+                            <div className="loading-message">
+                                Loading comments...
+                            </div>
+                        )}
+                        
+                        {error && (
+                            <div className="error-message">
+                                {error}
+                            </div>
+                        )}
+                        
+                        {!loading && !error && comments.length === 0 && (
+                            <div className="no-comments-message">
+                                No comments yet. Be the first to comment!
+                            </div>
+                        )}
+                        
                         {comments.map((comment) => (
                             <div key={comment.id} className={`chat-comment ${comment.user === 'You' ? 'own-comment' : ''}`}>
                                 <div className="comment-header">
