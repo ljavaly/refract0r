@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import '../styles/StreamChat.css';
 import apiClient from '../api/client.js';
 
-function StreamChat({ queued = false, initialComments = [] }) {
+function StreamChat({ initialComments = [] }) {
   const [comments, setComments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -21,7 +21,7 @@ function StreamChat({ queued = false, initialComments = [] }) {
   const loadComments = async () => {
     try {
       setLoading(true);
-      if (queued) {
+      if (initialComments.length) {
         setComments(initialComments);
       } else {
         const data = await apiClient.getComments();
