@@ -1,0 +1,152 @@
+.stream-chat-box {
+    border: 1px solid #333;
+    border-radius: 0.5rem;
+    color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+}
+
+.chat-header {
+    padding: 1rem;
+    border-bottom: 1px solid #333;
+    background-color: #2a2a2a;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.chat-header h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.viewer-count {
+    font-size: 0.9rem;
+    color: #888;
+}
+
+.chat-comments {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    gap: 0.5rem;
+}
+
+.chat-comment {
+    padding: 0.75rem;
+    border-left: 3px solid #8b5cf6;
+}
+
+.chat-comment.own-comment {
+    border-left-color: #a86ae1;
+}
+
+.comment-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.25rem;
+}
+
+.username {
+    font-weight: 600;
+    color: #8b5cf6;  /* TODO LAUREN TO RANDOMIZE */
+    font-size: 0.9rem;
+}
+
+.timestamp {
+    font-size: 0.75rem;
+    color: #666666;
+}
+
+.comment-content {
+    color: #555555;
+    line-height: 1.4;
+    word-wrap: break-word;
+}
+
+.chat-input-form {
+    padding: 1rem;
+    border-top: 1px solid #333;
+    display: flex;
+    gap: 0.5rem;
+}
+
+.chat-input {
+    flex: 1;
+    padding: 0.75rem;
+    border: 1px solid #444;
+    border-radius: 0.5rem;
+    background-color: #E7E7E7;
+    font-size: 0.9rem;
+}
+
+.chat-input:focus {
+    outline: none;
+    border-color: #8b5cf6;
+    box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.25);
+}
+
+.chat-input::placeholder {
+    color: #666;
+}
+
+.send-button {
+    padding: 0.75rem 1rem;
+    background-color: #8b5cf6;
+    color: #ffffff;
+    border: none;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.send-button:hover {
+    background-color: #7c3aed;
+}
+
+.send-button:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.5);
+}
+
+/* Scrollbar styling for chat comments */
+.chat-comments::-webkit-scrollbar {
+    width: 6px;
+}
+
+.chat-comments::-webkit-scrollbar-track {
+    background: #1a1a1a;
+}
+
+.chat-comments::-webkit-scrollbar-thumb {
+    background: #444;
+    border-radius: 3px;
+}
+
+.chat-comments::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+.loading-message,
+.error-message,
+.no-comments-message {
+    text-align: center;
+    padding: 1rem;
+    color: #888;
+    font-style: italic;
+}
+
+.error-message {
+    color: #ef4444;
+}
+
+.no-comments-message {
+    color: #666;
+}
