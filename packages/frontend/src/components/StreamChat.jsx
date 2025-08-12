@@ -11,10 +11,26 @@ function StreamChat({ initialComments = [] }) {
 
   useEffect(() => {
     loadComments();
-    setupWebSocket();
+    apiClient.connectWebSocket();
+
+    const onNewComment = (data) => {
+      setComments((prevComments) => [...prevComments, data.comment]);
+    };
+    const onConnection = (data) => {
+      console.log('WebSocket connected:', data.message);
+    };
+    const onError = (data) => {
+      console.error('WebSocket error:', data.message);
+    };
+
+    apiClient.onWebSocketMessage('new_comment', onNewComment);
+    apiClient.onWebSocketMessage('connection', onConnection);
+    apiClient.onWebSocketMessage('error', onError);
 
     return () => {
-      apiClient.disconnectWebSocket();
+      apiClient.offWebSocketMessage('new_comment', onNewComment);
+      apiClient.offWebSocketMessage('connection', onConnection);
+      apiClient.offWebSocketMessage('error', onError);
     };
   }, []);
 
@@ -33,22 +49,6 @@ function StreamChat({ initialComments = [] }) {
     } finally {
       setLoading(false);
     }
-  };
-
-  const setupWebSocket = () => {
-    apiClient.connectWebSocket();
-
-    apiClient.onWebSocketMessage('new_comment', (data) => {
-      setComments((prevComments) => [...prevComments, data.comment]);
-    });
-
-    apiClient.onWebSocketMessage('connection', (data) => {
-      console.log('WebSocket connected:', data.message);
-    });
-
-    apiClient.onWebSocketMessage('error', (data) => {
-      console.error('WebSocket error:', data.message);
-    });
   };
 
   useEffect(() => {

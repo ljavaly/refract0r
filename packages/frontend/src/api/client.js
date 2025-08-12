@@ -7,6 +7,7 @@ class ApiClient {
     constructor(baseUrl = API_BASE_URL) {
         this.baseUrl = baseUrl;
         this.ws = null;
+        // Map<string, Set<Function>> of listeners by message type
         this.wsListeners = new Map();
         this.reconnectAttempts = 0;
         this.maxReconnectAttempts = 5;
@@ -97,8 +98,8 @@ class ApiClient {
 
     // WebSocket methods
     connectWebSocket() {
-        if (this.ws && this.ws.readyState === WebSocket.OPEN) {
-            console.log('WebSocket already connected');
+        if (this.ws && (this.ws.readyState === WebSocket.OPEN || this.ws.readyState === WebSocket.CONNECTING)) {
+            // Already connected or in progress
             return;
         }
 
@@ -153,24 +154,40 @@ class ApiClient {
     }
 
     handleWebSocketMessage(data) {
-        console.log('📨 Received WebSocket message:', data);
-        
-        // Notify all listeners
-        this.wsListeners.forEach((listener, type) => {
-            if (type === 'all' || type === data.type) {
-                listener(data);
+        // Notify listeners registered for this type and for 'all'
+        const notifyType = (type) => {
+            const listeners = this.wsListeners.get(type);
+            if (listeners && listeners.size > 0) {
+                listeners.forEach((cb) => {
+                    try {
+                        cb(data);
+                    } catch (e) {
+                        console.error('WebSocket listener error:', e);
+                    }
+                });
             }
-        });
+        };
+        notifyType('all');
+        if (data && data.type) notifyType(data.type);
     }
 
     // Subscribe to WebSocket messages
     onWebSocketMessage(type, callback) {
-        this.wsListeners.set(type, callback);
+        const set = this.wsListeners.get(type) || new Set();
+        set.add(callback);
+        this.wsListeners.set(type, set);
     }
 
     // Unsubscribe from WebSocket messages
-    offWebSocketMessage(type) {
-        this.wsListeners.delete(type);
+    offWebSocketMessage(type, callback) {
+        const set = this.wsListeners.get(type);
+        if (!set) return;
+        set.delete(callback);
+        if (set.size === 0) {
+            this.wsListeners.delete(type);
+        } else {
+            this.wsListeners.set(type, set);
+        }
     }
 
     // Send comment through WebSocket
