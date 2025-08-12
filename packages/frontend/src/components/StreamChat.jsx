@@ -1,17 +1,14 @@
 import React, { useEffect, useRef, useState } from 'react';
 import '../styles/StreamChat.css';
-import apiClient from '../api/client.js';
+import wsClient from '../api/ws.js';
 
 function StreamChat({ initialComments = [] }) {
   const [comments, setComments] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [newComment, setNewComment] = useState('');
   const chatContainerRef = useRef(null);
 
   useEffect(() => {
-    loadComments();
-    apiClient.connectWebSocket();
+    wsClient.connectWebSocket();
 
     const onNewComment = (data) => {
       setComments((prevComments) => [...prevComments, data.comment]);
@@ -23,33 +20,16 @@ function StreamChat({ initialComments = [] }) {
       console.error('WebSocket error:', data.message);
     };
 
-    apiClient.onWebSocketMessage('new_comment', onNewComment);
-    apiClient.onWebSocketMessage('connection', onConnection);
-    apiClient.onWebSocketMessage('error', onError);
+    wsClient.onWebSocketMessage('new_comment', onNewComment);
+    wsClient.onWebSocketMessage('connection', onConnection);
+    wsClient.onWebSocketMessage('error', onError);
 
     return () => {
-      apiClient.offWebSocketMessage('new_comment', onNewComment);
-      apiClient.offWebSocketMessage('connection', onConnection);
-      apiClient.offWebSocketMessage('error', onError);
+      wsClient.offWebSocketMessage('new_comment', onNewComment);
+      wsClient.offWebSocketMessage('connection', onConnection);
+      wsClient.offWebSocketMessage('error', onError);
     };
   }, []);
-
-  const loadComments = async () => {
-    try {
-      setLoading(true);
-      if (initialComments.length) {
-        setComments(initialComments);
-      } else {
-        const data = await apiClient.getComments();
-        setComments(data);
-      }
-    } catch (err) {
-      console.error('Failed to load comments:', err);
-      setError('Failed to load comments');
-    } finally {
-      setLoading(false);
-    }
-  };
 
   useEffect(() => {
     if (chatContainerRef.current) {
@@ -60,7 +40,7 @@ function StreamChat({ initialComments = [] }) {
   const handleSendComment = (e) => {
     e.preventDefault();
     if (newComment.trim()) {
-      const success = apiClient.sendComment('You', newComment.trim());
+      const success = wsClient.sendComment('You', newComment.trim());
       if (success) {
         setNewComment('');
       } else {
@@ -84,9 +64,7 @@ function StreamChat({ initialComments = [] }) {
       </div>
 
       <div className="chat-comments" ref={chatContainerRef}>
-        {loading && <div className="loading-message">Loading comments...</div>}
-        {error && <div className="error-message">{error}</div>}
-        {!loading && !error && comments.length === 0 && (
+        {comments.length === 0 && (
           <div className="no-comments-message">No comments yet. Be the first to comment!</div>
         )}
         {comments.map((comment) => (
