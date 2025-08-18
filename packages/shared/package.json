@@ -7,7 +7,11 @@
     "build": "echo 'No build step needed for shared package'",
     "test": "echo 'No tests for shared package'"
   },
-  "keywords": ["shared", "types", "utils"],
+  "keywords": [
+    "shared",
+    "types",
+    "utils"
+  ],
   "author": "",
   "license": "ISC"
-} 
+}

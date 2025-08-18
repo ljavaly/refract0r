@@ -5,13 +5,13 @@
  */
 export const formatNumber = (num) => {
   if (num >= 1000000000) {
-    return (num / 1000000000).toFixed(1) + 'B';
+    return (num / 1000000000).toFixed(1) + "B";
   }
   if (num >= 1000000) {
-    return (num / 1000000).toFixed(1) + 'M';
+    return (num / 1000000).toFixed(1) + "M";
   }
   if (num >= 1000) {
-    return (num / 1000).toFixed(1) + 'K';
+    return (num / 1000).toFixed(1) + "K";
   }
   return num.toString();
 };
@@ -25,9 +25,9 @@ export const formatDuration = (seconds) => {
   const secs = seconds % 60;
 
   if (hours > 0) {
-    return `${hours}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    return `${hours}:${minutes.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
   }
-  return `${minutes}:${secs.toString().padStart(2, '0')}`;
+  return `${minutes}:${secs.toString().padStart(2, "0")}`;
 };
 
 /**
@@ -48,15 +48,15 @@ export const formatRelativeTime = (date) => {
     return `${days} days ago`;
   }
   if (days === 1) {
-    return 'yesterday';
+    return "yesterday";
   }
   if (hours > 0) {
-    return `${hours} hour${hours > 1 ? 's' : ''} ago`;
+    return `${hours} hour${hours > 1 ? "s" : ""} ago`;
   }
   if (minutes > 0) {
-    return `${minutes} minute${minutes > 1 ? 's' : ''} ago`;
+    return `${minutes} minute${minutes > 1 ? "s" : ""} ago`;
   }
-  return 'just now';
+  return "just now";
 };
 
 /**
@@ -64,9 +64,9 @@ export const formatRelativeTime = (date) => {
  */
 export const getInitials = (name) => {
   return name
-    .split(' ')
-    .map(word => word.charAt(0))
-    .join('')
+    .split(" ")
+    .map((word) => word.charAt(0))
+    .join("")
     .toUpperCase()
     .slice(0, 2);
 };
@@ -83,9 +83,7 @@ export const isValidEmail = (email) => {
  * Sanitize string for safe display
  */
 export const sanitizeString = (str) => {
-  return str
-    .replace(/[<>]/g, '')
-    .trim();
+  return str.replace(/[<>]/g, "").trim();
 };
 
 /**
@@ -108,4 +106,4 @@ export const debounce = (func, wait) => {
     clearTimeout(timeout);
     timeout = setTimeout(later, wait);
   };
-}; 
+};

@@ -33,11 +33,13 @@ refract0r/
 ### Quick Start (Recommended)
 
 1. Install all dependencies:
+
    ```bash
    npm run install:all
    ```
 
 2. Start both frontend and backend in development mode:
+
    ```bash
    npm run dev
    ```
@@ -49,11 +51,13 @@ refract0r/
 #### Frontend (React + Vite)
 
 1. Install frontend dependencies:
+
    ```bash
    npm install --workspace=frontend
    ```
 
 2. Start the frontend development server:
+
    ```bash
    npm run dev:frontend
    ```
@@ -63,11 +67,13 @@ refract0r/
 #### Backend (Express.js Server)
 
 1. Install backend dependencies:
+
    ```bash
    npm install --workspace=backend
    ```
 
 2. Set up environment variables (optional):
+
    ```bash
    cd packages/backend
    cp env.example .env
@@ -75,6 +81,7 @@ refract0r/
    ```
 
 3. Start the backend server:
+
    ```bash
    npm run dev:backend
    ```
@@ -92,12 +99,14 @@ refract0r/
 ## Development
 
 ### Frontend Features
+
 - React 19 with Vite for fast development
 - Tailwind CSS for styling
 - Component-based architecture
 - Responsive design
 
 ### Backend Features
+
 - Express.js server
 - CORS enabled for frontend communication
 - Modular route structure
@@ -107,6 +116,7 @@ refract0r/
 ## Available Scripts
 
 ### Root (Workspace)
+
 - `npm run dev` - Start both frontend and backend in development mode
 - `npm run dev:frontend` - Start only frontend development server
 - `npm run dev:backend` - Start only backend development server
@@ -115,17 +125,20 @@ refract0r/
 - `npm run start` - Start backend in production mode
 
 ### Frontend
+
 - `npm run dev` - Start development server (port 4001)
 - `npm run build` - Build for production
 - `npm run preview` - Preview production build
 
 ### Backend
+
 - `npm run dev` - Start development server with nodemon (port 3001)
 - `npm start` - Start production server
 
 ## Benefits of This Structure
 
 ### ✅ **Advantages:**
+
 - **Monorepo Management**: Single repository for frontend, backend, and shared code
 - **Unified Scripts**: Run both services with one command (`npm run dev`)
 - **Shared Code**: Common utilities, types, and configurations
@@ -135,6 +148,7 @@ refract0r/
 - **Consistent Tooling**: ESLint, Prettier, etc. can be shared
 
 ### ⚠️ **Considerations:**
+
 - **Complexity**: Slightly more complex setup than separate repos
 - **Learning Curve**: Team needs to understand workspace concepts
 - **Build Process**: Need to manage builds for multiple packages
@@ -142,12 +156,14 @@ refract0r/
 ### 🔄 **When to Use This vs. Separate Repos:**
 
 **Use This Structure When:**
+
 - Small to medium team (1-10 developers)
 - Frontend and backend are tightly coupled
 - You want to share code between frontend and backend
 - You plan to add more services (mobile app, admin panel)
 
 **Use Separate Repos When:**
+
 - Large team with different responsibilities
 - Frontend and backend are developed independently
 - Different deployment cycles

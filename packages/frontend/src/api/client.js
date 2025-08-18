@@ -1,97 +1,96 @@
 // API Client for communicating with the backend
 
-const API_BASE_URL = 'http://localhost:3001/api';
-
+const API_BASE_URL = "http://localhost:3001/api";
 
 class ApiClient {
-    constructor(baseUrl = API_BASE_URL) {
-        this.baseUrl = baseUrl;
+  constructor(baseUrl = API_BASE_URL) {
+    this.baseUrl = baseUrl;
+  }
+
+  // Generic request method
+  async request(endpoint, options = {}) {
+    const url = `${this.baseUrl}${endpoint}`;
+
+    const defaultOptions = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+
+    const config = {
+      ...defaultOptions,
+      ...options,
+      headers: {
+        ...defaultOptions.headers,
+        ...options.headers,
+      },
+    };
+
+    try {
+      const response = await fetch(url, config);
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error("API request failed:", error);
+      throw error;
     }
+  }
 
-    // Generic request method
-    async request(endpoint, options = {}) {
-        const url = `${this.baseUrl}${endpoint}`;
-        
-        const defaultOptions = {
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        };
+  // GET request
+  async get(endpoint) {
+    return this.request(endpoint, { method: "GET" });
+  }
 
-        const config = {
-            ...defaultOptions,
-            ...options,
-            headers: {
-                ...defaultOptions.headers,
-                ...options.headers,
-            },
-        };
+  // POST request
+  async post(endpoint, data) {
+    return this.request(endpoint, {
+      method: "POST",
+      body: JSON.stringify(data),
+    });
+  }
 
-        try {
-            const response = await fetch(url, config);
-            
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            
-            return await response.json();
-        } catch (error) {
-            console.error('API request failed:', error);
-            throw error;
-        }
-    }
+  // PUT request
+  async put(endpoint, data) {
+    return this.request(endpoint, {
+      method: "PUT",
+      body: JSON.stringify(data),
+    });
+  }
 
-    // GET request
-    async get(endpoint) {
-        return this.request(endpoint, { method: 'GET' });
-    }
+  // DELETE request
+  async delete(endpoint) {
+    return this.request(endpoint, { method: "DELETE" });
+  }
 
-    // POST request
-    async post(endpoint, data) {
-        return this.request(endpoint, {
-            method: 'POST',
-            body: JSON.stringify(data),
-        });
-    }
+  // Conversation-specific methods
+  async getConversations() {
+    return this.get("/conversations");
+  }
 
-    // PUT request
-    async put(endpoint, data) {
-        return this.request(endpoint, {
-            method: 'PUT',
-            body: JSON.stringify(data),
-        });
-    }
+  async getConversation(conversationId) {
+    return this.get(`/conversations/${conversationId}`);
+  }
 
-    // DELETE request
-    async delete(endpoint) {
-        return this.request(endpoint, { method: 'DELETE' });
-    }
+  // Video-specific methods
+  async getVideos() {
+    return this.get("/videos");
+  }
 
-    // Conversation-specific methods
-    async getConversations() {
-        return this.get('/conversations');
-    }
+  async getVideo(videoId) {
+    return this.get(`/videos/${videoId}`);
+  }
 
-    async getConversation(conversationId) {
-        return this.get(`/conversations/${conversationId}`);
-    }
-
-    // Video-specific methods
-    async getVideos() {
-        return this.get('/videos');
-    }
-
-    async getVideo(videoId) {
-        return this.get(`/videos/${videoId}`);
-    }
-
-    // Comment-specific methods
-    async getComments() {
-        return this.get('/comments');
-    }
+  // Comment-specific methods
+  async getComments() {
+    return this.get("/comments");
+  }
 }
 
 // Create and export a default instance
 const apiClient = new ApiClient();
 
-export default apiClient; 
+export default apiClient;
