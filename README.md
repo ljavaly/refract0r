@@ -28,8 +28,6 @@ refract0r/
 
 ## Getting Started
 
-## Getting Started
-
 ### Quick Start (Recommended)
 
 1. Install all dependencies:
@@ -88,14 +86,6 @@ refract0r/
 
 4. The server will be running on `http://localhost:3001`
 
-## API Endpoints
-
-- `GET /` - Server status
-- `GET /health` - Health check
-- `GET /api/videos` - Get all videos
-- `GET /api/videos/:id` - Get video by ID
-- `POST /api/videos` - Create new video
-
 ## Development
 
 ### Frontend Features
@@ -121,8 +111,12 @@ refract0r/
 - `npm run dev:frontend` - Start only frontend development server
 - `npm run dev:backend` - Start only backend development server
 - `npm run install:all` - Install dependencies for all workspaces
-- `npm run build` - Build frontend for production
-- `npm run start` - Start backend in production mode
+- `npm run build:backend` - Build amd64-compatible Docker image of backend service, tagged for upload to Google Cloud Artifact Registry
+- `npm run build:frontend` - Build frontend using Vite
+- `npm run build:all` - Build frontend and backend for production
+- `npm run push:frontend` - Upload frontend assets to Google Cloud Storage bucket, applying latest frontend build to production
+- `npm run push:backend` - Push backend docker image to Google Cloud Artifact Registry, applying latest backend build to production
+- `npm run push:all` - Push latest frontend and backend builds to production
 
 ### Frontend
 
@@ -134,37 +128,3 @@ refract0r/
 
 - `npm run dev` - Start development server with nodemon (port 3001)
 - `npm start` - Start production server
-
-## Benefits of This Structure
-
-### ✅ **Advantages:**
-
-- **Monorepo Management**: Single repository for frontend, backend, and shared code
-- **Unified Scripts**: Run both services with one command (`npm run dev`)
-- **Shared Code**: Common utilities, types, and configurations
-- **Dependency Management**: Each package has its own dependencies
-- **Scalability**: Easy to add more packages (mobile app, admin panel, etc.)
-- **Type Safety**: Shared type definitions (when using TypeScript)
-- **Consistent Tooling**: ESLint, Prettier, etc. can be shared
-
-### ⚠️ **Considerations:**
-
-- **Complexity**: Slightly more complex setup than separate repos
-- **Learning Curve**: Team needs to understand workspace concepts
-- **Build Process**: Need to manage builds for multiple packages
-
-### 🔄 **When to Use This vs. Separate Repos:**
-
-**Use This Structure When:**
-
-- Small to medium team (1-10 developers)
-- Frontend and backend are tightly coupled
-- You want to share code between frontend and backend
-- You plan to add more services (mobile app, admin panel)
-
-**Use Separate Repos When:**
-
-- Large team with different responsibilities
-- Frontend and backend are developed independently
-- Different deployment cycles
-- Different technology stacks
