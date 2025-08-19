@@ -1,8 +1,8 @@
 // WebSocket client for sending and receiving messages in real-time
 
-import { HOST } from "./utils";
+import { HOST, WS_PROTOCOL } from "./utils";
 
-const WS_BASE_URL = `ws://${HOST}/ws/comments`;
+const WS_BASE_URL = `${WS_PROTOCOL}://${HOST}/ws/comments`;
 
 class WsClient {
   constructor() {
