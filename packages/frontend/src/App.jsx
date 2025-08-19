@@ -52,6 +52,7 @@ function App() {
         {currentPage === "stream" && <VideoStream />}
         {currentPage === "browse" && <VideoFeed />}
         {currentPage === "inbox" && <Inbox />}
+        {currentPage === "admin" && <Admin />}
       </main>
     </div>
   );

@@ -62,16 +62,19 @@
 .profile-avatar {
   width: 2rem; /* w-8 */
   height: 2rem; /* h-8 */
-  background-color: #4b5563; /* bg-gray-600 */
+  background-color: #9333ea;
   border-radius: 9999px; /* rounded-full */
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #ffffff;
-  font-size: 0.875rem; /* text-sm */
-  font-weight: 700; /* font-bold */
   cursor: pointer;
   transition:
     ring-width 0.2s ease-in-out,
     ring-color 0.2s ease-in-out; /* transition */
+}
+
+.profile-avatar a {
+  font-size: 0.875rem; /* text-sm */
+  font-weight: 700; /* font-bold */
+  color: #ffffff;
 }

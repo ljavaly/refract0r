@@ -43,7 +43,11 @@ function NavBar({ onPageChange }) {
         </div>
 
         <div className="flex items-center space-x-4">
-          <div className="profile-avatar">TR</div>
+          <div className="profile-avatar">
+            <a href="#" className="col-span-1" onClick={() => onPageChange("admin")}>
+              TR
+            </a>
+          </div>
         </div>
       </header>
     </>
