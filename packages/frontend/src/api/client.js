@@ -1,6 +1,8 @@
 // API Client for communicating with the backend
 
-const API_BASE_URL = "http://localhost:3001/api";
+import { HOST, HTTP_PROTOCOL } from "./utils";
+
+const API_BASE_URL = `${HTTP_PROTOCOL}://${HOST}/api`;
 
 class ApiClient {
   constructor(baseUrl = API_BASE_URL) {
