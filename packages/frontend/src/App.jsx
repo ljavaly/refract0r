@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import NavBar from "./components/NavBar";
+import TopNavBar from "./components/TopNavBar";
 import VideoStream from "./components/VideoStream";
 import Inbox from "./components/Inbox";
 import Admin from "./components/Admin";
@@ -37,7 +37,7 @@ function App() {
   if (path === "/admin") {
     return (
       <div className="h-screen flex flex-col overflow-hidden">
-        <NavBar onPageChange={handlePageChange} onNavigate={navigate} />
+        <TopNavBar onPageChange={handlePageChange} onNavigate={navigate} />
         <main className="flex-1 overflow-hidden">
           <Admin />
         </main>
@@ -47,7 +47,7 @@ function App() {
 
   return (
     <div className="h-screen flex flex-col overflow-hidden">
-      <NavBar onPageChange={handlePageChange} onNavigate={navigate} />
+      <TopNavBar onPageChange={handlePageChange} onNavigate={navigate} />
       <main className="flex-1 overflow-hidden">
         {currentPage === "stream" && <VideoStream />}
         {currentPage === "browse" && <VideoFeed />}

@@ -1,7 +1,7 @@
-import "../styles/NavBar.css";
+import "../styles/TopNavBar.css";
 import ghostIcon from "../assets/ghost-svgrepo-com.svg";
 
-function NavBar({ onPageChange }) {
+function TopNavBar({ onPageChange }) {
   return (
     <>
       <header className="header-main">
@@ -54,4 +54,4 @@ function NavBar({ onPageChange }) {
   );
 }
 
-export default NavBar;
+export default TopNavBar;
