@@ -5,6 +5,7 @@ import Inbox from "./components/Inbox";
 import Admin from "./components/Admin";
 import "./App.css";
 import VideoFeed from "./components/VideoFeed";
+import SideNavBar from "./components/SideNavBar";
 
 function App() {
   const [currentPage, setCurrentPage] = useState("stream"); // Default to 'video' page
@@ -48,12 +49,15 @@ function App() {
   return (
     <div className="h-screen flex flex-col overflow-hidden">
       <TopNavBar onPageChange={handlePageChange} onNavigate={navigate} />
-      <main className="flex-1 overflow-hidden">
-        {currentPage === "stream" && <VideoStream />}
-        {currentPage === "browse" && <VideoFeed />}
-        {currentPage === "inbox" && <Inbox />}
-        {currentPage === "admin" && <Admin />}
-      </main>
+      <div className="flex flex-1 overflow-hidden">
+        <SideNavBar />
+        <main className="flex-1 overflow-hidden">
+          {currentPage === "stream" && <VideoStream />}
+          {currentPage === "browse" && <VideoFeed />}
+          {currentPage === "inbox" && <Inbox />}
+          {currentPage === "admin" && <Admin />}
+        </main>
+      </div>
     </div>
   );
 }
