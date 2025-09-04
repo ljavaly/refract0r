@@ -9,8 +9,7 @@ if (process.env.NODE_ENV === "development") {
   console.log(
     "Using local API",
     HTTP_PROTOCOL + "://" + HOST,
-    "\n" +
-    "Using local WebSocket",
+    "\n" + "Using local WebSocket",
     WS_PROTOCOL + "://" + HOST,
   );
 } else {
@@ -21,8 +20,7 @@ if (process.env.NODE_ENV === "development") {
   console.log(
     "Using remote API",
     HTTP_PROTOCOL + "://" + HOST,
-    "\n" +
-    "Using remote WebSocket",
+    "\n" + "Using remote WebSocket",
     WS_PROTOCOL + "://" + HOST,
   );
 }
