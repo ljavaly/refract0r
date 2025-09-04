@@ -98,7 +98,7 @@ function Inbox() {
               className={`tab-button ${activeTab === "other" ? "active" : ""}`}
               onClick={() => setActiveTab("other")}
             >
-              Other (15)
+              Requests (15)
             </button>
           </div>
 
@@ -245,9 +245,7 @@ function Inbox() {
                         )}
                         <div className="message-content-wrapper">
                           <div className="message-header">
-                            <span
-                              className={`message-username username-color-${(message.id % 3) + 1}`}
-                            >
+                            <span className="message-username">
                               {user ? user.username : message.user}
                             </span>
                             <span className="message-time">{message.time}</span>

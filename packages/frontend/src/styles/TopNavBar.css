@@ -3,7 +3,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background-color: #e7e7e7;
+  background-color: var(--color-accent);
 }
 
 .nav-links-container {
@@ -23,7 +23,7 @@
 }
 
 .nav-link:hover {
-  color: #9333ea;
+  color: var(--color-highlight);
 }
 
 .ghost-icon {
@@ -51,7 +51,7 @@
 }
 
 .search-input:focus {
-  outline: 2px solid #9333ea;
+  outline: 2px solid var(--color-highlight);
   outline-offset: 2px;
 }
 
@@ -62,7 +62,7 @@
 .profile-avatar {
   width: 2rem; /* w-8 */
   height: 2rem; /* h-8 */
-  background-color: #9333ea;
+  background-color: var(--color-highlight);
   border-radius: 9999px; /* rounded-full */
   display: flex;
   align-items: center;

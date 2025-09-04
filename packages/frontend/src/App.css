@@ -20,3 +20,10 @@ html {
   height: 100%;
   overflow: hidden;
 }
+
+:root {
+  --color-background: #f9f9f9;
+  --color-accent: #F6AD65;
+  --color-highlight: #C04000;
+  --color-highlight-2: #A33600;
+}
