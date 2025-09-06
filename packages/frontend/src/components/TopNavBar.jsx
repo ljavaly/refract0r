@@ -29,10 +29,7 @@ function TopNavBar({ onPageChange }) {
             </a>
           </div>
           <div className="inbox-icon col-span-1">
-            <a
-              href="#"
-              className="nav-link"
-            >
+            <a href="#" className="nav-link">
               <img src={gearIcon} alt="Settings" className="nav-icon" />
             </a>
           </div>
