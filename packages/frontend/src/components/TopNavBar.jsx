@@ -1,37 +1,14 @@
 import "../styles/TopNavBar.css";
 import ghostIcon from "../assets/ghost-svgrepo-com.svg";
+import mailIcon from "../assets/mail-icon.svg";
+import gearIcon from "../assets/gear-icon.svg";
 
 function TopNavBar({ onPageChange }) {
   return (
     <>
       <header className="header-main">
         <div className="flex gap-4">
-          <a href="#" className="" onClick={() => onPageChange("stream")}>
-            <img src={ghostIcon} alt="Ghost" className="ghost-icon block" />
-          </a>
-          <div className="nav-links-container grid grid-cols-3">
-            <a
-              href="#"
-              className="nav-link col-span-1"
-              onClick={() => onPageChange("stream")}
-            >
-              Stream 🔽
-            </a>
-            <a
-              href="#"
-              className="nav-link col-span-1"
-              onClick={() => onPageChange("browse")}
-            >
-              Browse 🔍
-            </a>
-            <a
-              href="#"
-              className="nav-link col-span-1"
-              onClick={() => onPageChange("inbox")}
-            >
-              Inbox 📨
-            </a>
-          </div>
+          <img src={ghostIcon} alt="Ghost" className="ghost-icon block" />
         </div>
         <div className="search-section flex-grow">
           <input
@@ -41,9 +18,25 @@ function TopNavBar({ onPageChange }) {
             className="search-input"
           />
         </div>
-
-        <div className="flex items-center space-x-4">
-          <div className="profile-avatar">
+        <div className="nav-link-container grid grid-cols-3">
+          <div className="col-span-1">
+            <a
+              href="#"
+              className="nav-link"
+              onClick={() => onPageChange("inbox")}
+            >
+              <img src={mailIcon} alt="Mail" className="nav-icon" />
+            </a>
+          </div>
+          <div className="inbox-icon col-span-1">
+            <a
+              href="#"
+              className="nav-link"
+            >
+              <img src={gearIcon} alt="Settings" className="nav-icon" />
+            </a>
+          </div>
+          <div className="profile-avatar col-span-1">
             <a
               href="#"
               className="col-span-1"

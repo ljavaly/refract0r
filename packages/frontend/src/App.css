@@ -26,4 +26,5 @@ html {
   --color-accent: #f6ad65;
   --color-highlight: #c04000;
   --color-highlight-2: #a33600;
+  --border-radius: 0.5rem;
 }

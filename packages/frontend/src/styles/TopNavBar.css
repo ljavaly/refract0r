@@ -6,26 +6,6 @@
   background-color: var(--color-accent);
 }
 
-.nav-links-container {
-  display: flex;
-  align-items: center;
-  gap: 1.5rem;
-}
-
-.nav-link {
-  font-size: 32;
-  font-weight: 600; /* font-semibold */
-  text-transform: uppercase;
-  color: #606060;
-  padding: 0.5rem;
-  transition: color 0.2s ease-in-out; /* transition */
-  cursor: pointer; /* Indicate clickable */
-}
-
-.nav-link:hover {
-  color: var(--color-highlight);
-}
-
 .ghost-icon {
   width: 36px;
   height: 36px;
@@ -45,7 +25,7 @@
   color: #252525;
   background-color: #f0f0f0;
   border: 1px solid #ccc;
-  border-radius: 2px;
+  border-radius: var(--border-radius);
   text-align: center;
   font-size: 16px;
 }
@@ -59,9 +39,31 @@
   color: transparent;
 }
 
+.nav-link-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+  width: 10%;
+}
+
+.nav-link {
+  font-weight: 600; /* font-semibold */
+  text-transform: uppercase;
+  color: #606060;
+  transition: color 0.2s ease-in-out; /* transition */
+  cursor: pointer; /* Indicate clickable */
+}
+
+.nav-icon {
+  width: 24px;
+  height: 24px;
+  color: #606060;
+}
+
 .profile-avatar {
-  width: 2rem; /* w-8 */
-  height: 2rem; /* h-8 */
+  width: 2.5rem;
+  height: 2.5rem;
   background-color: var(--color-highlight);
   border-radius: 9999px; /* rounded-full */
   display: flex;
