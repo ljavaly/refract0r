@@ -8,6 +8,7 @@ import historyIcon from "../assets/history-icon.svg";
 import watchLaterIcon from "../assets/watch-later-icon.svg";
 import likedVideosIcon from "../assets/liked-videos-icon.svg";
 import showMoreIcon from "../assets/show-more-icon.svg";
+import dollarIcon from "../assets/dollar-icon.svg";
 
 import "../styles/SideNavBar.css";
 
@@ -58,9 +59,9 @@ function SideNavBar({ onPageChange }) {
         <div className="sidebar-item">
           <a href="#">
             <div className="sidebar-icon">
-              <img src={tvIcon} alt="TV" />
+              <img src={dollarIcon} alt="Bank" />
             </div>
-            <span>TV</span>
+            <span>Bank</span>
           </a>
         </div>
       </div>
