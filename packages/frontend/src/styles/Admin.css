@@ -17,7 +17,7 @@
 
 .admin-cues-section {
   background: #ffffffcc;
-  border-radius: 12px;
+  border-radius: var(--border-radius);
   overflow: hidden;
   box-shadow: 0 1px 2px rgba(16, 185, 129, 0.08);
   display: flex;

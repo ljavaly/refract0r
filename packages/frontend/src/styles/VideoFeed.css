@@ -42,7 +42,7 @@
 
 .video-card {
   background-color: white;
-  border-radius: 8px;
+  border-radius: var(--border-radius);
   overflow: hidden;
   cursor: pointer;
   transition: transform 0.1s ease;
