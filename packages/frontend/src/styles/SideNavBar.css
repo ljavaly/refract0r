@@ -21,20 +21,26 @@
 }
 
 .sidebar-item {
+  font-size: 14px;
+  color: #030303;
+}
+
+.sidebar-item a {
   display: flex;
   align-items: center;
   gap: 24px;
   padding: 8px 24px;
   cursor: pointer;
-  font-size: 14px;
-  color: #030303;
+  text-decoration: none;
+  color: inherit;
+  width: 100%;
 }
 
-.sidebar-item:hover {
+.sidebar-item a:hover {
   background-color: #f2f2f2;
 }
 
-.sidebar-item.active {
+.sidebar-item.active a {
   background-color: #e5e5e5;
   font-weight: 500;
 }

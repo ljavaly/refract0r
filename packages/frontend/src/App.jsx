@@ -50,7 +50,7 @@ function App() {
     <div className="h-screen flex flex-col overflow-hidden">
       <TopNavBar onPageChange={handlePageChange} onNavigate={navigate} />
       <div className="flex flex-1 overflow-hidden">
-        <SideNavBar />
+        <SideNavBar onPageChange={handlePageChange} onNavigate={navigate} />
         <main className="flex-1 overflow-hidden">
           {currentPage === "stream" && <VideoStream />}
           {currentPage === "browse" && <VideoFeed />}

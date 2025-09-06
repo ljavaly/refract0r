@@ -11,93 +11,121 @@ import showMoreIcon from "../assets/show-more-icon.svg";
 
 import "../styles/SideNavBar.css";
 
-function SideNavBar() {
+function SideNavBar({ onPageChange }) {
   return (
     <aside className="sidebar">
       <div className="sidebar-section flex-grow">
         <div className="sidebar-item active">
-          <div className="sidebar-icon">
-            <img src={homeIcon} alt="Home" />
-          </div>
-          <span>Home</span>
+          <a href="#" onClick={() => onPageChange("stream")}>
+            <div className="sidebar-icon">
+              <img src={homeIcon} alt="Home" />
+            </div>
+            <span>Home</span>
+          </a>
         </div>
         <div className="sidebar-item">
-          <div className="sidebar-icon">
-            <img src={channelIcon} alt="My Channel" />
-          </div>
-          <span>My Channel</span>
+          <a href="#" onClick={() => onPageChange("browse")}>
+            <div className="sidebar-icon">
+              <img src={channelIcon} alt="My Channel" />
+            </div>
+            <span>My Channel</span>
+          </a>
         </div>
         <div className="sidebar-item">
-          <div className="sidebar-icon">
-            <img src={trendingIcon} alt="Trending" />
-          </div>
-          <span>Trending</span>
+          <a href="#">
+            <div className="sidebar-icon">
+              <img src={trendingIcon} alt="Trending" />
+            </div>
+            <span>Trending</span>
+          </a>
         </div>
         <div className="sidebar-item">
-          <div className="sidebar-icon">
-            <img src={subscriptionsIcon} alt="Subscriptions" />
-          </div>
-          <span>Subscriptions</span>
+          <a href="#">
+            <div className="sidebar-icon">
+              <img src={subscriptionsIcon} alt="Subscriptions" />
+            </div>
+            <span>Subscriptions</span>
+          </a>
         </div>
         <div className="sidebar-item">
-          <div className="sidebar-icon">
-            <img src={premiumIcon} alt="Premium" />
-          </div>
-          <span>Premium</span>
+          <a href="#">
+            <div className="sidebar-icon">
+              <img src={premiumIcon} alt="Premium" />
+            </div>
+            <span>Premium</span>
+          </a>
         </div>
         <div className="sidebar-item">
-          <div className="sidebar-icon">
-            <img src={tvIcon} alt="TV" />
-          </div>
-          <span>TV</span>
+          <a href="#">
+            <div className="sidebar-icon">
+              <img src={tvIcon} alt="TV" />
+            </div>
+            <span>TV</span>
+          </a>
         </div>
       </div>
 
       <div className="sidebar-section">
         <div className="section-title">Library</div>
         <div className="sidebar-item">
-          <div className="sidebar-icon">
-            <img src={historyIcon} alt="History" />
-          </div>
-          <span>History</span>
+          <a href="#">
+            <div className="sidebar-icon">
+              <img src={historyIcon} alt="History" />
+            </div>
+            <span>History</span>
+          </a>
         </div>
         <div className="sidebar-item">
-          <div className="sidebar-icon">
-            <img src={watchLaterIcon} alt="Watch Later" />
-          </div>
-          <span>Watch Later</span>
+          <a href="#">
+            <div className="sidebar-icon">
+              <img src={watchLaterIcon} alt="Watch Later" />
+            </div>
+            <span>Watch Later</span>
+          </a>
         </div>
         <div className="sidebar-item">
-          <div className="sidebar-icon">
-            <img src={likedVideosIcon} alt="Liked Videos" />
-          </div>
-          <span>Liked Videos</span>
+          <a href="#">
+            <div className="sidebar-icon">
+              <img src={likedVideosIcon} alt="Liked Videos" />
+            </div>
+            <span>Liked Videos</span>
+          </a>
         </div>
         <div className="sidebar-item">
-          <div className="sidebar-icon">
-            <img src={showMoreIcon} alt="Show More" />
-          </div>
-          <span>Show More</span>
+          <a href="#">
+            <div className="sidebar-icon">
+              <img src={showMoreIcon} alt="Show More" />
+            </div>
+            <span>Show More</span>
+          </a>
         </div>
       </div>
 
       <div className="sidebar-section">
         <div className="section-title">Subscriptions</div>
         <div className="sidebar-item">
-          <div className="channel-avatar"></div>
-          <span>Channel 1</span>
+          <a href="#">
+            <div className="channel-avatar"></div>
+            <span>Channel 1</span>
+          </a>
         </div>
         <div className="sidebar-item">
-          <div className="channel-avatar"></div>
-          <span>Channel 2</span>
+          <a href="#">
+            <div className="channel-avatar"></div>
+            <span>Channel 2</span>
+          </a>
         </div>
         <div className="sidebar-item">
-          <div className="channel-avatar"></div>
-          <span>Channel 3</span>
+          <a href="#">
+            <div className="channel-avatar"></div>
+            <span>Channel 3</span>
+          </a>
         </div>
         <div className="sidebar-item">
-          <div className="channel-avatar"></div>
-          <span>Channel 4</span>
+          <a href="#">
+            <div className="channel-avatar"></div>
+            <span>Channel 4</span>
+          </a>
         </div>
       </div>
     </aside>
