@@ -6,11 +6,9 @@
   background-color: var(--color-accent);
 }
 
-.ghost-icon {
-  width: 36px;
-  height: 36px;
-  padding: 0.5rem;
-  margin-right: 2rem; /* TODO LAUREN FIX THIS */
+.logo-icon {
+  width: 54px;
+  height: 54px;
 }
 
 .search-section {

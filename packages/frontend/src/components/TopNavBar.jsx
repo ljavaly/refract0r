@@ -1,5 +1,5 @@
 import "../styles/TopNavBar.css";
-import ghostIcon from "../assets/ghost-svgrepo-com.svg";
+import eyeIcon from "../assets/eye-icon.svg";
 import mailIcon from "../assets/mail-icon.svg";
 import gearIcon from "../assets/gear-icon.svg";
 
@@ -8,7 +8,7 @@ function TopNavBar({ onPageChange }) {
     <>
       <header className="header-main">
         <div className="flex gap-4">
-          <img src={ghostIcon} alt="Ghost" className="ghost-icon block" />
+          <img src={eyeIcon} className="logo-icon block" />
         </div>
         <div className="search-section flex-grow">
           <input
