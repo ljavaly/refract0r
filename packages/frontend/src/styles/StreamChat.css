@@ -75,14 +75,17 @@
   border-top: 1px solid #333;
   display: flex;
   gap: 0.5rem;
+  align-items: stretch;
+  min-width: 0;
 }
 
 .chat-input {
   flex: 1;
+  min-width: 0;
   padding: 0.75rem;
   border: 1px solid #444;
   border-radius: var(--border-radius);
-  background-color: #e7e7e7;
+  background-color: var(--color-background);
   font-size: 0.9rem;
 }
 
@@ -105,10 +108,72 @@
   font-weight: 600;
   cursor: pointer;
   transition: background-color 0.2s ease;
+  white-space: nowrap;
+  min-width: 70px;
+  flex-shrink: 0;
+  flex-basis: auto;
 }
 
 .send-button:hover {
   background-color: var(--color-highlight);
+}
+
+/* Emoji picker styles */
+.emoji-picker-container {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.emoji-button {
+  background-color: transparent;
+  border: 1px solid #666;
+  color: #666;
+  cursor: pointer;
+  padding: 0.75rem;
+  border-radius: var(--border-radius);
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  min-width: 48px;
+}
+
+.emoji-button:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+  border-color: #888;
+  color: #888;
+}
+
+.emoji-picker {
+  position: absolute;
+  bottom: 100%;
+  right: 0;
+  background-color: #2a2a2a;
+  border: 1px solid #444;
+  border-radius: var(--border-radius);
+  padding: 0.5rem;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.25rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  z-index: 100;
+  margin-bottom: 0.5rem;
+  min-width: 200px;
+}
+
+.emoji-option {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+}
+
+.emoji-option:hover {
+  background-color: rgba(255, 255, 255, 0.1);
 }
 
 /* Scrollbar styling for chat comments */

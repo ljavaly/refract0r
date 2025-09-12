@@ -5,6 +5,7 @@ import wsClient from "../api/ws.js";
 function StreamChat({ initialComments = [] }) {
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState("");
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const chatContainerRef = useRef(null);
 
   useEffect(() => {
@@ -60,11 +61,35 @@ function StreamChat({ initialComments = [] }) {
     }
   };
 
+  const handleEmojiClick = (emoji) => {
+    setNewComment((prev) => prev + emoji);
+    setShowEmojiPicker(false);
+  };
+
+  const emojis = [
+    "😀",
+    "😂",
+    "😍",
+    "😭",
+    "😊",
+    "😎",
+    "🤔",
+    "😴",
+    "🔥",
+    "❤️",
+    "👍",
+    "👎",
+    "🎉",
+    "😱",
+    "🤯",
+    "💯",
+  ];
+
   return (
     <div className="stream-chat-box">
       <div className="chat-header">
         <h3>Live Chat</h3>
-        <span className="viewer-count">👥 127 viewers</span>
+        <span className="viewer-count">127 viewers</span>
       </div>
 
       <div className="chat-comments" ref={chatContainerRef}>
@@ -95,6 +120,42 @@ function StreamChat({ initialComments = [] }) {
           placeholder="Type a comment..."
           className="chat-input"
         />
+        <div className="emoji-picker-container">
+          <button
+            type="button"
+            className="emoji-button"
+            onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+          >
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <circle cx="12" cy="12" r="10"/>
+              <path d="m9 9 1.5 1.5L12 9l1.5 1.5L15 9"/>
+              <path d="M8 15s1.5 2 4 2 4-2 4-2"/>
+            </svg>
+          </button>
+          {showEmojiPicker && (
+            <div className="emoji-picker">
+              {emojis.map((emoji, index) => (
+                <button
+                  key={index}
+                  type="button"
+                  className="emoji-option"
+                  onClick={() => handleEmojiClick(emoji)}
+                >
+                  {emoji}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
         <button type="submit" className="send-button">
           Send
         </button>
