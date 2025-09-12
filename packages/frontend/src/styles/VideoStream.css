@@ -37,7 +37,7 @@
 
 .camera-toggle-button {
   position: absolute;
-  bottom: 1rem;
+  top: 1rem;
   left: 1rem;
   padding: 0.75rem 1.5rem; /* px-6 py-3 */
   background-color: var(--color-highlight);
@@ -56,7 +56,136 @@
 
 .camera-toggle-button:focus {
   outline: none;
-  box-shadow:
-    0 0 0 2px var(--color-highlight-2),
-    0 0 0 4px var(--color-highlight);
+  box-shadow: 0 0 0 2px var(--color-highlight-2);
+}
+
+/* Stream metadata section */
+.stream-metadata {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.8) 0%,
+    rgba(0, 0, 0, 0.6) 50%,
+    transparent 100%
+  );
+  padding: 3rem 1.5rem 1.5rem 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  color: white;
+}
+
+.stream-info {
+  flex: 1;
+  margin-right: 1rem;
+}
+
+.stream-title-section {
+  margin-bottom: 0.5rem;
+}
+
+.stream-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0 0 0.25rem 0;
+  line-height: 1.2;
+}
+
+.stream-stats {
+  display: flex;
+  gap: 1rem;
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.viewer-count {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.viewer-count::before {
+  content: "👁";
+  font-size: 0.75rem;
+}
+
+.tip-count {
+  opacity: 0.7;
+}
+
+.tip-count::before {
+  content: "💰";
+  font-size: 0.75rem;
+}
+
+.stream-actions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.follow-button {
+  background-color: var(--color-highlight);
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.follow-button:hover {
+  background-color: var(--color-highlight-2);
+}
+
+.share-button,
+.mute-button {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 0.5rem 0.75rem;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.more-button {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 0.5rem;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  width: 40px;
+  height: 40px;
+}
+
+.share-button:hover,
+.mute-button:hover,
+.more-button:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.share-button svg,
+.mute-button svg,
+.more-button svg {
+  width: 16px;
+  height: 16px;
 }
