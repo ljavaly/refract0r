@@ -65,6 +65,14 @@ function VideoStream() {
             className="video-element"
           ></video>
 
+          {/* Live indicator - only shows when streaming */}
+          {isCameraOn && (
+            <div className="live-indicator">
+              <div className="live-dot"></div>
+              <span className="live-text">LIVE</span>
+            </div>
+          )}
+
           {/* Stream metadata section */}
           <div className="stream-metadata">
             <div className="stream-info">

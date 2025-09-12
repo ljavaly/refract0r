@@ -59,6 +59,47 @@
   box-shadow: 0 0 0 2px var(--color-highlight-2);
 }
 
+/* Live indicator */
+.live-indicator {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: rgba(0, 0, 0, 0.7);
+  padding: 0.5rem 0.75rem;
+  border-radius: 4px;
+  z-index: 10;
+}
+
+.live-dot {
+  width: 8px;
+  height: 8px;
+  background-color: #ff0000;
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+
+.live-text {
+  color: white;
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
 /* Stream metadata section */
 .stream-metadata {
   position: absolute;
