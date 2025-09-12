@@ -136,9 +136,9 @@ function StreamChat({ initialComments = [] }) {
               strokeLinecap="round"
               strokeLinejoin="round"
             >
-              <circle cx="12" cy="12" r="10"/>
-              <path d="m9 9 1.5 1.5L12 9l1.5 1.5L15 9"/>
-              <path d="M8 15s1.5 2 4 2 4-2 4-2"/>
+              <circle cx="12" cy="12" r="10" />
+              <path d="m9 9 1.5 1.5L12 9l1.5 1.5L15 9" />
+              <path d="M8 15s1.5 2 4 2 4-2 4-2" />
             </svg>
           </button>
           {showEmojiPicker && (
