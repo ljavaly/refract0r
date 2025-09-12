@@ -33,6 +33,7 @@
   border: #000;
   background-color: #000;
   border-radius: var(--border-radius);
+  transform: scaleX(-1);
 }
 
 .camera-toggle-button {
