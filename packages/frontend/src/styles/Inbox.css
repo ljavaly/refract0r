@@ -118,7 +118,7 @@
   align-items: center;
   justify-content: center;
   font-weight: 600;
-  font-size: 0.9rem;
+  font-size: 1rem;
   margin-right: 0.75rem;
   flex-shrink: 0;
   min-width: 2.5rem;
@@ -323,7 +323,7 @@
   border: 1px solid #e5e5e5;
   border-radius: var(--border-radius);
   padding: 0.75rem 1rem;
-  color: #333;
+  color: #444;
   font-size: 0.9rem;
   font-family: inherit;
   line-height: 1.4;
