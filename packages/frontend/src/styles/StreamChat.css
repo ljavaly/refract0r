@@ -101,7 +101,7 @@
 
 .send-button {
   padding: 0.75rem 1rem;
-  background-color: var(--color-accent);
+  background-color: var(--color-highlight);
   color: #ffffff;
   border: none;
   border-radius: var(--border-radius);
@@ -115,7 +115,7 @@
 }
 
 .send-button:hover {
-  background-color: var(--color-highlight);
+  background-color: var(--color-highlight-2);
 }
 
 /* Emoji picker styles */
