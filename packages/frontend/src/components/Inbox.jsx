@@ -57,6 +57,23 @@ function Inbox() {
     }
   };
 
+  const adjustMessageInputHeight = (e) => {
+    // Reset height to measure content
+    const savedHeight = e.target.style.height;
+    e.target.style.height = 'auto';
+    
+    // Get the natural height needed for content
+    const scrollHeight = e.target.scrollHeight;
+    const minHeight = 40; // 2.5rem converted to pixels
+    
+    // Only grow if content needs more space than minimum
+    if (scrollHeight > minHeight) {
+      e.target.style.height = Math.min(scrollHeight, 120) + 'px';
+    } else {
+      e.target.style.height = minHeight + 'px';
+    }
+  };
+
   // Show loading state
   if (loading && conversations.length === 0) {
     return (
@@ -258,9 +275,48 @@ function Inbox() {
           <div className="message-input-area">
             <textarea
               className="message-input"
-              placeholder="Send a message"
-              rows="1" // Start with one row
-            ></textarea>
+              placeholder="Enter a message..."
+              rows="1"
+              onInput={adjustMessageInputHeight}
+            />
+            <div className="message-input-buttons">
+              <button
+                className="message-input-button"
+                title="Record voice message"
+              >
+                <svg
+                  className="message-input-icon"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path d="M12 2a3 3 0 0 1 3 3v6a3 3 0 0 1-6 0V5a3 3 0 0 1 3-3ZM19 10v1a7 7 0 0 1-14 0v-1a1 1 0 0 1 2 0v1a5 5 0 0 0 10 0v-1a1 1 0 1 1 2 0ZM12 18.5a1 1 0 0 1 1 1v1a1 1 0 1 1-2 0v-1a1 1 0 0 1 1-1Z" />
+                </svg>
+              </button>
+              <button className="message-input-button" title="Start video call">
+                <svg
+                  className="message-input-icon"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path d="M17 10.5V7a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-3.5l4 2v-7l-4 2Z" />
+                </svg>
+              </button>
+              <button
+                className="message-input-button send-button"
+                title="Send message"
+              >
+                <svg
+                  className="message-input-icon"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path d="m21.426 11.095-17-8A.999.999 0 0 0 3.03 4.242L4.969 12 3.03 19.758a.998.998 0 0 0 1.396 1.147l17-8a1 1 0 0 0 0-1.81zM5.481 18.197l.8-3.441L13 12 6.281 9.244l-.8-3.441L19.014 12l-13.533 6.197Z" />
+                </svg>
+              </button>
+            </div>
           </div>
         </div>
       </div>
