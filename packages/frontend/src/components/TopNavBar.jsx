@@ -10,41 +10,40 @@ function TopNavBar({ onPageChange }) {
         <div className="logo-icon flex">
           <svg
             width="120"
-            height="130"
-            viewBox="0 -10 120 120"
+            height="150"
+            viewBox="0 -10 120 160"
             xmlns="http://www.w3.org/2000/svg"
             role="img"
             aria-labelledby="title desc"
             preserveAspectRatio="xMidYMin meet"
           >
             <title id="title">
-              Monocle with Left‑Shifted Eye, White Background, and Straight
-              Chain
+              Monocle with Chain's Right Edge Aligned to Rim
             </title>
             <desc id="desc">
-              Monocle rim with the “eye” shifted left, straight-down chain from
-              the right, and white background for visibility.
+              Monocle rim with the eye near center, and chain's right edge
+              aligned with the rim's outermost pixel.
             </desc>
-            <rect x="0" y="-10" width="120" height="120" fill="none" />
+            <rect x="0" y="-10" width="120" height="160" fill="none" />
             <circle
               cx="60"
               cy="30"
               r="30"
               stroke="var(--color-highlight)"
-              stroke-width="4"
+              stroke-width="14"
               fill="none"
             />
-            <circle cx="50" cy="30" r="10" fill="var(--color-highlight)" />
+            <circle cx="57" cy="30" r="14" fill="var(--color-highlight)" />
             <line
-              x1="90"
+              x1="91"
               y1="30"
-              x2="90"
+              x2="91"
               y2="110"
               stroke="var(--color-highlight)"
-              stroke-width="3"
+              stroke-width="12"
               stroke-linecap="round"
             />
-            <circle cx="90" cy="110" r="3" fill="var(--color-highlight)" />
+            <circle cx="91" cy="110" r="8" fill="var(--color-highlight)" />{" "}
           </svg>
         </div>
         <div className="search-section flex-grow">
