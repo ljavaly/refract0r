@@ -60,17 +60,17 @@ function Inbox() {
   const adjustMessageInputHeight = (e) => {
     // Reset height to measure content
     const savedHeight = e.target.style.height;
-    e.target.style.height = 'auto';
-    
+    e.target.style.height = "auto";
+
     // Get the natural height needed for content
     const scrollHeight = e.target.scrollHeight;
     const minHeight = 40; // 2.5rem converted to pixels
-    
+
     // Only grow if content needs more space than minimum
     if (scrollHeight > minHeight) {
-      e.target.style.height = Math.min(scrollHeight, 120) + 'px';
+      e.target.style.height = Math.min(scrollHeight, 120) + "px";
     } else {
-      e.target.style.height = minHeight + 'px';
+      e.target.style.height = minHeight + "px";
     }
   };
 
