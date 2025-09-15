@@ -8,26 +8,6 @@
   overflow: hidden;
 }
 
-.chat-header {
-  padding: 1rem;
-  border-bottom: 1px solid #333;
-  background-color: #2a2a2a;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.chat-header h3 {
-  margin: 0;
-  font-size: 1.1rem;
-  font-weight: 600;
-}
-
-.viewer-count {
-  font-size: 0.9rem;
-  color: #888;
-}
-
 .chat-comments {
   flex: 1;
   overflow-y: auto;

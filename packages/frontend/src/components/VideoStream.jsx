@@ -80,8 +80,8 @@ function VideoStream() {
                 <h1 className="stream-title">TRENT4YOU - Stream</h1>
               </div>
               <div className="stream-stats">
-                <span className="viewer-count">15,151 viewers</span>
-                <span className="tip-count">100 tokens</span>
+                <span className="viewer-count">127 viewers</span>
+                <span className="tip-count">102 tokens</span>
               </div>
             </div>
             <div className="stream-actions">

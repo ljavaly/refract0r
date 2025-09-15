@@ -87,11 +87,6 @@ function StreamChat({ initialComments = [] }) {
 
   return (
     <div className="stream-chat-box">
-      <div className="chat-header">
-        <h3>Live Chat</h3>
-        <span className="viewer-count">127 viewers</span>
-      </div>
-
       <div className="chat-comments" ref={chatContainerRef}>
         {comments.length === 0 && (
           <div className="no-comments-message">
