@@ -52,6 +52,9 @@
   color: #606060;
   transition: color 0.2s ease-in-out; /* transition */
   cursor: pointer; /* Indicate clickable */
+  justify-content: center;
+  display: grid;
+  align-items: center;
 }
 
 .nav-icon {
@@ -63,6 +66,7 @@
 .profile-avatar {
   width: 2.5rem;
   height: 2.5rem;
+  margin-left: 1rem;
   background-color: var(--color-highlight);
   border-radius: 9999px; /* rounded-full */
   display: flex;

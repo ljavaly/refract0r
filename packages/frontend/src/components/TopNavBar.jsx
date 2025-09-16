@@ -55,26 +55,18 @@ function TopNavBar({ onPageChange }) {
           />
         </div>
         <div className="nav-link-container grid grid-cols-3">
-          <div className="col-span-1">
-            <a
-              href="#"
-              className="nav-link"
-              onClick={() => onPageChange("inbox")}
-            >
+          <div className="nav-link col-span-1">
+            <a href="#" onClick={() => onPageChange("inbox")}>
               <img src={mailIcon} alt="Mail" className="nav-icon" />
             </a>
           </div>
-          <div className="inbox-icon col-span-1">
-            <a href="#" className="nav-link">
+          <div className="nav-link inbox-icon col-span-1">
+            <a href="#">
               <img src={gearIcon} alt="Settings" className="nav-icon" />
             </a>
           </div>
-          <div className="profile-avatar col-span-1">
-            <a
-              href="#"
-              className="col-span-1"
-              onClick={() => onPageChange("admin")}
-            >
+          <div className="nav-link profile-avatar col-span-1">
+            <a href="#" onClick={() => onPageChange("admin")}>
               TR
             </a>
           </div>
