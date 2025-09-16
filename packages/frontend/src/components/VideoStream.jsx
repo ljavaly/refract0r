@@ -77,7 +77,7 @@ function VideoStream() {
           <div className="stream-metadata">
             <div className="stream-info">
               <div className="stream-title-section">
-                <h1 className="stream-title">TRENT4YOU - Stream</h1>
+                <h1 className="stream-title">TRENT4YOU</h1>
               </div>
               <div className="stream-stats">
                 <span className="viewer-count">127 viewers</span>

@@ -23,8 +23,8 @@ html {
 
 :root {
   --color-background: #f9f9f9;
-  --color-accent: #f28c28;
+  --color-accent: #f28c28;  /* Cadmium Orange */
   --color-highlight: #ffcb9e;
-  --color-highlight-2: #f6ad65;
+  --color-highlight-2: #c6690c;
   --border-radius: 0.3rem;
 }
