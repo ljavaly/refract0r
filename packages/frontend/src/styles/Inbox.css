@@ -208,12 +208,6 @@
   font-weight: 600;
 }
 
-.main-content-subtitle {
-  font-size: 0.85rem;
-  color: #666;
-  margin-left: 0.5rem;
-}
-
 .chat-messages {
   flex-grow: 1;
   overflow-y: auto;

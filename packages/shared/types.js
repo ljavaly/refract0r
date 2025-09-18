@@ -50,9 +50,7 @@ export const ConversationSchema = {
   time: "string",
   unread: "number?",
   new: "boolean?",
-  participants: "number?",
   avatar: "string?",
-  isGroup: "boolean?",
   lastMessageTime: "string?",
   status: "string?", // 'online', 'offline', 'away'
 };

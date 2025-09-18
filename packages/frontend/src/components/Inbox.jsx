@@ -149,11 +149,6 @@ function Inbox() {
                 <div className="conversation-details">
                   <div className="conversation-name">
                     {conv.name}
-                    {conv.isGroup && (
-                      <span className="ml-1 text-xs text-gray-400">
-                        ({conv.participants})
-                      </span>
-                    )}
                   </div>
                   <div className="conversation-last-message">
                     {conv.lastMessage}
@@ -202,17 +197,6 @@ function Inbox() {
                     ?.name) ||
                   "Select a conversation"}
               </span>
-              {activeConversation &&
-                conversations.find((c) => c.id === activeConversation)
-                  ?.isGroup && (
-                  <span className="main-content-subtitle">
-                    {
-                      conversations.find((c) => c.id === activeConversation)
-                        ?.participants
-                    }{" "}
-                    participants
-                  </span>
-                )}
             </div>
           </div>
 

@@ -10,16 +10,13 @@ const conversations = [
     time: "5:45pm",
     unread: 2,
     new: true,
-    isGroup: false,
     status: "online",
   },
   {
-    id: "main-menu-group",
-    name: "Main Menu Group Room",
-    lastMessage: "Time for the new emotes to come...",
+    id: "xxluver69x",
+    name: "Xxluver69xX",
+    lastMessage: "Hey there stud 😜",
     time: "5:44pm",
-    participants: 12,
-    isGroup: true,
     status: "active",
   },
   {
@@ -27,15 +24,13 @@ const conversations = [
     name: "OMGEisIe",
     lastMessage: "LOL",
     time: "3:45pm",
-    isGroup: false,
     status: "away",
   },
   {
-    id: "shark",
-    name: "Shark",
+    id: "sharkboi",
+    name: "SharkBoi",
     lastMessage: "Thanks buddy.",
     time: "8:26am",
-    isGroup: false,
     status: "offline",
   },
   {
@@ -43,124 +38,40 @@ const conversations = [
     name: "Geoff",
     lastMessage: "hope to see you in the cast friend",
     time: "yesterday",
-    isGroup: false,
+    status: "offline",
+  },
+  {
+    id: "tehmorag",
+    name: "TehMorag",
+    lastMessage: "🔥🔥🔥",
+    time: "2:36pm",
+    status: "online",
+  },
+  {
+    id: "thundercast",
+    name: "Thundercast",
+    lastMessage: "What's next on the agenda?",
+    time: "2:43pm",
+    status: "away",
+  },
+  {
+    id: "hjtanchi",
+    name: "HJTanchi",
+    lastMessage: "Loved ur last stream!",
+    time: "2:42pm",
     status: "offline",
   },
 ];
 
-// Mock data for users
-const users = {
-  iKasperr: {
-    id: "user1",
-    username: "iKasperr",
-    email: "ikasperr@example.com",
-    avatar: null,
-    createdAt: "2024-01-01",
-  },
-  Brotatoe: {
-    id: "user2",
-    username: "Brotatoe",
-    email: "brotatoe@example.com",
-    avatar: null,
-    createdAt: "2024-01-02",
-  },
-  tehMorag: {
-    id: "user3",
-    username: "tehMorag",
-    email: "tehmorag@example.com",
-    avatar: "https://placehold.co/20x20/FF0000/FFFFFF?text=T",
-    createdAt: "2024-01-03",
-  },
-  Thundercast: {
-    id: "user4",
-    username: "Thundercast",
-    email: "thundercast@example.com",
-    avatar: null,
-    createdAt: "2024-01-04",
-  },
-  HJTanchi: {
-    id: "user5",
-    username: "HJTanchi",
-    email: "hjtanchi@example.com",
-    avatar: null,
-    createdAt: "2024-01-05",
-  },
-};
-
 // Mock data for messages by conversation
 const messagesByConversation = {
-  "main-menu-group": [
+  "xxluver69x": [
     {
       id: 1,
-      user: "iKasperr",
-      time: "4:45pm",
-      text: "and bryan with the wasabi...",
-      avatar: null,
-      emoji: null,
-    },
-    {
-      id: 2,
-      user: "iKasperr",
-      time: "4:45pm",
-      text: "Topic: Darkest Dungeon Keys",
-      avatar: null,
-      emoji: null,
-    },
-    {
-      id: 3,
-      user: "Brotatoe",
-      time: "5:40pm",
-      text: "PHEW.",
-      avatar: null,
-      emoji: null,
-    },
-    {
-      id: 4,
-      user: "tehMorag",
-      time: "5:41pm",
-      text: "you put my worries to REST hardcore",
-      avatar: "https://placehold.co/20x20/FF0000/FFFFFF?text=T",
-      emoji: null,
-    },
-    { id: 5, type: "date", date: "Thursday. February 5th" },
-    {
-      id: 6,
-      user: "Brotatoe",
-      time: "5:41pm",
-      text: "That was worrying",
-      avatar: null,
-      emoji: null,
-    },
-    {
-      id: 7,
-      user: "Brotatoe",
-      time: "5:41pm",
-      text: 'Was getting scared we would be like "TIME TO DRAW IT ON PAPER"',
-      avatar: null,
-      emoji: null,
-    },
-    {
-      id: 8,
-      user: "Thundercast",
-      time: "5:42pm",
-      text: "So yeah, game night was fun. Pitchford's house is crazy. Big home theater and a game room with like every board board game and lego set ever.",
-      avatar: null,
-      emoji: null,
-    },
-    {
-      id: 9,
-      user: "HJTanchi",
-      time: "5:44pm",
-      text: "Nice!",
-      avatar: null,
-      emoji: "🎉",
-    },
-    {
-      id: 10,
-      user: "tehMorag",
+      user: "Xxluver69xX",
       time: "5:45pm",
-      text: "so, what job were you offered this time?",
-      avatar: "https://placehold.co/20x20/FF0000/FFFFFF?text=T",
+      text: "Hey there stud 😜",
+      avatar: null,
       emoji: null,
     },
   ],
@@ -184,10 +95,10 @@ const messagesByConversation = {
       emoji: null,
     },
   ],
-  shark: [
+  sharkboi: [
     {
       id: 1,
-      user: "Shark",
+      user: "SharkBoi",
       time: "8:26am",
       text: "Thanks buddy.",
       avatar: null,
@@ -232,7 +143,6 @@ router.get("/:id", (req, res) => {
   res.json({
     conversation,
     messages,
-    users,
   });
 });
 
