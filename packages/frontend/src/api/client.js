@@ -11,11 +11,16 @@ class ApiClient {
 
   // Generic request method
   async request(endpoint, options = {}) {
-    const url = `${this.baseUrl}${endpoint}`;
+    // Add cache-busting parameter for GET requests
+    const cacheBuster = options.method === 'GET' || !options.method ? 
+      `${endpoint.includes('?') ? '&' : '?'}_cb=${Date.now()}` : '';
+    const url = `${this.baseUrl}${endpoint}${cacheBuster}`;
 
     const defaultOptions = {
       headers: {
         "Content-Type": "application/json",
+        "Cache-Control": "no-cache, no-store, must-revalidate",
+        "Pragma": "no-cache",
       },
     };
 

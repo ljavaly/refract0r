@@ -111,6 +111,17 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Add cache control headers to prevent aggressive caching of API responses
+app.use('/api', (req, res, next) => {
+  // Disable caching for API routes
+  res.set({
+    'Cache-Control': 'no-cache, no-store, must-revalidate',
+    'Pragma': 'no-cache',
+    'Expires': '0'
+  });
+  next();
+});
+
 // Basic route
 app.get("/", (req, res) => {
   res.json({
