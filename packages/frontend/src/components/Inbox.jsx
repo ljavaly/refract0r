@@ -1,6 +1,6 @@
 import "../styles/Inbox.css";
-import { ConversationSchema, MessageSchema } from "../../../shared/types.js";
 import apiClient from "../api/client.js";
+import wsClient from "../api/ws";
 
 import React, { useState, useEffect } from "react";
 
@@ -13,9 +13,11 @@ function Inbox() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Load conversations on component mount
+  // On component mount, load conversations and clear unread message
   useEffect(() => {
     loadConversations();
+    wsClient.connectWebSocket();
+    wsClient.ws.send(JSON.stringify({ type: "clearUnreadMessage" }));
   }, []);
 
   // Load conversation details when active conversation changes

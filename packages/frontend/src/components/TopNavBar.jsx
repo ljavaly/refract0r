@@ -13,6 +13,9 @@ function TopNavBar({ onPageChange }) {
     const onUnreadMessage = (data) => {
       setHasUnreadMessage(true);
     };
+    const onClearUnreadMessage = (data) => {
+      setHasUnreadMessage(false);
+    };
     const onConnection = (data) => {
       console.log("WebSocket connected:", data.message);
     };
@@ -21,11 +24,13 @@ function TopNavBar({ onPageChange }) {
     };
 
     wsClient.onWebSocketMessage("unreadMessage", onUnreadMessage);
+    wsClient.onWebSocketMessage("clearUnreadMessage", onClearUnreadMessage);
     wsClient.onWebSocketMessage("connection", onConnection);
     wsClient.onWebSocketMessage("error", onError);
 
     return () => {
       wsClient.offWebSocketMessage("unreadMessage", onUnreadMessage);
+      wsClient.offWebSocketMessage("clearUnreadMessage", onClearUnreadMessage);
       wsClient.offWebSocketMessage("connection", onConnection);
       wsClient.offWebSocketMessage("error", onError);
     };
