@@ -65,7 +65,7 @@ const conversations = [
 
 // Mock data for messages by conversation
 const messagesByConversation = {
-  "xxluver69x": [
+  xxluver69x: [
     {
       id: 1,
       user: "Xxluver69xX",

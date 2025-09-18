@@ -12,6 +12,7 @@ function Inbox() {
   const [users, setUsers] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [showDropdown, setShowDropdown] = useState(false);
 
   // On component mount, load conversations and clear unread message
   useEffect(() => {
@@ -75,6 +76,40 @@ function Inbox() {
       e.target.style.height = minHeight + "px";
     }
   };
+
+  const handleDropdownToggle = () => {
+    setShowDropdown(!showDropdown);
+  };
+
+  const handleBlock = () => {
+    if (activeConversation) {
+      const conversation = conversations.find(
+        (c) => c.id === activeConversation,
+      );
+      if (conversation) {
+        console.log(`Blocking conversation with ${conversation.name}`);
+        alert(
+          `Are you sure you want to block ${conversation.name}?`,
+        );
+        // TODO(Lauren): Remove blocked conversation from list
+      }
+    }
+    setShowDropdown(false);
+  };
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (showDropdown && !event.target.closest(".dropdown-menu-container")) {
+        setShowDropdown(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [showDropdown]);
 
   // Show loading state
   if (loading && conversations.length === 0) {
@@ -147,9 +182,7 @@ function Inbox() {
                   )}
                 </div>
                 <div className="conversation-details">
-                  <div className="conversation-name">
-                    {conv.name}
-                  </div>
+                  <div className="conversation-name">{conv.name}</div>
                   <div className="conversation-last-message">
                     {conv.lastMessage}
                   </div>
@@ -190,13 +223,36 @@ function Inbox() {
         {/* Main Content Area */}
         <div className="main-content">
           <div className="main-content-header">
-            <div>
+            <div className="header-title-container">
               <span className="main-content-title">
                 {(activeConversation &&
                   conversations.find((c) => c.id === activeConversation)
                     ?.name) ||
                   "Select a conversation"}
               </span>
+              <div className="dropdown-menu-container">
+                <button
+                  className="dropdown-toggle-button"
+                  onClick={handleDropdownToggle}
+                  title="More options"
+                >
+                  ⋮
+                </button>
+                {showDropdown && (
+                  <div className="dropdown-menu">
+                    <button className="dropdown-item" onClick={handleBlock}>
+                      Block
+                    </button>
+                    <button
+                      className="dropdown-item"
+                      onClick={handleBlock}
+                      style={{ color: "red" }}
+                    >
+                      Report
+                    </button>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
 
