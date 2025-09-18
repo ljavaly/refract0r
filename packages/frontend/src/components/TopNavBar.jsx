@@ -62,7 +62,7 @@ function TopNavBar({ onPageChange }) {
               cy="30"
               r="30"
               stroke="var(--color-highlight)"
-              stroke-width="14"
+              strokeWidth="14"
               fill="none"
             />
             <circle cx="57" cy="30" r="14" fill="var(--color-highlight)" />
@@ -72,8 +72,8 @@ function TopNavBar({ onPageChange }) {
               x2="91"
               y2="110"
               stroke="var(--color-highlight)"
-              stroke-width="12"
-              stroke-linecap="round"
+              strokeWidth="12"
+              strokeLinecap="round"
             />
             <circle cx="91" cy="110" r="8" fill="var(--color-highlight)" />{" "}
           </svg>
