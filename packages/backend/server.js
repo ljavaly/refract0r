@@ -58,15 +58,6 @@ wss.on("connection", (ws) => {
           });
           break;
 
-        case "unreadMessage":
-          // Broadcast unread message to all connected clients
-          clients.forEach((client) => {
-            if (client.readyState === WebSocket.OPEN) {
-              client.send(JSON.stringify(message));
-            }
-          });
-          break;
-
         case "ping":
           ws.send(
             JSON.stringify({
@@ -77,7 +68,13 @@ wss.on("connection", (ws) => {
           break;
 
         default:
-          console.log("Unknown message type:", message.type);
+          // Broadcast to all connected clients
+          clients.forEach((client) => {
+            if (client.readyState === WebSocket.OPEN) {
+              client.send(JSON.stringify(message));
+            }
+          });
+          break;
       }
     } catch (error) {
       console.error("Error parsing WebSocket message:", error);
