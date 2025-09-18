@@ -83,3 +83,56 @@
   font-weight: 700; /* font-bold */
   color: #ffffff;
 }
+
+/* Inbox icon container for positioning indicators */
+.inbox-icon-container {
+  position: relative;
+  display: inline-block;
+}
+
+/* Red dot indicator */
+.unread-dot {
+  position: absolute;
+  top: -4px;
+  left: -4px;
+  width: 12px;
+  height: 12px;
+  background-color: #ef4444; /* red-500 */
+  border-radius: 50%;
+  border: 2px solid var(--color-accent);
+  z-index: 10;
+}
+
+/* Message bubble */
+.unread-message-bubble {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-top: 8px;
+  padding: 6px 12px;
+  background-color: #1f2937; /* gray-800 */
+  color: white;
+  font-size: 0.75rem; /* text-xs */
+  font-weight: 500;
+  border-radius: 6px;
+  white-space: nowrap;
+  z-index: 20;
+  box-shadow:
+    0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+/* Arrow for the bubble */
+.unread-message-bubble::before {
+  content: "";
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-bottom: 6px solid #1f2937; /* gray-800 */
+}

@@ -24,3 +24,34 @@
   flex-direction: column;
   min-height: 0;
 }
+
+/* Admin controls styling */
+.admin-controls {
+  padding: 1rem 3rem;
+  display: flex;
+  justify-content: center;
+}
+
+.test-message-button {
+  background-color: white;
+  color: blue;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--border-radius);
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.test-message-button:hover {
+  background-color: lightgrey;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.test-message-button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}

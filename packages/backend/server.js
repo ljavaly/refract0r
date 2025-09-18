@@ -37,7 +37,6 @@ wss.on("connection", (ws) => {
       // Handle different message types
       switch (message.type) {
         case "comment":
-          // Broadcast comment to all connected clients
           const commentData = {
             type: "new_comment",
             comment: {
@@ -55,6 +54,15 @@ wss.on("connection", (ws) => {
           clients.forEach((client) => {
             if (client.readyState === WebSocket.OPEN) {
               client.send(JSON.stringify(commentData));
+            }
+          });
+          break;
+
+        case "unreadMessage":
+          // Broadcast unread message to all connected clients
+          clients.forEach((client) => {
+            if (client.readyState === WebSocket.OPEN) {
+              client.send(JSON.stringify(message));
             }
           });
           break;

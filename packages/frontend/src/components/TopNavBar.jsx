@@ -1,9 +1,36 @@
 import "../styles/TopNavBar.css";
-import eyeIcon from "../assets/eye-icon.svg";
 import mailIcon from "../assets/mail-icon.svg";
 import gearIcon from "../assets/gear-icon.svg";
+import wsClient from "../api/ws";
+import { useEffect, useState } from "react";
 
 function TopNavBar({ onPageChange }) {
+  const [hasUnreadMessage, setHasUnreadMessage] = useState(false);
+
+  useEffect(() => {
+    wsClient.connectWebSocket();
+
+    const onUnreadMessage = (data) => {
+      setHasUnreadMessage(true);
+    };
+    const onConnection = (data) => {
+      console.log("WebSocket connected:", data.message);
+    };
+    const onError = (data) => {
+      console.error("WebSocket error:", data.message);
+    };
+
+    wsClient.onWebSocketMessage("unreadMessage", onUnreadMessage);
+    wsClient.onWebSocketMessage("connection", onConnection);
+    wsClient.onWebSocketMessage("error", onError);
+
+    return () => {
+      wsClient.offWebSocketMessage("unreadMessage", onUnreadMessage);
+      wsClient.offWebSocketMessage("connection", onConnection);
+      wsClient.offWebSocketMessage("error", onError);
+    };
+  }, []);
+
   return (
     <>
       <header className="header-main">
@@ -56,9 +83,19 @@ function TopNavBar({ onPageChange }) {
         </div>
         <div className="nav-link-container grid grid-cols-3">
           <div className="nav-link col-span-1">
-            <a href="#" onClick={() => onPageChange("inbox")}>
-              <img src={mailIcon} alt="Mail" className="nav-icon" />
-            </a>
+            <div className="inbox-icon-container">
+              <a href="#" onClick={() => onPageChange("inbox")}>
+                <img src={mailIcon} alt="Mail" className="nav-icon" />
+              </a>
+              {hasUnreadMessage && (
+                <>
+                  <div className="unread-dot"></div>
+                  <div className="unread-message-bubble">
+                    You have a new message
+                  </div>
+                </>
+              )}
+            </div>
           </div>
           <div className="nav-link inbox-icon col-span-1">
             <a href="#">
