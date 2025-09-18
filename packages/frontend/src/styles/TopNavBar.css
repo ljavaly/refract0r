@@ -18,15 +18,30 @@
   margin-right: 1rem; /* mx-4 */
 }
 
+.search-input-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
 .search-input {
   width: 100%;
-  padding: 8px 12px;
+  padding: 8px 40px 8px 12px;
   color: #252525;
   background-color: #f0f0f0;
   border: 1px solid #ccc;
   border-radius: var(--border-radius);
   text-align: center;
-  font-size: 16px;
+  font-size: 14px;
+}
+
+.search-icon {
+  position: absolute;
+  right: 12px;
+  width: 16px;
+  height: 16px;
+  color: #666;
+  pointer-events: none;
 }
 
 .search-input:focus {
