@@ -88,9 +88,7 @@ function Inbox() {
       );
       if (conversation) {
         console.log(`Blocking conversation with ${conversation.name}`);
-        alert(
-          `Are you sure you want to block ${conversation.name}?`,
-        );
+        alert(`Are you sure you want to block ${conversation.name}?`);
         // TODO(Lauren): Remove blocked conversation from list
       }
     }

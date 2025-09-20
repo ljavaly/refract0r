@@ -14,17 +14,15 @@ class ApiClient {
     // Add cache-busting parameter and random component for all requests
     const timestamp = Date.now();
     const random = Math.random().toString(36).substring(2);
-    const cacheBuster = `${endpoint.includes('?') ? '&' : '?'}_cb=${timestamp}&_r=${random}`;
+    const cacheBuster = `${endpoint.includes("?") ? "&" : "?"}_cb=${timestamp}&_r=${random}`;
     const url = `${this.baseUrl}${endpoint}${cacheBuster}`;
-
-    console.log('API Request URL:', url); // Debug log to verify cache busting
 
     const defaultOptions = {
       headers: {
         "Content-Type": "application/json",
         "Cache-Control": "no-cache, no-store, must-revalidate, max-age=0",
-        "Pragma": "no-cache",
-        "Expires": "0",
+        Pragma: "no-cache",
+        Expires: "0",
         "If-Modified-Since": "0",
         "X-Requested-With": "XMLHttpRequest",
       },

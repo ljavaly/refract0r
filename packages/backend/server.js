@@ -107,13 +107,29 @@ const conversationRoutes = require("./routes/conversations");
 const commentRoutes = require("./routes/comments");
 
 // Middleware
-app.use(cors({
-  origin: true, // Allow all origins for now
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'Cache-Control', 'Pragma', 'Expires', 'If-Modified-Since', 'X-Requested-With'],
-  exposedHeaders: ['Cache-Control', 'Pragma', 'Expires', 'ETag', 'Last-Modified']
-}));
+app.use(
+  cors({
+    origin: true, // Allow all origins for now
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: [
+      "Content-Type",
+      "Authorization",
+      "Cache-Control",
+      "Pragma",
+      "Expires",
+      "If-Modified-Since",
+      "X-Requested-With",
+    ],
+    exposedHeaders: [
+      "Cache-Control",
+      "Pragma",
+      "Expires",
+      "ETag",
+      "Last-Modified",
+    ],
+  }),
+);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -121,12 +137,12 @@ app.use(express.urlencoded({ extended: true }));
 app.use((req, res, next) => {
   // Disable caching for all routes
   res.set({
-    'Cache-Control': 'no-cache, no-store, must-revalidate, max-age=0, private',
-    'Pragma': 'no-cache',
-    'Expires': '0',
-    'Last-Modified': new Date().toUTCString(),
-    'ETag': `"${Date.now()}-${Math.random()}"`, // Generate unique ETag
-    'Vary': '*'
+    "Cache-Control": "no-cache, no-store, must-revalidate, max-age=0, private",
+    Pragma: "no-cache",
+    Expires: "0",
+    "Last-Modified": new Date().toUTCString(),
+    ETag: `"${Date.now()}-${Math.random()}"`, // Generate unique ETag
+    Vary: "*",
   });
   next();
 });
@@ -150,22 +166,22 @@ app.get("/health", (req, res) => {
 
 // Debug endpoint to test cache busting
 app.get("/api/debug/cache-test", (req, res) => {
-  console.log('Cache test endpoint hit:', {
+  console.log("Cache test endpoint hit:", {
     timestamp: new Date().toISOString(),
     query: req.query,
-    headers: req.headers
+    headers: req.headers,
   });
-  
+
   res.json({
     message: "Cache test endpoint",
     timestamp: new Date().toISOString(),
     randomValue: Math.random(),
     queryParams: req.query,
     requestHeaders: {
-      'cache-control': req.headers['cache-control'],
-      'pragma': req.headers['pragma'],
-      'if-modified-since': req.headers['if-modified-since']
-    }
+      "cache-control": req.headers["cache-control"],
+      pragma: req.headers["pragma"],
+      "if-modified-since": req.headers["if-modified-since"],
+    },
   });
 });
 
