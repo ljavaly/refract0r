@@ -39,7 +39,12 @@ function Browse() {
                   <div className="video-thumbnail">
                     <img src={video.thumbnail} alt={video.title} />
                     <div className="video-play-overlay">
-                      <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                      <svg
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                      >
                         <path d="M8 5v14l11-7z" />
                       </svg>
                     </div>
