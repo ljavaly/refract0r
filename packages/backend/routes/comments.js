@@ -21,7 +21,12 @@ const comments = [
     message: "Can you show u,ls that trick again?",
     timestamp: "2:35 PM",
   },
-  { id: 4, user: "ChatMaster", message: "🔥🔥🔥", timestamp: "2:36 PM" },
+  {
+    id: 4,
+    user: "ChatMaster666",
+    message: "Niiiiice 🔥🔥🔥",
+    timestamp: "2:36 PM",
+  },
   {
     id: 5,
     user: "NewViewer",
