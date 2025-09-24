@@ -2,17 +2,21 @@ import React, { useEffect, useRef, useState } from "react";
 import "../styles/AudienceChat.css";
 import wsClient from "../api/ws.js";
 
-function AudienceChat({ initialComments = [] }) {
+function AudienceChat({ initialComments = null, isAdmin = false }) {
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState("");
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const chatContainerRef = useRef(null);
+  const prevCommentsLength = useRef(0);
 
   useEffect(() => {
+    // Connect to the WebSocket and define listeners
     wsClient.connectWebSocket();
 
     const onNewComment = (data) => {
-      setComments((prevComments) => [...prevComments, data.comment]);
+      if (!isAdmin) {
+        setComments((prevComments) => [...prevComments, data.comment]);
+      }
     };
     const onConnection = (data) => {
       console.log("WebSocket connected:", data.message);
@@ -33,10 +37,26 @@ function AudienceChat({ initialComments = [] }) {
   }, []);
 
   useEffect(() => {
-    if (chatContainerRef.current) {
+    // If we got initial comments, display them
+    if (initialComments && initialComments.length > 0) {
+      setComments(initialComments);
+    } else if (initialComments && initialComments.length === 0) {
+      console.log("No initial comments, setting comments to empty array...");
+      setComments([]);
+    }
+  }, [initialComments]);
+
+  useEffect(() => {
+    // Only scroll to bottom if comments were added (length increased) or it's the initial load
+    if (
+      chatContainerRef.current &&
+      (comments.length > prevCommentsLength.current ||
+        prevCommentsLength.current === 0)
+    ) {
       chatContainerRef.current.scrollTop =
         chatContainerRef.current.scrollHeight;
     }
+    prevCommentsLength.current = comments.length;
   }, [comments]);
 
   const handleSendComment = (e) => {
@@ -93,10 +113,10 @@ function AudienceChat({ initialComments = [] }) {
             No comments yet. Be the first to comment!
           </div>
         )}
-        {comments.map((comment) => (
+        {comments.map((comment, index) => (
           <div
             key={comment.id}
-            className={`chat-comment ${comment.user === "You" ? "own-comment" : ""}`}
+            className={`chat-comment ${isAdmin && index === 0 ? "highlight-next" : ""}`}
           >
             <div className="comment-header">
               <span className="username">{comment.user}</span>
@@ -107,54 +127,56 @@ function AudienceChat({ initialComments = [] }) {
         ))}
       </div>
 
-      <form className="chat-input-form" onSubmit={handleSendComment}>
-        <input
-          type="text"
-          value={newComment}
-          onChange={(e) => setNewComment(e.target.value)}
-          placeholder="Type a comment..."
-          className="chat-input"
-        />
-        <div className="emoji-picker-container">
-          <button
-            type="button"
-            className="emoji-button"
-            onClick={() => setShowEmojiPicker(!showEmojiPicker)}
-          >
-            <svg
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
+      {!isAdmin && (
+        <form className="chat-input-form" onSubmit={handleSendComment}>
+          <input
+            type="text"
+            value={newComment}
+            onChange={(e) => setNewComment(e.target.value)}
+            placeholder="Type a comment..."
+            className="chat-input"
+          />
+          <div className="emoji-picker-container">
+            <button
+              type="button"
+              className="emoji-button"
+              onClick={() => setShowEmojiPicker(!showEmojiPicker)}
             >
-              <circle cx="12" cy="12" r="10" />
-              <path d="m9 9 1.5 1.5L12 9l1.5 1.5L15 9" />
-              <path d="M8 15s1.5 2 4 2 4-2 4-2" />
-            </svg>
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <circle cx="12" cy="12" r="10" />
+                <path d="m9 9 1.5 1.5L12 9l1.5 1.5L15 9" />
+                <path d="M8 15s1.5 2 4 2 4-2 4-2" />
+              </svg>
+            </button>
+            {showEmojiPicker && (
+              <div className="emoji-picker">
+                {emojis.map((emoji, index) => (
+                  <button
+                    key={index}
+                    type="button"
+                    className="emoji-option"
+                    onClick={() => handleEmojiClick(emoji)}
+                  >
+                    {emoji}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+          <button type="submit" className="send-button">
+            Send
           </button>
-          {showEmojiPicker && (
-            <div className="emoji-picker">
-              {emojis.map((emoji, index) => (
-                <button
-                  key={index}
-                  type="button"
-                  className="emoji-option"
-                  onClick={() => handleEmojiClick(emoji)}
-                >
-                  {emoji}
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
-        <button type="submit" className="send-button">
-          Send
-        </button>
-      </form>
+        </form>
+      )}
     </div>
   );
 }

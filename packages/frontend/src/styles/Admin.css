@@ -7,9 +7,9 @@
 }
 
 .admin-cues-grid {
-  height: 100%;
-  gap: 3rem;
-  padding: 3rem;
+  height: 90%;
+  gap: 2rem;
+  padding: 2rem;
   justify-content: center;
   box-sizing: border-box;
   min-height: 0;
@@ -23,13 +23,15 @@
   display: flex;
   flex-direction: column;
   min-height: 0;
+  height: 100%;
 }
 
 /* Admin controls styling */
 .admin-controls {
-  padding: 1rem 3rem;
+  padding: 1rem;
   display: flex;
   justify-content: center;
+  gap: 5rem;
 }
 
 .test-message-button {
@@ -54,4 +56,11 @@
 .test-message-button:active {
   transform: translateY(0);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Arrow styling */
+.arrow-right {
+  color: white;
+  transition: all 0.3s ease;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
 }

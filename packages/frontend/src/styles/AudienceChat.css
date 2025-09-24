@@ -1,7 +1,7 @@
 .stream-chat-box {
   border: 1px solid #333;
   border-radius: var(--border-radius);
-  color: #ffffff;
+  background-color: #ffffff;
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -19,11 +19,11 @@
 
 .chat-comment {
   padding: 0.75rem;
-  border-left: 3px solid var(--color-highlight);
 }
 
-.chat-comment.own-comment {
-  border-left-color: var(--color-highlight-2);
+.chat-comment.highlight-next {
+  background-color: #ffff8f;
+  box-shadow: 0 0 8px rgba(255, 215, 0, 0.2);
 }
 
 .comment-header {
@@ -35,7 +35,7 @@
 
 .username {
   font-weight: 600;
-  color: var(--color-highlight); /* TODO LAUREN TO RANDOMIZE */
+  color: var(--color-highlight);
   font-size: 0.9rem;
 }
 
