@@ -1,6 +1,6 @@
 .stream-chat-box {
-  border: 1px solid #333;
   border-radius: var(--border-radius);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   background-color: #ffffff;
   display: flex;
   flex-direction: column;
@@ -52,7 +52,6 @@
 
 .chat-input-form {
   padding: 1rem;
-  border-top: 1px solid #333;
   display: flex;
   gap: 0.5rem;
   align-items: stretch;
@@ -63,7 +62,7 @@
   flex: 1;
   min-width: 0;
   padding: 0.75rem;
-  border: 1px solid #444;
+  border: 1px solid #e5e5e5;
   border-radius: var(--border-radius);
   background-color: var(--color-background);
   font-size: 0.9rem;
@@ -106,7 +105,7 @@
 
 .emoji-button {
   background-color: transparent;
-  border: 1px solid #666;
+  border: 1px solid #e5e5e5;
   color: #666;
   cursor: pointer;
   padding: 0.75rem;
@@ -130,7 +129,7 @@
   bottom: 100%;
   right: 0;
   background-color: #2a2a2a;
-  border: 1px solid #444;
+  border: 1px solid #e5e5e5;
   border-radius: var(--border-radius);
   padding: 0.5rem;
   display: grid;
