@@ -1,36 +1,37 @@
 import express from "express";
+import { readFileSync } from "fs";
+import { fileURLToPath } from "url";
+import { dirname, join } from "path";
 import { getThumbnails } from "../utils/gcp.js";
+
+// ES module way to import JSON
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+const videoData = JSON.parse(
+  readFileSync(join(__dirname, "../static/video_thumbnails.json"), "utf-8"),
+);
 
 const router = express.Router();
 
 // GET /api/videos - Get all videos
 router.get("/", async (req, res) => {
-  let videos = await getThumbnails()
+  let thumbnails = await getThumbnails()
     .then((result) => {
-      const videos = result.thumbnailUrls.map((thumbnailUrl, index) => ({
-        id: index + 1,
-        title: `Video ${index + 1}`,
-        description: `Description for video ${index + 1}`,
-        thumbnail: thumbnailUrl,
-        channel: `Channel ${index + 1}`,
-        views: Math.floor(Math.random() * 10000) + 100,
-        duration: `${Math.floor(Math.random() * 10) + 1}:${Math.floor(
-          Math.random() * 60,
-        )
-          .toString()
-          .padStart(2, "0")}`,
-        uploadDate: new Date(
-          Date.now() - Math.floor(Math.random() * 30) * 24 * 60 * 60 * 1000,
-        )
-          .toISOString()
-          .split("T")[0],
-      }));
-      return videos;
+      return result.thumbnailUrls;
     })
     .catch((error) => {
       console.error("Error fetching thumbnails:", error);
       return [];
     });
+
+  const videos = videoData.map((video, index) => ({
+    id: index + 1,
+    title: video.title,
+    thumbnail: thumbnails[index] || thumbnails[0],
+    views: video.views,
+    duration: video.duration,
+    uploadDate: video.date,
+  }));
 
   res.json(videos);
 });
