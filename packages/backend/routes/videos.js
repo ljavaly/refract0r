@@ -1,18 +1,10 @@
 import express from "express";
-import { readFileSync } from "fs";
-import { fileURLToPath } from "url";
-import { dirname, join } from "path";
+import { loadFile } from "../utils/static.js";
 import { getThumbnails } from "../utils/gcp.js";
 
-// ES module way to import JSON
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
 // Function to load fresh data each time (prevents caching)
-const getVideos = () => {
-  return JSON.parse(
-    readFileSync(join(__dirname, "../static/videos.json"), "utf-8")
-  );
+const getVideos = async () => {
+  return await loadFile("videos.json");
 };
 
 const router = express.Router();
@@ -28,7 +20,7 @@ router.get("/", async (req, res) => {
       return [];
     });
 
-  const videos = getVideos();
+  const videos = await getVideos();
   const videoData = videos.map((video, index) => ({
     id: index + 1,
     title: video.title,
@@ -54,7 +46,7 @@ router.get("/:id", async (req, res) => {
       return [];
     });
 
-  const videos = getVideos();
+  const videos = await getVideos();
   const video = videos.find((video) => video.id === videoId);
 
   if (!video) {
@@ -68,7 +60,7 @@ router.get("/:id", async (req, res) => {
     views: video.views,
     duration: video.duration,
     uploadDate: video.date,
-    videoUrl: "https://storage.googleapis.com/refract0r-assets/IMG_9906.mov"
+    videoUrl: "https://storage.googleapis.com/refract0r-assets/IMG_9906.mov",
   };
 
   res.json(videoData);
