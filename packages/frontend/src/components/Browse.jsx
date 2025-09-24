@@ -1,9 +1,9 @@
-import "../styles/VideoFeed.css";
+import "../styles/Browse.css";
 import apiClient from "../api/client.js";
 
 import React, { useState, useEffect } from "react";
 
-function VideoFeed() {
+function Browse() {
   const [videos, setVideos] = useState([]);
 
   useEffect(() => {
@@ -41,4 +41,4 @@ function VideoFeed() {
   );
 }
 
-export default VideoFeed;
+export default Browse;

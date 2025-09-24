@@ -1,11 +1,13 @@
-import React, { useEffect, useState } from "react";
-import TopNavBar from "./components/TopNavBar";
-import VideoStream from "./components/VideoStream";
+import "./App.css";
+
+import TopNav from "./components/TopNav";
+import Stream from "./components/Stream";
 import Inbox from "./components/Inbox";
 import Admin from "./components/Admin";
-import "./App.css";
-import VideoFeed from "./components/VideoFeed";
-import SideNavBar from "./components/SideNavBar";
+import Browse from "./components/Browse";
+import SideNav from "./components/SideNav";
+
+import React, { useEffect, useState } from "react";
 
 function App() {
   const [currentPage, setCurrentPage] = useState("stream"); // Default to 'video' page
@@ -38,7 +40,7 @@ function App() {
   if (path === "/admin") {
     return (
       <div className="h-screen flex flex-col overflow-hidden">
-        <TopNavBar onPageChange={handlePageChange} onNavigate={navigate} />
+        <TopNav onPageChange={handlePageChange} onNavigate={navigate} />
         <main className="flex-1 overflow-hidden">
           <Admin />
         </main>
@@ -48,12 +50,12 @@ function App() {
 
   return (
     <div className="h-screen flex flex-col overflow-hidden">
-      <TopNavBar onPageChange={handlePageChange} onNavigate={navigate} />
+      <TopNav onPageChange={handlePageChange} onNavigate={navigate} />
       <div className="flex flex-1 overflow-hidden">
-        <SideNavBar onPageChange={handlePageChange} onNavigate={navigate} />
+        <SideNav onPageChange={handlePageChange} onNavigate={navigate} />
         <main className="flex-1 overflow-hidden">
-          {currentPage === "stream" && <VideoStream />}
-          {currentPage === "browse" && <VideoFeed />}
+          {currentPage === "stream" && <Stream />}
+          {currentPage === "browse" && <Browse />}
           {currentPage === "inbox" && <Inbox />}
           {currentPage === "admin" && <Admin />}
         </main>

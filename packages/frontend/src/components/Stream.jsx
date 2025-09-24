@@ -1,12 +1,12 @@
-import "../styles/VideoStream.css";
+import "../styles/Stream.css";
 import React, { useEffect, useRef, useState } from "react";
-import StreamChat from "./StreamChat.jsx";
+import AudienceChat from "./AudienceChat.jsx";
 
-function VideoStream() {
+function Stream() {
   // Ref for the user's video element
   const userVideoRef = useRef(null);
   const [isCameraOn, setIsCameraOn] = useState(false);
-  // Chat moved to StreamChat component
+  // Chat moved to AudienceChat component
 
   useEffect(() => {
     const startLocalCamera = async () => {
@@ -134,10 +134,10 @@ function VideoStream() {
             </div>
           </div>
         </div>
-        <StreamChat />
+        <AudienceChat />
       </div>
     </>
   );
 }
 
-export default VideoStream;
+export default Stream;

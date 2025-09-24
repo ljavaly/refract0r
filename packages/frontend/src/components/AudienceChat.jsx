@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
-import "../styles/StreamChat.css";
+import "../styles/AudienceChat.css";
 import wsClient from "../api/ws.js";
 
-function StreamChat({ initialComments = [] }) {
+function AudienceChat({ initialComments = [] }) {
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState("");
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
@@ -159,4 +159,4 @@ function StreamChat({ initialComments = [] }) {
   );
 }
 
-export default StreamChat;
+export default AudienceChat;

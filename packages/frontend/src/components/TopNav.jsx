@@ -1,10 +1,10 @@
-import "../styles/TopNavBar.css";
+import "../styles/TopNav.css";
 import mailIcon from "../assets/mail-icon.svg";
 import gearIcon from "../assets/gear-icon.svg";
 import wsClient from "../api/ws";
 import { useEffect, useState } from "react";
 
-function TopNavBar({ onPageChange }) {
+function TopNav({ onPageChange }) {
   const [hasUnreadMessage, setHasUnreadMessage] = useState(false);
 
   useEffect(() => {
@@ -134,4 +134,4 @@ function TopNavBar({ onPageChange }) {
   );
 }
 
-export default TopNavBar;
+export default TopNav;

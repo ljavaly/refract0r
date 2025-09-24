@@ -3,16 +3,15 @@ import channelIcon from "../assets/channel-icon.svg";
 import trendingIcon from "../assets/trending-icon.svg";
 import subscriptionsIcon from "../assets/subscriptions-icon.svg";
 import premiumIcon from "../assets/premium-icon.svg";
-import tvIcon from "../assets/tv-icon.svg";
 import historyIcon from "../assets/history-icon.svg";
 import watchLaterIcon from "../assets/watch-later-icon.svg";
 import likedVideosIcon from "../assets/liked-videos-icon.svg";
 import showMoreIcon from "../assets/show-more-icon.svg";
 import dollarIcon from "../assets/dollar-icon.svg";
 
-import "../styles/SideNavBar.css";
+import "../styles/SideNav.css";
 
-function SideNavBar({ onPageChange }) {
+function SideNav({ onPageChange }) {
   return (
     <aside className="sidebar">
       <div className="sidebar-section flex-grow">
@@ -133,4 +132,4 @@ function SideNavBar({ onPageChange }) {
   );
 }
 
-export default SideNavBar;
+export default SideNav;
