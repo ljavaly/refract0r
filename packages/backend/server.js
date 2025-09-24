@@ -1,15 +1,17 @@
-const express = require("express");
-const cors = require("cors");
-const http = require("http");
-const WebSocket = require("ws");
-require("dotenv").config();
+import express from "express";
+import cors from "cors";
+import { createServer } from "http";
+import { WebSocketServer } from "ws";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const app = express();
-const server = http.createServer(app);
+const server = createServer(app);
 const PORT = process.env.PORT || 3001;
 
 // WebSocket server
-const wss = new WebSocket.Server({ server, path: "/ws/comments" });
+const wss = new WebSocketServer({ server, path: "/ws/comments" });
 
 // Store connected clients
 const clients = new Set();
@@ -52,7 +54,7 @@ wss.on("connection", (ws) => {
 
           // Broadcast to all connected clients
           clients.forEach((client) => {
-            if (client.readyState === WebSocket.OPEN) {
+            if (client.readyState === client.OPEN) {
               client.send(JSON.stringify(commentData));
             }
           });
@@ -70,7 +72,7 @@ wss.on("connection", (ws) => {
         default:
           // Broadcast to all connected clients
           clients.forEach((client) => {
-            if (client.readyState === WebSocket.OPEN) {
+            if (client.readyState === client.OPEN) {
               client.send(JSON.stringify(message));
             }
           });
@@ -102,9 +104,9 @@ wss.on("connection", (ws) => {
 });
 
 // Import routes
-const videoRoutes = require("./routes/videos");
-const conversationRoutes = require("./routes/conversations");
-const commentRoutes = require("./routes/comments");
+import videoRoutes from "./routes/videos.js";
+import conversationRoutes from "./routes/conversations.js";
+import commentRoutes from "./routes/comments.js";
 
 // Middleware
 app.use(
@@ -215,4 +217,4 @@ server.listen(PORT, () => {
   console.log(`🔌 WebSocket endpoint: ws://localhost:${PORT}/ws/comments`);
 });
 
-module.exports = app;
+export default app;
