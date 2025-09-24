@@ -9,13 +9,40 @@ import SideNav from "./components/SideNav";
 
 import React, { useEffect, useState } from "react";
 
+// Centralized path-to-page mapping
+const ROUTE_MAP = {
+  "/": "stream",
+  "/admin": "admin",
+  "/browse": "browse",
+  "/inbox": "inbox",
+};
+
+const PAGE_TO_PATH = {
+  stream: "/",
+  admin: "/admin",
+  browse: "/browse",
+  inbox: "/inbox",
+};
+
 function App() {
-  const [currentPage, setCurrentPage] = useState("stream"); // Default to 'video' page
+  // Helper function to get page from path
+  const getPageFromPath = (path) => ROUTE_MAP[path] || "stream";
+
+  // Helper function to get path from page
+  const getPathFromPage = (page) => PAGE_TO_PATH[page] || "/";
+
+  const [currentPage, setCurrentPage] = useState(() =>
+    getPageFromPath(window.location.pathname),
+  );
   const [path, setPath] = useState(window.location.pathname);
 
   // Track browser navigation
   useEffect(() => {
-    const onPopState = () => setPath(window.location.pathname);
+    const onPopState = () => {
+      const newPath = window.location.pathname;
+      setPath(newPath);
+      setCurrentPage(getPageFromPath(newPath));
+    };
     window.addEventListener("popstate", onPopState);
     return () => window.removeEventListener("popstate", onPopState);
   }, []);
@@ -29,11 +56,8 @@ function App() {
 
   // Function to handle page navigation
   const handlePageChange = (page) => {
-    // If currently on /admin, navigate back to root for regular pages
-    if (path === "/admin") {
-      navigate("/");
-    }
     setCurrentPage(page);
+    navigate(getPathFromPage(page));
   };
 
   // Admin route gating
