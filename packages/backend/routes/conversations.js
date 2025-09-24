@@ -118,12 +118,12 @@ const messagesByConversation = {
 };
 
 // GET /api/conversations - Get all conversations
-router.get("/", (req, res) => {
+router.get("/", async (req, res) => {
   res.json(conversations);
 });
 
 // GET /api/conversations/:id - Get conversation details and messages
-router.get("/:id", (req, res) => {
+router.get("/:id", async (req, res) => {
   const conversationId = req.params.id;
 
   // Find the conversation

@@ -49,7 +49,7 @@ const comments = [
 ];
 
 // GET /api/comments - Get all comments
-router.get("/", (req, res) => {
+router.get("/", async (req, res) => {
   res.json(comments);
 });
 
