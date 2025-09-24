@@ -2,9 +2,12 @@ import React, { useState, useRef, useEffect } from "react";
 import "../styles/VideoViewerModal.css";
 import AudienceChat from "./AudienceChat.jsx";
 import closeIcon from "../assets/close-circle.svg";
+import apiClient from "../api/client.js";
 
 function VideoViewerModal({ video, isOpen, onClose }) {
     const videoRef = useRef(null);
+    const [videoData, setVideoData] = useState(null);
+    const [isLoading, setIsLoading] = useState(false);
     const [isPlaying, setIsPlaying] = useState(false);
     const [currentTime, setCurrentTime] = useState(0);
     const [duration, setDuration] = useState(0);
@@ -25,14 +28,66 @@ function VideoViewerModal({ video, isOpen, onClose }) {
         return `${mins}:${secs.toString().padStart(2, '0')}`;
     };
 
+    // Fetch video data when modal opens with a video ID
     useEffect(() => {
-        if (video && videoRef.current) {
-            // Set mock duration based on video data
-            const mockDuration = parseDuration(video.duration);
-            setDuration(mockDuration);
-            setCurrentTime(0);
+        if (isOpen && video?.id) {
+            setIsLoading(true);
+            setVideoData(null);
+
+            apiClient.getVideo(video.id)
+                .then((data) => {
+                    setVideoData(data);
+                    setIsLoading(false);
+                })
+                .catch((error) => {
+                    console.error('Failed to fetch video data:', error);
+                    setIsLoading(false);
+                });
         }
-    }, [video]);
+    }, [isOpen, video?.id]);
+
+    // Update video source and reset playback when video data changes
+    useEffect(() => {
+        if (videoData && videoRef.current) {
+            setCurrentTime(0);
+            setIsPlaying(false);
+
+            // Set video source
+            if (videoData.videoUrl) {
+                videoRef.current.src = videoData.videoUrl;
+                videoRef.current.load();
+            }
+        }
+    }, [videoData]);
+
+    // Video event handlers
+    const handleVideoLoadedMetadata = () => {
+        if (videoRef.current) {
+            setDuration(videoRef.current.duration);
+        }
+    };
+
+    const handleVideoTimeUpdate = () => {
+        if (videoRef.current) {
+            setCurrentTime(videoRef.current.currentTime);
+        }
+    };
+
+    const handleVideoEnded = () => {
+        setIsPlaying(false);
+        setCurrentTime(0);
+        if (videoRef.current) {
+            videoRef.current.currentTime = 0;
+        }
+    };
+
+    const handleVideoLoadStart = () => {
+        setIsLoading(true);
+    };
+
+    const handleVideoCanPlay = () => {
+        setIsLoading(false);
+    };
 
     useEffect(() => {
         // Close modal on Escape key
@@ -53,66 +108,93 @@ function VideoViewerModal({ video, isOpen, onClose }) {
         };
     }, [isOpen, onClose]);
 
-    const togglePlay = () => {
-        setIsPlaying(!isPlaying);
-        // Since we don't have actual video files, we'll simulate playback
-        if (!isPlaying) {
-            simulatePlayback();
-        }
-    };
+    const togglePlay = async () => {
+        if (!videoRef.current) return;
 
-    const simulatePlayback = () => {
-        const interval = setInterval(() => {
-            setCurrentTime((prev) => {
-                if (prev >= duration) {
-                    clearInterval(interval);
-                    setIsPlaying(false);
-                    return duration;
-                }
-                return prev + 1;
-            });
-        }, 1000);
-
-        // Store interval ID to clear it when pausing
-        if (videoRef.current) {
-            videoRef.current.playbackInterval = interval;
+        try {
+            if (isPlaying) {
+                videoRef.current.pause();
+                setIsPlaying(false);
+            } else {
+                await videoRef.current.play();
+                setIsPlaying(true);
+            }
+        } catch (error) {
+            console.error('Video playback error:', error);
         }
     };
 
     const handleProgressClick = (e) => {
+        if (!videoRef.current) return;
+
         const progressBar = e.currentTarget;
         const clickX = e.clientX - progressBar.getBoundingClientRect().left;
         const progressWidth = progressBar.offsetWidth;
         const newTime = (clickX / progressWidth) * duration;
+
+        videoRef.current.currentTime = newTime;
         setCurrentTime(newTime);
     };
 
     const toggleMute = () => {
-        setIsMuted(!isMuted);
+        if (!videoRef.current) return;
+
+        videoRef.current.muted = !videoRef.current.muted;
+        setIsMuted(videoRef.current.muted);
     };
 
     const handleVolumeChange = (e) => {
-        setVolume(e.target.value / 100);
+        if (!videoRef.current) return;
+
+        const newVolume = e.target.value / 100;
+        videoRef.current.volume = newVolume;
+        setVolume(newVolume);
+
+        // Unmute if volume is changed from 0
+        if (newVolume > 0 && videoRef.current.muted) {
+            videoRef.current.muted = false;
+            setIsMuted(false);
+        }
     };
 
     if (!isOpen || !video) return null;
 
+    // Use fetched video data if available, otherwise fall back to prop data
+    const displayVideo = videoData || video;
+
     return (
         <div className="video-modal-overlay" onClick={onClose}>
             <div>
-                <img className="modal-close-button" src={closeIcon} alt="Close" />
+                <img className="modal-close-button" onClick={onClose} src={closeIcon} alt="Close" />
             </div>
 
             <div className="video-modal-container" onClick={(e) => e.stopPropagation()}>
                 <div className="video-modal-content">
                     <div className="video-player-section">
                         <div className="video-player-wrapper">
-                            {/* Video placeholder */}
-                            <div
-                                ref={videoRef}
-                                className="video-player"
-                                style={{ backgroundImage: `url(${video.thumbnail})` }}
-                            >
+                            {/* Video player */}
+                            <div className="video-player">
+                                <video
+                                    ref={videoRef}
+                                    className="video-element"
+                                    poster={displayVideo.thumbnail}
+                                    onLoadedMetadata={handleVideoLoadedMetadata}
+                                    onTimeUpdate={handleVideoTimeUpdate}
+                                    onEnded={handleVideoEnded}
+                                    onLoadStart={handleVideoLoadStart}
+                                    onCanPlay={handleVideoCanPlay}
+                                    onPlay={() => setIsPlaying(true)}
+                                    onPause={() => setIsPlaying(false)}
+                                    preload="metadata"
+                                />
+
+                                {/* Loading indicator */}
+                                {isLoading && (
+                                    <div className="loading-overlay">
+                                        <div className="loading-spinner">Loading...</div>
+                                    </div>
+                                )}
+
                                 {/* Play/Pause overlay */}
                                 <div className="video-controls-overlay" onClick={togglePlay}>
                                     <div className="play-pause-button">
@@ -132,11 +214,11 @@ function VideoViewerModal({ video, isOpen, onClose }) {
                                 <div className="stream-metadata">
                                     <div className="stream-info">
                                         <div className="stream-title-section">
-                                            <h1 className="stream-title">{video.title}</h1>
+                                            <h1 className="stream-title">{displayVideo.title}</h1>
                                         </div>
                                         <div className="stream-stats">
-                                            <span className="viewer-count">{video.views} views</span>
-                                            <span className="upload-date">{video.uploadDate}</span>
+                                            <span className="viewer-count">{displayVideo.views} views</span>
+                                            <span className="upload-date">{displayVideo.uploadDate}</span>
                                         </div>
                                     </div>
                                     <div className="stream-actions">

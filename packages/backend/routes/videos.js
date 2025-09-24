@@ -9,9 +9,9 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 // Function to load fresh data each time (prevents caching)
-const getVideoData = () => {
+const getVideos = () => {
   return JSON.parse(
-    readFileSync(join(__dirname, "../static/video_thumbnails.json"), "utf-8")
+    readFileSync(join(__dirname, "../static/videos.json"), "utf-8")
   );
 };
 
@@ -28,8 +28,8 @@ router.get("/", async (req, res) => {
       return [];
     });
 
-  const videoData = getVideoData();
-  const videos = videoData.map((video, index) => ({
+  const videos = getVideos();
+  const videoData = videos.map((video, index) => ({
     id: index + 1,
     title: video.title,
     thumbnail: thumbnails[index] || thumbnails[0],
@@ -38,28 +38,40 @@ router.get("/", async (req, res) => {
     uploadDate: video.date,
   }));
 
-  res.json(videos);
+  res.json(videoData);
 });
 
 // GET /api/videos/:id - Get video by ID
 router.get("/:id", async (req, res) => {
-  const videoId = req.params.id;
+  const videoId = parseInt(req.params.id);
 
-  // Mock single video data
-  const video = {
+  let thumbnails = await getThumbnails()
+    .then((result) => {
+      return result.thumbnailUrls;
+    })
+    .catch((error) => {
+      console.error("Error fetching thumbnails:", error);
+      return [];
+    });
+
+  const videos = getVideos();
+  const video = videos.find((video) => video.id === videoId);
+
+  if (!video) {
+    return res.status(404).json({ error: "Video not found" });
+  }
+
+  const videoData = {
     id: videoId,
-    title: `Video ${videoId}`,
-    description: `Description for video ${videoId}`,
-    thumbnail: "https://via.placeholder.com/320x180",
-    channel: "Sample Channel",
-    views: 1000,
-    duration: "10:30",
-    uploadDate: "2024-01-15",
-    likes: 150,
-    dislikes: 5,
+    title: video.title,
+    thumbnail: thumbnails[videoId - 1] || thumbnails[0],
+    views: video.views,
+    duration: video.duration,
+    uploadDate: video.date,
+    videoUrl: "https://storage.googleapis.com/refract0r-assets/IMG_9906.mov"
   };
 
-  res.json(video);
+  res.json(videoData);
 });
 
 export default router;
