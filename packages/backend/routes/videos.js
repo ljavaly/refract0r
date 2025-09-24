@@ -32,8 +32,6 @@ router.get("/", async (req, res) => {
       return [];
     });
 
-  console.log("Videos:", videos);
-
   res.json(videos);
 });
 
