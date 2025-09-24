@@ -47,12 +47,12 @@ npm run csv-to-json /path/to/file.csv --skip-header
 #### Programmatic Usage
 
 ```typescript
-import { csvToJson } from './csvToJson.js';
+import { csvToJson } from "./csvToJson.js";
 
-csvToJson('/absolute/path/to/file.csv', {
-  delimiter: ',',
+csvToJson("/absolute/path/to/file.csv", {
+  delimiter: ",",
   skipHeader: false,
-  outputPath: './output.json'
+  outputPath: "./output.json",
 });
 ```
 
