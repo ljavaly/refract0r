@@ -15,7 +15,7 @@
     "build:backend": "docker build --platform linux/amd64 -t us-central1-docker.pkg.dev/refract0r/refract0r-repo/refract0r-server:1.0 .",
     "push:all": "concurrently \"npm run push:frontend\" \"npm run push:backend\"",
     "push:frontend": "gcloud storage cp --recursive packages/frontend/dist/* gs://refract0r-app/",
-    "push:backend": "docker push us-central1-docker.pkg.dev/refract0r/refract0r-repo/refract0r-server:1.0",
+    "push:backend": "./packages/backend/deploy.sh",
     "install:all": "npm install && npm install --workspace=frontend && npm install --workspace=backend",
     "format": "npx prettier --write .",
     "lint": "npm run lint --workspaces",

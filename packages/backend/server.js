@@ -163,6 +163,7 @@ app.get("/health", (req, res) => {
     status: "OK",
     uptime: process.uptime(),
     timestamp: new Date().toISOString(),
+    deploymentHash: process.env.DEPLOYMENT_HASH || "local",
   });
 });
 

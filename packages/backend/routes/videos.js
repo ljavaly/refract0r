@@ -7,9 +7,13 @@ import { getThumbnails } from "../utils/gcp.js";
 // ES module way to import JSON
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-const videoData = JSON.parse(
-  readFileSync(join(__dirname, "../static/video_thumbnails.json"), "utf-8"),
-);
+
+// Function to load fresh data each time (prevents caching)
+const getVideoData = () => {
+  return JSON.parse(
+    readFileSync(join(__dirname, "../static/video_thumbnails.json"), "utf-8")
+  );
+};
 
 const router = express.Router();
 
@@ -24,6 +28,7 @@ router.get("/", async (req, res) => {
       return [];
     });
 
+  const videoData = getVideoData();
   const videos = videoData.map((video, index) => ({
     id: index + 1,
     title: video.title,
