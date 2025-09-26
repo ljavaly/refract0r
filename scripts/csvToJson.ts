@@ -30,7 +30,8 @@ function csvToJson(csvFilePath: string, options: CsvToJsonOptions = {}): void {
       .split(delimiter)
       .map((header) => header.trim().replace(/"/g, ""));
 
-    const dataStartIndex = skipHeader ? 1 : 0;
+    // Always skip the first row as it contains headers
+    const dataStartIndex = 1;
 
     for (let i = dataStartIndex; i < lines.length; i++) {
       const values = lines[i]
@@ -91,13 +92,14 @@ Usage:
 
 Options:
   --delimiter <char>     CSV delimiter (default: comma)
-  --skip-header          Skip first row as header
   --output <path>        Output JSON file path
+  
+Note: The first row is always treated as headers and excluded from JSON output.
 
 Examples:
   npx ts-node scripts/csvToJson.ts /Users/john/data/users.csv
   npx ts-node scripts/csvToJson.ts ./data.csv --delimiter ";" --output ./output.json
-  npx ts-node scripts/csvToJson.ts /absolute/path/to/file.csv --skip-header
+  npx ts-node scripts/csvToJson.ts /absolute/path/to/file.csv
     `);
     return;
   }
