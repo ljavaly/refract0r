@@ -39,6 +39,7 @@ export const formatComments = (comments) => {
         hour: "2-digit",
         minute: "2-digit",
         hour12: false,
+        timeZone: "America/New_York",
       }),
   }));
 };
