@@ -1,17 +1,17 @@
 import express from "express";
-import { loadFile } from "../utils/static.js";
+import { loadJsonFile } from "../utils/static.js";
 import { getThumbnails } from "../utils/gcp.js";
 
 // Function to load fresh data each time (prevents caching)
 const getVideos = async () => {
-  return await loadFile("videos.json");
+  return await loadJsonFile("videos.json");
 };
 
 const router = express.Router();
 
 // GET /api/videos - Get all videos
 router.get("/", async (req, res) => {
-  let thumbnails = await getThumbnails()
+  const thumbnails = await getThumbnails()
     .then((result) => {
       return result.thumbnailUrls;
     })
@@ -37,7 +37,7 @@ router.get("/", async (req, res) => {
 router.get("/:id", async (req, res) => {
   const videoId = parseInt(req.params.id);
 
-  let thumbnails = await getThumbnails()
+  const thumbnails = await getThumbnails()
     .then((result) => {
       return result.thumbnailUrls;
     })

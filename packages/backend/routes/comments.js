@@ -1,13 +1,35 @@
 import express from "express";
-import { loadFile } from "../utils/static.js";
+import { loadJsonFile, readFiles } from "../utils/static.js";
 
 const router = express.Router();
 
-// GET /api/comments - Get all comments
+// GET /api/comments - Get video viewer modal comments
 router.get("/", async (req, res) => {
-  const comments = await loadFile("videoViewerComments.json");
+  const comments = await loadJsonFile("videoViewerComments.json");
+  const commentsData = formatComments(comments);
+  res.json(commentsData);
+});
 
-  const commentsData = comments.map((comment, index) => ({
+// GET /api/comments/:id - Get audience comments by scene ID
+router.get("/:id", async (req, res) => {
+  const sceneFile = (await readFiles("audience")).find((file) =>
+    file.startsWith(req.params.id),
+  );
+
+  if (!sceneFile) {
+    return res.status(404).json({
+      error: "Scene not found",
+      message: `Scene with id ${req.params.id} does not exist`,
+    });
+  }
+
+  const comments = await loadJsonFile(`audience/${sceneFile}`);
+  const commentsData = formatComments(comments);
+  res.json(commentsData);
+});
+
+export const formatComments = (comments) => {
+  return comments.map((comment, index) => ({
     id: index + 1,
     user: comment.user,
     message: comment.message,
@@ -19,8 +41,6 @@ router.get("/", async (req, res) => {
         hour12: false,
       }),
   }));
-
-  res.json(commentsData);
-});
+};
 
 export default router;
