@@ -47,6 +47,10 @@ function AudienceChat({ initialComments = null, isAdmin = false }) {
   }, [initialComments]);
 
   useEffect(() => {
+    if (isAdmin) {
+      return;
+    }
+
     // Only scroll to bottom if comments were added (length increased) or it's the initial load
     if (
       chatContainerRef.current &&
@@ -57,7 +61,7 @@ function AudienceChat({ initialComments = null, isAdmin = false }) {
         chatContainerRef.current.scrollHeight;
     }
     prevCommentsLength.current = comments.length;
-  }, [comments]);
+  }, [comments, isAdmin]);
 
   const handleSendComment = (e) => {
     e.preventDefault();
