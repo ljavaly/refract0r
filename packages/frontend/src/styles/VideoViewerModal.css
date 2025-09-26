@@ -198,8 +198,7 @@
   align-items: center;
 }
 
-.share-button,
-.more-button {
+.share-button {
   background-color: rgba(255, 255, 255, 0.15);
   color: white;
   border: 1px solid rgba(255, 255, 255, 0.3);
@@ -216,8 +215,7 @@
   z-index: 15;
 }
 
-.share-button:hover,
-.more-button:hover {
+.share-button:hover {
   background-color: rgba(255, 255, 255, 0.2);
   border-color: rgba(255, 255, 255, 0.4);
 }
@@ -337,11 +335,6 @@
     border-left: none;
     border-top: 1px solid var(--color-border);
     height: 300px;
-  }
-
-  .modal-close-button-container {
-    top: 0.5rem;
-    right: 0.5rem;
   }
 
   .modal-close-button {
