@@ -56,10 +56,10 @@
 .nav-link-container {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: right;
   padding: 0.5rem;
   gap: 1rem;
-  width: 10%;
+  width: 15%;
 }
 
 .nav-link {
