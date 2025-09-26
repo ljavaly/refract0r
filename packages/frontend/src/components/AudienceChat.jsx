@@ -9,6 +9,29 @@ function AudienceChat({ initialComments = null, isAdmin = false }) {
   const chatContainerRef = useRef(null);
   const prevCommentsLength = useRef(0);
 
+  const ENLARGED_EMOJIS_MAPPING = {
+    "🎁": 2,
+    "💰": 2,
+    "💎": 2,
+    "🌹": 4,
+  };
+
+  // Function to process message and enlarge specific emojis
+  const processMessageWithEnlargedEmojis = (message) => {
+    let processedMessage = message;
+    
+    // Replace each emoji in the mapping with a wrapped version
+    Object.entries(ENLARGED_EMOJIS_MAPPING).forEach(([emoji, scale]) => {
+      const regex = new RegExp(emoji, 'g');
+      processedMessage = processedMessage.replace(
+        regex,
+        `<span class="enlarged-emoji emoji-${scale}x">${emoji}</span>`
+      );
+    });
+    
+    return processedMessage;
+  };
+
   useEffect(() => {
     // Connect to the WebSocket and define listeners
     wsClient.connectWebSocket();
@@ -126,7 +149,12 @@ function AudienceChat({ initialComments = null, isAdmin = false }) {
               <span className="username">{comment.user}</span>
               <span className="timestamp">{comment.timestamp}</span>
             </div>
-            <div className="comment-content">{comment.message}</div>
+            <div 
+              className="comment-content"
+              dangerouslySetInnerHTML={{ 
+                __html: processMessageWithEnlargedEmojis(comment.message) 
+              }}
+            />
           </div>
         ))}
       </div>

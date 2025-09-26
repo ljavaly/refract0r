@@ -58,6 +58,22 @@
   word-wrap: break-word;
 }
 
+/* Enlarged emoji styles */
+.enlarged-emoji {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.emoji-2x {
+  font-size: 2em;
+  line-height: 1;
+}
+
+.emoji-4x {
+  font-size: 4em;
+  line-height: 1;
+}
+
 .chat-input-form {
   padding: 1rem;
   display: flex;
