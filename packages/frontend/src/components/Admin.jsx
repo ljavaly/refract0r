@@ -59,8 +59,6 @@ function Admin() {
         );
         setQueuedComments([]);
       }
-
-      console.log("queuedComments", queuedComments);
     }
   };
 
