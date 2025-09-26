@@ -16,7 +16,6 @@
 }
 
 .admin-cues-section {
-  background: #ffffffcc;
   border-radius: var(--border-radius);
   overflow: hidden;
   box-shadow: 0 1px 2px rgba(16, 185, 129, 0.08);
@@ -63,4 +62,22 @@
   color: white;
   transition: all 0.3s ease;
   filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+.scene-select-dropdown {
+  width: 100%;
+  background-color: white;
+  color: blue;
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--border-radius);
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%230000ff' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right 0.75rem center;
+  background-repeat: no-repeat;
+  background-size: 1rem;
+  padding-right: 2.5rem;
+  margin-bottom: 1rem;
 }

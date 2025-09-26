@@ -100,6 +100,10 @@ class ApiClient {
   async getComments() {
     return this.get("/comments");
   }
+
+  async getCommentsByScene(sceneId) {
+    return this.get(`/comments/${sceneId}`);
+  }
 }
 
 // Create and export a default instance
