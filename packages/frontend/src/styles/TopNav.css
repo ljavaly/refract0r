@@ -60,6 +60,7 @@
   padding: 0.5rem;
   gap: 1rem;
   width: 15%;
+  background-color: var(--color-accent);
 }
 
 .nav-link {
