@@ -18,6 +18,11 @@ function AudienceChat({ initialComments = null, isAdmin = false }) {
 
   // Function to process message and enlarge specific emojis
   const processMessageWithEnlargedEmojis = (message) => {
+    // Ensure message is a string, return empty string if not
+    if (typeof message !== 'string') {
+      return '';
+    }
+    
     let processedMessage = message;
     
     // Replace each emoji in the mapping with a wrapped version

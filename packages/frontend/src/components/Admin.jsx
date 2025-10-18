@@ -13,6 +13,12 @@ function Admin() {
   }, []);
 
   const loadSceneComments = (scene) => {
+    if (!scene) { // Clear comments when no scene is selected
+      setSelectedScene("");
+      setQueuedComments([]);
+      return;
+    }
+
     setSelectedScene(scene);
     apiClient.getCommentsByScene(scene)
       .then((data) => {
