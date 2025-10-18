@@ -7,13 +7,6 @@
   aria-labelledby="title desc"
   preserveAspectRatio="xMidYMin meet"
 >
-  <title id="title">
-    Monocle with Chain's Right Edge Aligned to Rim
-  </title>
-  <desc id="desc">
-    Monocle rim with the eye near center, and chain's right edge
-    aligned with the rim's outermost pixel.
-  </desc>
   <circle
     cx="60"
     cy="30"
@@ -22,7 +15,7 @@
     stroke-width="14"
     fill="none"
   />
-  <circle cx="57" cy="30" r="14" fill="black" />
+  <circle cx="57" cy="30" r="12" fill="black" />
   <line
     x1="91"
     y1="30"
