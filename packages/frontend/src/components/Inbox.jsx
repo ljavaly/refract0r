@@ -81,6 +81,18 @@ function Inbox() {
     setShowDropdown(!showDropdown);
   };
 
+  const handleConversationClick = (conversationId) => {
+    // Set the active conversation
+    setActiveConversation(conversationId);
+    
+    // Clear the unread indicator locally (only in UI, not in underlying data)
+    setConversations((prevConversations) =>
+      prevConversations.map((conv) =>
+        conv.id === conversationId ? { ...conv, new: false } : conv
+      )
+    );
+  };
+
   const handleBlock = () => {
     if (activeConversation) {
       const conversation = conversations.find(
@@ -157,7 +169,7 @@ function Inbox() {
               className={`tab-button ${activeTab === "inbox" ? "active" : ""}`}
               onClick={() => setActiveTab("inbox")}
             >
-              Inbox ({conversations.filter((c) => c.unread).length})
+              Inbox ({conversations.filter((c) => c.new).length})
             </button>
             <button
               className={`tab-button ${activeTab === "other" ? "active" : ""}`}
@@ -172,7 +184,7 @@ function Inbox() {
               <div
                 key={conv.id}
                 className={`conversation-item ${activeConversation === conv.id ? "active" : ""}`}
-                onClick={() => setActiveConversation(conv.id)}
+                onClick={() => handleConversationClick(conv.id)}
               >
                 {conv.new && (
                   <div className="conversation-unread-indicator">
