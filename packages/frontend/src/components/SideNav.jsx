@@ -11,11 +11,11 @@ import dollarIcon from "../assets/dollar-icon.svg";
 
 import "../styles/SideNav.css";
 
-function SideNav({ onPageChange }) {
+function SideNav({ onPageChange, currentPage }) {
   return (
     <aside className="sidebar">
       <div className="sidebar-section flex-grow">
-        <div className="sidebar-item active">
+        <div className={`sidebar-item ${currentPage === "stream" ? "active" : ""}`}>
           <a href="#" onClick={() => onPageChange("stream")}>
             <div className="sidebar-icon">
               <img src={homeIcon} alt="Home" />
@@ -23,7 +23,7 @@ function SideNav({ onPageChange }) {
             <span>Home</span>
           </a>
         </div>
-        <div className="sidebar-item">
+        <div className={`sidebar-item ${currentPage === "browse" ? "active" : ""}`}>
           <a href="#" onClick={() => onPageChange("browse")}>
             <div className="sidebar-icon">
               <img src={channelIcon} alt="My Channel" />

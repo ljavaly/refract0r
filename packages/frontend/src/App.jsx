@@ -76,7 +76,7 @@ function App() {
     <div className="h-screen flex flex-col overflow-hidden">
       <TopNav onPageChange={handlePageChange} onNavigate={navigate} />
       <div className="flex flex-1 overflow-hidden">
-        <SideNav onPageChange={handlePageChange} onNavigate={navigate} />
+        <SideNav onPageChange={handlePageChange} onNavigate={navigate} currentPage={currentPage} />
         <main className="flex-1 overflow-hidden">
           {currentPage === "stream" && <Stream />}
           {currentPage === "browse" && <Browse />}
