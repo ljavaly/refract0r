@@ -95,7 +95,8 @@ function Admin() {
               <option value="8_fresh_direct_2">8 - Fresh Direct 2</option>
               <option value="9_wolf">9 - Wolf</option>
               <option value="10_rick_and_morty">10 - Rick and Morty</option>
-              <option value="11_grace">11 - Grace</option>
+              <option value="11_mirror_test">11 - Mirror Test</option>
+              <option value="12_grace">12 - Grace</option>
             </select>
           </div>
           <AudienceChat initialComments={queuedComments} isAdmin={true} />
