@@ -2,16 +2,42 @@ import "../styles/TopNav.css";
 import mailIcon from "../assets/mail-icon.svg";
 import gearIcon from "../assets/gear-icon.svg";
 import wsClient from "../api/ws";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
+import newMessageSound from "../assets/new_message.wav";
 
 function TopNav({ onPageChange }) {
   const [hasUnreadMessage, setHasUnreadMessage] = useState(false);
+  const audioRef = useRef(null);
+
+  // Initialize audio element
+  useEffect(() => {
+    audioRef.current = new Audio(newMessageSound);
+    audioRef.current.preload = 'auto';
+    
+    // Clean up audio element on unmount
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current = null;
+      }
+    };
+  }, []);
+
+  const playNotificationSound = () => {
+    if (audioRef.current) {
+      audioRef.current.currentTime = 0; // Reset to beginning
+      audioRef.current.play().catch((error) => {
+        console.warn('Could not play notification sound:', error);
+      });
+    }
+  };
 
   useEffect(() => {
     wsClient.connectWebSocket();
 
     const onUnreadMessage = (data) => {
       setHasUnreadMessage(true);
+      playNotificationSound();
     };
     const onClearUnreadMessage = (data) => {
       setHasUnreadMessage(false);
