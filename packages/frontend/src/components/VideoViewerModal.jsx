@@ -506,7 +506,7 @@ function VideoViewerModal({ video, isOpen, onClose }) {
           {/* Chat section */}
           <div className="video-chat-section">
             <AudienceChat
-            //   initialComments={videoViewerComments}
+              //   initialComments={videoViewerComments}
               key="audience-chat"
             />
           </div>

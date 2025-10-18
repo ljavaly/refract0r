@@ -7,20 +7,22 @@ import wsClient from "../api/ws";
 function Admin() {
   const [queuedComments, setQueuedComments] = useState([]);
   const [selectedScene, setSelectedScene] = useState("");
-  
+
   useEffect(() => {
     wsClient.connectWebSocket();
   }, []);
 
   const loadSceneComments = (scene) => {
-    if (!scene) { // Clear comments when no scene is selected
+    if (!scene) {
+      // Clear comments when no scene is selected
       setSelectedScene("");
       setQueuedComments([]);
       return;
     }
 
     setSelectedScene(scene);
-    apiClient.getCommentsByScene(scene)
+    apiClient
+      .getCommentsByScene(scene)
       .then((data) => {
         setQueuedComments(data);
       })
@@ -86,7 +88,9 @@ function Admin() {
             >
               <option value="">Choose a scene...</option>
               <option value="1_rp_home_invasion">1 - RP Home Invasion</option>
-              <option value="2_grwm_big_brother_fresh_direct_1">2 - GRWM Big Brother Fresh Direct 1</option>
+              <option value="2_grwm_big_brother_fresh_direct_1">
+                2 - GRWM Big Brother Fresh Direct 1
+              </option>
               <option value="3_ama_louies">3 - AMA Louies</option>
               <option value="4_grwm_survivor">4 - GRWM Survivor</option>
               <option value="5_ama_coney_island">5 - AMA Coney Island</option>

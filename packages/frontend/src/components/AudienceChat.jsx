@@ -19,21 +19,21 @@ function AudienceChat({ initialComments = null, isAdmin = false }) {
   // Function to process message and enlarge specific emojis
   const processMessageWithEnlargedEmojis = (message) => {
     // Ensure message is a string, return empty string if not
-    if (typeof message !== 'string') {
-      return '';
+    if (typeof message !== "string") {
+      return "";
     }
-    
+
     let processedMessage = message;
-    
+
     // Replace each emoji in the mapping with a wrapped version
     Object.entries(ENLARGED_EMOJIS_MAPPING).forEach(([emoji, scale]) => {
-      const regex = new RegExp(emoji, 'g');
+      const regex = new RegExp(emoji, "g");
       processedMessage = processedMessage.replace(
         regex,
-        `<span class="enlarged-emoji emoji-${scale}x">${emoji}</span>`
+        `<span class="enlarged-emoji emoji-${scale}x">${emoji}</span>`,
       );
     });
-    
+
     return processedMessage;
   };
 
@@ -154,10 +154,10 @@ function AudienceChat({ initialComments = null, isAdmin = false }) {
               <span className="username">{comment.user}</span>
               <span className="timestamp">{comment.timestamp}</span>
             </div>
-            <div 
+            <div
               className="comment-content"
-              dangerouslySetInnerHTML={{ 
-                __html: processMessageWithEnlargedEmojis(comment.message) 
+              dangerouslySetInnerHTML={{
+                __html: processMessageWithEnlargedEmojis(comment.message),
               }}
             />
           </div>

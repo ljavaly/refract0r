@@ -88,13 +88,15 @@ function Inbox() {
       );
       if (conversation) {
         console.log(`Blocking conversation with ${conversation.name}`);
-        const confirmed = window.confirm(`Are you sure you want to block ${conversation.name}?`);
+        const confirmed = window.confirm(
+          `Are you sure you want to block ${conversation.name}?`,
+        );
         if (confirmed) {
           // Remove blocked conversation from list by filtering out the conversation with matching name
-          setConversations(prevConversations => 
-            prevConversations.filter(c => c.name !== conversation.name)
+          setConversations((prevConversations) =>
+            prevConversations.filter((c) => c.name !== conversation.name),
           );
-          
+
           // Clear active conversation if it was the blocked one
           if (activeConversation === conversation.id) {
             setActiveConversation(null);
