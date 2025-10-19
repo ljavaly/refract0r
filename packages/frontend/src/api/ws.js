@@ -143,9 +143,49 @@ class WsClient {
       this.ws.send(JSON.stringify({ type: "ping" }));
     }
   }
+
+  // Send any message through WebSocket
+  sendMessage(messageData) {
+    if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+      this.ws.send(JSON.stringify(messageData));
+      return true;
+    } else {
+      console.warn("WebSocket not ready, message not sent:", messageData);
+      return false;
+    }
+  }
+
+  // Send clearUnreadMessage to clear unread message from top nav
+  clearUnreadMessage() {
+    return this.sendMessage({ type: "clearUnreadMessage", sessionId: this.sessionId });
+  }
+
+  // Wait for WebSocket to be ready and then execute callback
+  whenReady(callback, timeout = 5000) {
+    return new Promise((resolve, reject) => {
+      if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+        const result = callback();
+        resolve(result);
+        return;
+      }
+
+      const startTime = Date.now();
+      const checkReady = () => {
+        if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+          const result = callback();
+          resolve(result);
+        } else if (Date.now() - startTime > timeout) {
+          reject(new Error('WebSocket connection timeout'));
+        } else {
+          setTimeout(checkReady, 50);
+        }
+      };
+
+      checkReady();
+    });
+  }
 }
 
-// TODO LAUREN this should not be a singleton
 const wsClient = new WsClient();
 
 export default wsClient;

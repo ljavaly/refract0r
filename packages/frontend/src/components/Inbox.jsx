@@ -18,7 +18,13 @@ function Inbox() {
   useEffect(() => {
     loadConversations();
     wsClient.connectWebSocket();
-    wsClient.ws.send(JSON.stringify({ type: "clearUnreadMessage" }));
+    
+    // Wait for WebSocket to be ready before sending clearUnreadMessage
+    wsClient.whenReady(() => {
+      wsClient.clearUnreadMessage();
+    }).catch(error => {
+      console.warn('Failed to clear unread message:', error);
+    });
   }, []);
 
   // Load conversation details when active conversation changes
