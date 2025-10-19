@@ -56,6 +56,7 @@ function Stream() {
   return (
     <>
       <div className="video-container">
+        <AudienceChat />
         <div className="video-box">
           <video
             id="user-video"
@@ -124,7 +125,6 @@ function Stream() {
             </div>
           </div>
         </div>
-        <AudienceChat />
       </div>
     </>
   );
