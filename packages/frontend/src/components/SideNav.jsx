@@ -9,16 +9,22 @@ import likedVideosIcon from "../assets/liked-videos-icon.svg";
 import showMoreIcon from "../assets/show-more-icon.svg";
 import dollarIcon from "../assets/dollar-icon.svg";
 
+import { useNavigate, useLocation } from "react-router-dom";
 import "../styles/SideNav.css";
 
-function SideNav({ onPageChange, currentPage }) {
+function SideNav() {
+  const navigate = useNavigate();
+  const location = useLocation();
+  
+  // Helper function to determine if a path is active
+  const isActive = (path) => location.pathname === path;
   return (
     <aside className="sidebar">
       <div className="sidebar-section flex-grow">
         <div
-          className={`sidebar-item ${currentPage === "stream" ? "active" : ""}`}
+          className={`sidebar-item ${isActive("/") ? "active" : ""}`}
         >
-          <a href="#" onClick={() => onPageChange("stream")}>
+          <a href="#" onClick={(e) => { e.preventDefault(); navigate("/"); }}>
             <div className="sidebar-icon">
               <img src={homeIcon} alt="Home" />
             </div>
@@ -26,9 +32,9 @@ function SideNav({ onPageChange, currentPage }) {
           </a>
         </div>
         <div
-          className={`sidebar-item ${currentPage === "browse" ? "active" : ""}`}
+          className={`sidebar-item ${isActive("/browse") ? "active" : ""}`}
         >
-          <a href="#" onClick={() => onPageChange("browse")}>
+          <a href="#" onClick={(e) => { e.preventDefault(); navigate("/browse"); }}>
             <div className="sidebar-icon">
               <img src={channelIcon} alt="My Channel" />
             </div>

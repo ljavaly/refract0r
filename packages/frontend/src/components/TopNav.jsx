@@ -3,9 +3,11 @@ import mailIcon from "../assets/mail-icon.svg";
 import gearIcon from "../assets/gear-icon.svg";
 import wsClient from "../api/ws";
 import { useEffect, useState, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import newMessageSound from "../assets/new_message.wav";
 
-function TopNav({ onPageChange }) {
+function TopNav() {
+  const navigate = useNavigate();
   const [hasUnreadMessage, setHasUnreadMessage] = useState(false);
   const audioRef = useRef(null);
 
@@ -135,7 +137,7 @@ function TopNav({ onPageChange }) {
         <div className="nav-link-container grid grid-cols-3">
           <div className="nav-link col-span-1">
             <div className="inbox-icon-container">
-              <a href="#" onClick={() => onPageChange("inbox")}>
+              <a href="#" onClick={(e) => { e.preventDefault(); navigate("/inbox"); }}>
                 <img src={mailIcon} alt="Mail" className="nav-icon" />
               </a>
               {hasUnreadMessage && (
@@ -154,7 +156,7 @@ function TopNav({ onPageChange }) {
             </a>
           </div>
           <div className="nav-link profile-avatar col-span-1">
-            <a href="#" onClick={() => onPageChange("admin")}>
+            <a href="#" onClick={(e) => { e.preventDefault(); navigate("/admin"); }}>
               TR
             </a>
           </div>

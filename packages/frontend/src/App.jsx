@@ -7,88 +7,43 @@ import Admin from "./components/Admin";
 import Browse from "./components/Browse";
 import SideNav from "./components/SideNav";
 
-import React, { useEffect, useState } from "react";
+import { Routes, Route } from "react-router-dom";
 
-// Centralized path-to-page mapping
-const ROUTE_MAP = {
-  "/": "stream",
-  "/admin": "admin",
-  "/browse": "browse",
-  "/inbox": "inbox",
-};
-
-const PAGE_TO_PATH = {
-  stream: "/",
-  admin: "/admin",
-  browse: "/browse",
-  inbox: "/inbox",
-};
-
-function App() {
-  // Helper function to get page from path
-  const getPageFromPath = (path) => ROUTE_MAP[path] || "stream";
-
-  // Helper function to get path from page
-  const getPathFromPage = (page) => PAGE_TO_PATH[page] || "/";
-
-  const [currentPage, setCurrentPage] = useState(() =>
-    getPageFromPath(window.location.pathname),
-  );
-  const [path, setPath] = useState(window.location.pathname);
-
-  // Track browser navigation
-  useEffect(() => {
-    const onPopState = () => {
-      const newPath = window.location.pathname;
-      setPath(newPath);
-      setCurrentPage(getPageFromPath(newPath));
-    };
-    window.addEventListener("popstate", onPopState);
-    return () => window.removeEventListener("popstate", onPopState);
-  }, []);
-
-  const navigate = (to) => {
-    if (to !== window.location.pathname) {
-      window.history.pushState({}, "", to);
-      setPath(to);
-    }
-  };
-
-  // Function to handle page navigation
-  const handlePageChange = (page) => {
-    setCurrentPage(page);
-    navigate(getPathFromPage(page));
-  };
-
-  // Admin route gating
-  if (path === "/admin") {
-    return (
-      <div className="h-screen flex flex-col overflow-hidden">
-        <TopNav onPageChange={handlePageChange} onNavigate={navigate} />
-        <main className="flex-1 overflow-hidden">
-          <Admin />
-        </main>
-      </div>
-    );
-  }
-
+// Layout component for pages with sidebar
+function MainLayout({ children }) {
   return (
     <div className="h-screen flex flex-col overflow-hidden">
-      <TopNav onPageChange={handlePageChange} onNavigate={navigate} />
+      <TopNav />
       <div className="flex flex-1 overflow-hidden">
-        <SideNav
-          onPageChange={handlePageChange}
-          onNavigate={navigate}
-          currentPage={currentPage}
-        />
+        <SideNav />
         <main className="flex-1 overflow-hidden">
-          {currentPage === "stream" && <Stream />}
-          {currentPage === "browse" && <Browse />}
-          {currentPage === "inbox" && <Inbox />}
-          {currentPage === "admin" && <Admin />}
+          {children}
         </main>
       </div>
     </div>
+  );
+}
+
+// Layout component for admin page (no sidebar)
+function AdminLayout({ children }) {
+  return (
+    <div className="h-screen flex flex-col overflow-hidden">
+      <TopNav />
+      <main className="flex-1 overflow-hidden">
+        {children}
+      </main>
+    </div>
+  );
+}
+
+function App() {
+  return (
+    <Routes>
+      <Route path="/" element={<MainLayout><Stream /></MainLayout>} />
+      <Route path="/browse" element={<MainLayout><Browse /></MainLayout>} />
+      <Route path="/inbox" element={<MainLayout><Inbox /></MainLayout>} />
+      <Route path="/admin" element={<AdminLayout><Admin /></AdminLayout>} />
+    </Routes>
   );
 }
 
