@@ -37,7 +37,11 @@ function TopNav({ onPageChange }) {
 
     const onUnreadMessage = (data) => {
       setHasUnreadMessage(true);
-      playNotificationSound();
+      
+      // Only play sound if the message is from a different session
+      if (data.sessionId && data.sessionId !== wsClient.sessionId) {
+        playNotificationSound();
+      }
     };
     const onClearUnreadMessage = (data) => {
       setHasUnreadMessage(false);

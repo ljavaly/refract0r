@@ -38,6 +38,7 @@ function Admin() {
         type: "unreadMessage",
         user: "Admin",
         timestamp: new Date().toISOString(),
+        sessionId: wsClient.sessionId,
       };
 
       wsClient.ws.send(JSON.stringify(testMessage));
