@@ -12,7 +12,9 @@ router.get("/", async (req, res) => {
 router.get("/:id", async (req, res) => {
   const conversationId = req.params.id;
   const conversations = await loadJsonFile("inbox/conversations.json");
-  const messagesByConversation = await loadJsonFile("inbox/messagesByConversation.json");
+  const messagesByConversation = await loadJsonFile(
+    "inbox/messagesByConversation.json",
+  );
 
   // Find the conversation
   const conversation = conversations.find((conv) => conv.id === conversationId);

@@ -14,8 +14,8 @@ function TopNav() {
   // Initialize audio element
   useEffect(() => {
     audioRef.current = new Audio(newMessageSound);
-    audioRef.current.preload = 'auto';
-    
+    audioRef.current.preload = "auto";
+
     // Clean up audio element on unmount
     return () => {
       if (audioRef.current) {
@@ -29,7 +29,7 @@ function TopNav() {
     if (audioRef.current) {
       audioRef.current.currentTime = 0; // Reset to beginning
       audioRef.current.play().catch((error) => {
-        console.warn('Could not play notification sound:', error);
+        console.warn("Could not play notification sound:", error);
       });
     }
   };
@@ -39,7 +39,7 @@ function TopNav() {
 
     const onUnreadMessage = (data) => {
       setHasUnreadMessage(true);
-      
+
       // Only play sound if the message is from a different session
       if (data.sessionId && data.sessionId !== wsClient.sessionId) {
         playNotificationSound();
@@ -137,7 +137,13 @@ function TopNav() {
         <div className="nav-link-container grid grid-cols-3">
           <div className="nav-link col-span-1">
             <div className="inbox-icon-container">
-              <a href="#" onClick={(e) => { e.preventDefault(); navigate("/inbox"); }}>
+              <a
+                href="#"
+                onClick={(e) => {
+                  e.preventDefault();
+                  navigate("/inbox");
+                }}
+              >
                 <img src={mailIcon} alt="Mail" className="nav-icon" />
               </a>
               {hasUnreadMessage && (
@@ -156,7 +162,13 @@ function TopNav() {
             </a>
           </div>
           <div className="nav-link profile-avatar col-span-1">
-            <a href="#" onClick={(e) => { e.preventDefault(); navigate("/admin"); }}>
+            <a
+              href="#"
+              onClick={(e) => {
+                e.preventDefault();
+                navigate("/admin");
+              }}
+            >
               TR
             </a>
           </div>

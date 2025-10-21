@@ -15,26 +15,34 @@ import "../styles/SideNav.css";
 function SideNav() {
   const navigate = useNavigate();
   const location = useLocation();
-  
+
   // Helper function to determine if a path is active
   const isActive = (path) => location.pathname === path;
   return (
     <aside className="sidebar">
       <div className="sidebar-section flex-grow">
-        <div
-          className={`sidebar-item ${isActive("/") ? "active" : ""}`}
-        >
-          <a href="#" onClick={(e) => { e.preventDefault(); navigate("/"); }}>
+        <div className={`sidebar-item ${isActive("/") ? "active" : ""}`}>
+          <a
+            href="#"
+            onClick={(e) => {
+              e.preventDefault();
+              navigate("/");
+            }}
+          >
             <div className="sidebar-icon">
               <img src={homeIcon} alt="Home" />
             </div>
             <span>Home</span>
           </a>
         </div>
-        <div
-          className={`sidebar-item ${isActive("/browse") ? "active" : ""}`}
-        >
-          <a href="#" onClick={(e) => { e.preventDefault(); navigate("/browse"); }}>
+        <div className={`sidebar-item ${isActive("/browse") ? "active" : ""}`}>
+          <a
+            href="#"
+            onClick={(e) => {
+              e.preventDefault();
+              navigate("/browse");
+            }}
+          >
             <div className="sidebar-icon">
               <img src={channelIcon} alt="My Channel" />
             </div>

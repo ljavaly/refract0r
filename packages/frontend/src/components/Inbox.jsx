@@ -20,13 +20,15 @@ function Inbox() {
   useEffect(() => {
     loadConversations();
     wsClient.connectWebSocket();
-    
+
     // Wait for WebSocket to be ready before sending clearUnreadMessage
-    wsClient.whenReady(() => {
-      wsClient.clearUnreadMessage();
-    }).catch(error => {
-      console.warn('Failed to clear unread message:', error);
-    });
+    wsClient
+      .whenReady(() => {
+        wsClient.clearUnreadMessage();
+      })
+      .catch((error) => {
+        console.warn("Failed to clear unread message:", error);
+      });
   }, []);
 
   // Load conversation details when active conversation changes
@@ -59,11 +61,11 @@ function Inbox() {
       setLoading(true);
       const data = await apiClient.getConversation(conversationId);
       const loadedMessages = data.messages || [];
-      
+
       // Merge loaded messages with any local messages for this conversation
       const conversationLocalMessages = localMessages[conversationId] || [];
       const allMessages = [...loadedMessages, ...conversationLocalMessages];
-      
+
       setMessages(allMessages);
       setUsers(data.users || {});
     } catch (err) {
@@ -74,7 +76,6 @@ function Inbox() {
     }
   };
 
-
   const handleDropdownToggle = () => {
     setShowDropdown(!showDropdown);
   };
@@ -82,12 +83,12 @@ function Inbox() {
   const handleConversationClick = (conversationId) => {
     // Set the active conversation
     setActiveConversation(conversationId);
-    
+
     // Clear the unread indicator locally (only in UI, not in underlying data)
     setConversations((prevConversations) =>
       prevConversations.map((conv) =>
-        conv.id === conversationId ? { ...conv, new: false } : conv
-      )
+        conv.id === conversationId ? { ...conv, new: false } : conv,
+      ),
     );
   };
 
@@ -121,13 +122,13 @@ function Inbox() {
   // Handle sending messages from the conversation component
   const handleSendMessage = (message) => {
     // Add message to local messages store for this conversation
-    setLocalMessages(prev => ({
+    setLocalMessages((prev) => ({
       ...prev,
-      [activeConversation]: [...(prev[activeConversation] || []), message]
+      [activeConversation]: [...(prev[activeConversation] || []), message],
     }));
-    
+
     // Also add to current messages display
-    setMessages(prev => [...prev, message]);
+    setMessages((prev) => [...prev, message]);
   };
 
   // Close dropdown when clicking outside
@@ -148,11 +149,13 @@ function Inbox() {
   useEffect(() => {
     return () => {
       // Clean up audio URLs in local messages
-      Object.values(localMessages).flat().forEach(message => {
-        if (message.audio && message.audio.url) {
-          URL.revokeObjectURL(message.audio.url);
-        }
-      });
+      Object.values(localMessages)
+        .flat()
+        .forEach((message) => {
+          if (message.audio && message.audio.url) {
+            URL.revokeObjectURL(message.audio.url);
+          }
+        });
     };
   }, []); // Empty dependency array means this runs only on unmount
 
@@ -266,7 +269,7 @@ function Inbox() {
         </div>
 
         {/* Conversation Area */}
-        <Conversation 
+        <Conversation
           activeConversation={activeConversation}
           conversations={conversations}
           messages={messages}

@@ -16,7 +16,9 @@ class WsClient {
   }
 
   generateSessionId() {
-    return 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+    return (
+      "session_" + Date.now() + "_" + Math.random().toString(36).substr(2, 9)
+    );
   }
 
   // WebSocket methods
@@ -157,7 +159,10 @@ class WsClient {
 
   // Send clearUnreadMessage to clear unread message from top nav
   clearUnreadMessage() {
-    return this.sendMessage({ type: "clearUnreadMessage", sessionId: this.sessionId });
+    return this.sendMessage({
+      type: "clearUnreadMessage",
+      sessionId: this.sessionId,
+    });
   }
 
   // Wait for WebSocket to be ready and then execute callback
@@ -175,7 +180,7 @@ class WsClient {
           const result = callback();
           resolve(result);
         } else if (Date.now() - startTime > timeout) {
-          reject(new Error('WebSocket connection timeout'));
+          reject(new Error("WebSocket connection timeout"));
         } else {
           setTimeout(checkReady, 50);
         }

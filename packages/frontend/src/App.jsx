@@ -16,9 +16,7 @@ function MainLayout({ children }) {
       <TopNav />
       <div className="flex flex-1 overflow-hidden">
         <SideNav />
-        <main className="flex-1 overflow-hidden">
-          {children}
-        </main>
+        <main className="flex-1 overflow-hidden">{children}</main>
       </div>
     </div>
   );
@@ -29,9 +27,7 @@ function AdminLayout({ children }) {
   return (
     <div className="h-screen flex flex-col overflow-hidden">
       <TopNav />
-      <main className="flex-1 overflow-hidden">
-        {children}
-      </main>
+      <main className="flex-1 overflow-hidden">{children}</main>
     </div>
   );
 }
@@ -39,10 +35,38 @@ function AdminLayout({ children }) {
 function App() {
   return (
     <Routes>
-      <Route path="/" element={<MainLayout><Stream /></MainLayout>} />
-      <Route path="/browse" element={<MainLayout><Browse /></MainLayout>} />
-      <Route path="/inbox" element={<MainLayout><Inbox /></MainLayout>} />
-      <Route path="/admin" element={<AdminLayout><Admin /></AdminLayout>} />
+      <Route
+        path="/"
+        element={
+          <MainLayout>
+            <Stream />
+          </MainLayout>
+        }
+      />
+      <Route
+        path="/browse"
+        element={
+          <MainLayout>
+            <Browse />
+          </MainLayout>
+        }
+      />
+      <Route
+        path="/inbox"
+        element={
+          <MainLayout>
+            <Inbox />
+          </MainLayout>
+        }
+      />
+      <Route
+        path="/admin"
+        element={
+          <AdminLayout>
+            <Admin />
+          </AdminLayout>
+        }
+      />
     </Routes>
   );
 }
