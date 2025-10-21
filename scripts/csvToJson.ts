@@ -1,5 +1,6 @@
 import * as fs from "fs";
 import * as path from "path";
+import csv from "csv-parser";
 
 interface CsvToJsonOptions {
   delimiter?: string;
@@ -7,80 +8,167 @@ interface CsvToJsonOptions {
   outputPath?: string;
 }
 
-function csvToJson(csvFilePath: string, options: CsvToJsonOptions = {}): void {
+// Helper function to detect if a value was quoted in the raw CSV line
+function isValueQuotedInRawLine(
+  rawLine: string,
+  columnIndex: number,
+  delimiter: string,
+): boolean {
+  if (!rawLine) return false;
+
+  let currentColumn = 0;
+  let inQuotes = false;
+  let i = 0;
+  let fieldStart = 0;
+
+  while (i < rawLine.length) {
+    const char = rawLine[i];
+
+    if (char === '"') {
+      if (inQuotes && rawLine[i + 1] === '"') {
+        // Escaped quote
+        i += 2;
+        continue;
+      } else {
+        inQuotes = !inQuotes;
+      }
+    } else if (char === delimiter && !inQuotes) {
+      // Found field boundary
+      if (currentColumn === columnIndex) {
+        // This is our target field
+        const fieldContent = rawLine.substring(fieldStart, i).trim();
+        return fieldContent.startsWith('"') && fieldContent.endsWith('"');
+      }
+      currentColumn++;
+      fieldStart = i + 1;
+    }
+    i++;
+  }
+
+  // Handle the last field
+  if (currentColumn === columnIndex) {
+    const fieldContent = rawLine.substring(fieldStart).trim();
+    return fieldContent.startsWith('"') && fieldContent.endsWith('"');
+  }
+
+  return false;
+}
+
+function csvToJson(
+  csvFilePath: string,
+  options: CsvToJsonOptions = {},
+): Promise<void> {
   const { delimiter = ",", skipHeader = false, outputPath } = options;
 
-  try {
-    // Check if CSV file exists
-    if (!fs.existsSync(csvFilePath)) {
-      throw new Error(`CSV file not found: ${csvFilePath}`);
-    }
-
-    // Read CSV file
-    const csvContent = fs.readFileSync(csvFilePath, "utf-8");
-    const lines = csvContent.trim().split("\n");
-
-    if (lines.length === 0) {
-      throw new Error("CSV file is empty");
-    }
-
-    // Parse CSV
-    const result: any[] = [];
-    const headers = lines[0]
-      .split(delimiter)
-      .map((header) => header.trim().replace(/"/g, ""));
-
-    // Always skip the first row as it contains headers
-    const dataStartIndex = 1;
-
-    for (let i = dataStartIndex; i < lines.length; i++) {
-      const values = lines[i]
-        .split(delimiter)
-        .map((value) => value.trim().replace(/"/g, ""));
-
-      if (values.length === headers.length) {
-        const row: any = {};
-        headers.forEach((header, index) => {
-          // Try to parse numbers
-          const value = values[index];
-          if (!isNaN(Number(value)) && value !== "") {
-            row[header] = Number(value);
-          } else if (value.toLowerCase() === "true") {
-            row[header] = true;
-          } else if (value.toLowerCase() === "false") {
-            row[header] = false;
-          } else {
-            row[header] = value;
-          }
-        });
-        result.push(row);
+  return new Promise((resolve, reject) => {
+    try {
+      // Check if CSV file exists
+      if (!fs.existsSync(csvFilePath)) {
+        throw new Error(`CSV file not found: ${csvFilePath}`);
       }
+
+      const result: any[] = [];
+      let headers: string[] = [];
+      let rawLines: string[] = [];
+
+      // First, read the entire file to get raw lines for quote detection
+      const csvContent = fs.readFileSync(csvFilePath, "utf-8");
+      rawLines = csvContent.trim().split("\n");
+
+      // Create read stream and pipe through csv-parser
+      fs.createReadStream(csvFilePath)
+        .pipe(
+          csv({
+            separator: delimiter,
+          }),
+        )
+        .on("headers", (headerList) => {
+          headers = headerList;
+        })
+        .on("data", (row: any, index: number) => {
+          // Process each row
+          const processedRow: any = {};
+          const rawLine = rawLines[result.length + 1]; // +1 to skip header
+
+          Object.keys(row).forEach((key) => {
+            const value = row[key];
+            const columnIndex = headers.indexOf(key);
+
+            // Check if this value was originally quoted by examining the raw line
+            const wasQuoted = isValueQuotedInRawLine(
+              rawLine,
+              columnIndex,
+              delimiter,
+            );
+
+            // If the value was quoted, keep it as a string
+            if (wasQuoted) {
+              processedRow[key] = value;
+            } else {
+              // Try to parse numbers only for unquoted values
+              if (
+                !isNaN(Number(value)) &&
+                value !== "" &&
+                !isNaN(parseFloat(value))
+              ) {
+                processedRow[key] = Number(value);
+              } else if (value.toLowerCase() === "true") {
+                processedRow[key] = true;
+              } else if (value.toLowerCase() === "false") {
+                processedRow[key] = false;
+              } else {
+                processedRow[key] = value;
+              }
+            }
+          });
+
+          result.push(processedRow);
+        })
+        .on("end", () => {
+          try {
+            // Generate output path
+            const csvDir = path.dirname(csvFilePath);
+            const csvName = path.basename(
+              csvFilePath,
+              path.extname(csvFilePath),
+            );
+            const outputDir = outputPath || path.join(csvDir, `../json`);
+
+            if (!fs.existsSync(outputDir)) {
+              fs.mkdirSync(outputDir, { recursive: true });
+            }
+
+            const jsonFilePath =
+              outputPath || path.join(outputDir, `${csvName}.json`);
+
+            // Write JSON file
+            fs.writeFileSync(
+              jsonFilePath,
+              JSON.stringify(result, null, 2),
+              "utf-8",
+            );
+
+            console.log(`✅ Successfully converted CSV to JSON:`);
+            console.log(`   Input:  ${csvFilePath}`);
+            console.log(`   Output: ${jsonFilePath}`);
+            console.log(`   Records: ${result.length}`);
+
+            resolve();
+          } catch (error) {
+            reject(error);
+          }
+        })
+        .on("error", (error) => {
+          reject(new Error(`Error parsing CSV: ${error.message}`));
+        });
+    } catch (error) {
+      reject(error);
     }
-
-    // Generate output path
-    const csvDir = path.dirname(csvFilePath);
-    const csvName = path.basename(csvFilePath, path.extname(csvFilePath));
-    const outputDir = outputPath || path.join(csvDir, `../json`);
-    if (!fs.existsSync(outputDir)) {
-      fs.mkdirSync(outputDir, { recursive: true });
-    }
-    const jsonFilePath = outputPath || path.join(outputDir, `${csvName}.json`);
-
-    // Write JSON file
-    fs.writeFileSync(jsonFilePath, JSON.stringify(result, null, 2), "utf-8");
-
-    console.log(`✅ Successfully converted CSV to JSON:`);
-    console.log(`   Input:  ${csvFilePath}`);
-    console.log(`   Output: ${jsonFilePath}`);
-    console.log(`   Records: ${result.length}`);
-  } catch (error) {
-    console.error("❌ Error converting CSV to JSON:", error);
-    process.exit(1);
-  }
+  });
 }
 
 // CLI usage
-function main() {
+async function main() {
   const args = process.argv.slice(2);
 
   if (args.length === 0) {
@@ -122,7 +210,12 @@ Examples:
     }
   }
 
-  csvToJson(csvPath, options);
+  try {
+    await csvToJson(csvPath, options);
+  } catch (error) {
+    console.error("❌ Error converting CSV to JSON:", error);
+    process.exit(1);
+  }
 }
 
 // Export for programmatic use
