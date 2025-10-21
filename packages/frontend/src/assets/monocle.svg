@@ -15,7 +15,7 @@
     stroke-width="14"
     fill="none"
   />
-  <circle cx="57" cy="30" r="12" fill="black" />
+  <circle cx="57" cy="30" r="10" fill="black" />
   <line
     x1="91"
     y1="30"
