@@ -3,10 +3,10 @@ import React, { useState, useEffect } from "react";
 
 // Soundwave animation component
 function SoundwaveAnimation({ isActive, size = "small" }) {
-  const barCount = size === "large" ? 12 : 8;
+  const barCount = size === "large" ? 20 : 8;
   const barHeight = size === "large" ? "20px" : "12px";
   const barWidth = size === "large" ? "2px" : "1.5px";
-  const gapSize = size === "large" ? "3px" : "2px";
+  const gapSize = size === "large" ? "2px" : "1.5px";
   
   return (
     <div 
@@ -15,8 +15,9 @@ function SoundwaveAnimation({ isActive, size = "small" }) {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        gap: gapSize,
-        height: barHeight
+        width: '100%',
+        height: barHeight,
+        gap: gapSize
       }}
     >
       {Array.from({ length: barCount }).map((_, i) => (
@@ -323,40 +324,37 @@ function Conversation({
                           </div>
                         )}
                         {message.photo && (
-                          <div className="message-photo">
+                          <div className={`message-photo-container ${!message.text ? 'no-text' : ''}`}>
                             <img 
                               src={message.photo.url} 
                               alt={message.photo.name}
                               className="message-photo-img"
-                              style={{
-                                maxWidth: '300px',
-                                maxHeight: '200px',
-                                borderRadius: '8px',
-                                marginTop: message.text ? '8px' : '0'
-                              }}
                             />
                           </div>
                         )}
                         {message.audio && (
-                          <div className="message-audio" style={{ marginTop: message.text ? '8px' : '0' }}>
-                            <div className="audio-player" style={{
-                              display: 'flex',
-                              flexDirection: 'column',
-                              gap: '8px',
-                              padding: '12px',
-                              backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                              borderRadius: '20px',
-                              maxWidth: '250px'
-                            }}>
-                              {/* Soundwave above audio controls */}
-                              <div style={{ 
-                                display: 'flex', 
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                                minHeight: '24px',
-                                width: '100%'
-                              }}>
-                                <div style={{ color: 'var(--color-accent)', width: '100%', display: 'flex', justifyContent: 'center' }}>
+                          <div className={`message-audio-container ${!message.text ? 'no-text' : ''}`}>
+                            <div className="audio-player">
+                              {/* Play button */}
+                              <button
+                                onClick={() => {
+                                  const audio = document.querySelector(`audio[src="${message.audio.url}"]`);
+                                  if (audio) {
+                                    if (playingAudio === message.audio.url) {
+                                      audio.pause();
+                                    } else {
+                                      audio.play();
+                                    }
+                                  }
+                                }}
+                                className="audio-play-button"
+                              >
+                                {playingAudio === message.audio.url ? '⏸' : '▶'}
+                              </button>
+                              
+                              {/* Soundwave where time used to be */}
+                              <div className="audio-soundwave-container">
+                                <div style={{ color: 'var(--color-accent)' }}>
                                   <SoundwaveAnimation 
                                     isActive={playingAudio === message.audio.url} 
                                     size="large" 
@@ -364,24 +362,14 @@ function Conversation({
                                 </div>
                               </div>
                               
-                              {/* Audio controls and duration */}
-                              <div style={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '8px'
-                              }}>
-                                <audio 
-                                  controls 
-                                  src={message.audio.url}
-                                  style={{ height: '30px', flex: 1 }}
-                                  onPlay={(e) => handleAudioPlay(e.target)}
-                                  onPause={(e) => handleAudioPause(e.target)}
-                                  onEnded={(e) => handleAudioEnded(e.target)}
-                                />
-                                <span style={{ fontSize: '0.75rem', opacity: 0.7 }}>
-                                  {message.audio.duration}s
-                                </span>
-                              </div>
+                              {/* Hidden audio element for playback */}
+                              <audio 
+                                src={message.audio.url}
+                                className="audio-hidden"
+                                onPlay={(e) => handleAudioPlay(e.target)}
+                                onPause={(e) => handleAudioPause(e.target)}
+                                onEnded={(e) => handleAudioEnded(e.target)}
+                              />
                             </div>
                           </div>
                         )}
@@ -398,41 +386,23 @@ function Conversation({
       <div className="message-input-area">
         {/* Photo Preview */}
         {selectedPhoto && (
-          <div className="attachment-preview" style={{
-            padding: '12px',
-            borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '12px'
-          }}>
+          <div className="attachment-preview">
             <img 
               src={selectedPhoto.preview} 
               alt="Selected photo"
-              style={{
-                width: '60px',
-                height: '60px',
-                objectFit: 'cover',
-                borderRadius: '8px'
-              }}
+              className="attachment-preview-image"
             />
-            <div style={{ flex: 1 }}>
-              <div style={{ fontSize: '0.9rem', fontWeight: '500' }}>
+            <div className="attachment-preview-content">
+              <div className="attachment-preview-title">
                 {selectedPhoto.name}
               </div>
-              <div style={{ fontSize: '0.8rem', opacity: 0.7 }}>
+              <div className="attachment-preview-subtitle">
                 Photo ready to send
               </div>
             </div>
             <button 
               onClick={removeSelectedPhoto}
-              style={{
-                background: 'none',
-                border: 'none',
-                color: 'currentColor',
-                cursor: 'pointer',
-                padding: '4px',
-                borderRadius: '4px'
-              }}
+              className="attachment-preview-remove"
               title="Remove photo"
             >
               ✕
@@ -442,44 +412,41 @@ function Conversation({
 
         {/* Voice Recording Preview */}
         {recordedAudio && (
-          <div className="attachment-preview" style={{
-            padding: '12px',
-            borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '12px'
-          }}>
-            <div style={{
-              width: '40px',
-              height: '40px',
-              borderRadius: '50%',
-              backgroundColor: 'var(--color-accent)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}>
+          <div className="attachment-preview">
+            <div className="voice-preview-icon">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="white">
                 <path d="M12 2a3 3 0 0 1 3 3v6a3 3 0 0 1-6 0V5a3 3 0 0 1 3-3Z"/>
               </svg>
             </div>
-            <div style={{ flex: 1 }}>
-              <div style={{ fontSize: '0.9rem', fontWeight: '500' }}>
+            <div className="attachment-preview-content">
+              <div className="attachment-preview-title">
                 Voice Message
               </div>
-              <div style={{ fontSize: '0.8rem', opacity: 0.7 }}>
+              <div className="attachment-preview-subtitle">
                 {Math.round((recordedAudio.duration || 0) / 1000)}s recording
               </div>
             </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', alignItems: 'center' }}>
-              {/* Soundwave above audio controls */}
-              <div style={{ 
-                display: 'flex', 
-                justifyContent: 'center',
-                alignItems: 'center',
-                minHeight: '24px',
-                width: '150px'
-              }}>
-                <div style={{ color: 'var(--color-accent)', width: '100%', display: 'flex', justifyContent: 'center' }}>
+            <div className="voice-preview-controls">
+              {/* Play button */}
+              <button
+                onClick={() => {
+                  const audio = document.querySelector(`audio[src="${recordedAudio.url}"]`);
+                  if (audio) {
+                    if (playingAudio === recordedAudio.url) {
+                      audio.pause();
+                    } else {
+                      audio.play();
+                    }
+                  }
+                }}
+                className="audio-play-button"
+              >
+                {playingAudio === recordedAudio.url ? '⏸' : '▶'}
+              </button>
+              
+              {/* Soundwave */}
+              <div className="voice-preview-soundwave">
+                <div style={{ color: 'var(--color-accent)' }}>
                   <SoundwaveAnimation 
                     isActive={playingAudio === recordedAudio.url} 
                     size="large" 
@@ -487,11 +454,10 @@ function Conversation({
                 </div>
               </div>
               
-              {/* Audio controls */}
+              {/* Hidden audio element */}
               <audio 
-                controls 
                 src={recordedAudio.url}
-                style={{ height: '30px', width: '150px' }}
+                className="audio-hidden"
                 onPlay={(e) => handleAudioPlay(e.target)}
                 onPause={(e) => handleAudioPause(e.target)}
                 onEnded={(e) => handleAudioEnded(e.target)}
@@ -499,14 +465,7 @@ function Conversation({
             </div>
             <button 
               onClick={removeRecordedAudio}
-              style={{
-                background: 'none',
-                border: 'none',
-                color: 'currentColor',
-                cursor: 'pointer',
-                padding: '4px',
-                borderRadius: '4px'
-              }}
+              className="attachment-preview-remove"
               title="Remove recording"
             >
               ✕
@@ -557,7 +516,9 @@ function Conversation({
             }}
           >
             {isRecording ? (
-              <SoundwaveAnimation isActive={true} size="small" />
+              <div style={{ width: '20px', height: '12px' }}>
+                <SoundwaveAnimation isActive={true} size="small" />
+              </div>
             ) : (
               <svg
                 className="message-input-icon"

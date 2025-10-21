@@ -321,6 +321,141 @@
   height: 0;
 }
 
+/* Attachment preview styles */
+.attachment-preview {
+  padding: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 8px 8px 0 0;
+}
+
+.attachment-preview-image {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.attachment-preview-content {
+  flex: 1;
+}
+
+.attachment-preview-title {
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.attachment-preview-subtitle {
+  font-size: 0.8rem;
+  opacity: 0.7;
+}
+
+.attachment-preview-remove {
+  background: none;
+  border: none;
+  color: currentColor;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+}
+
+.attachment-preview-remove:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Voice recording preview */
+.voice-preview-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: var(--color-accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.voice-preview-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.voice-preview-soundwave {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 24px;
+}
+
+/* Audio player styles */
+.audio-player {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  max-width: 250px;
+}
+
+.audio-play-button {
+  width: 32px;
+  height: 32px;
+  border: none;
+  background-color: var(--color-accent);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.audio-soundwave-container {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  min-height: 24px;
+}
+
+.audio-hidden {
+  display: none;
+}
+
+/* Message photo styles */
+.message-photo-container {
+  margin-top: 8px;
+}
+
+.message-photo-container.no-text {
+  margin-top: 0;
+}
+
+.message-photo-img {
+  max-width: 300px;
+  max-height: 200px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.message-photo-img:hover {
+  transform: scale(1.02);
+}
+
+/* Message audio container */
+.message-audio-container {
+  margin-top: 8px;
+}
+
+.message-audio-container.no-text {
+  margin-top: 0;
+}
+
 /* Soundwave animations */
 @keyframes soundwave-0 {
   0%, 100% { transform: scaleY(0.3); }
