@@ -86,11 +86,21 @@ function csvToJson(
           headers = headerList;
         })
         .on("data", (row: any, index: number) => {
+          const rowId = result.length + 1; // +1 to skip header
+
           // Process each row
           const processedRow: any = {};
-          const rawLine = rawLines[result.length + 1]; // +1 to skip header
+          const rawLine = rawLines[rowId];
+
+          // Add row ID (1-based indexing)
+          processedRow["id"] = rowId;
 
           Object.keys(row).forEach((key) => {
+            // Skip columns with blank/empty headers
+            if (!key || key.trim() === "") {
+              return;
+            }
+
             const value = row[key];
             const columnIndex = headers.indexOf(key);
 
@@ -132,6 +142,28 @@ function csvToJson(
               csvFilePath,
               path.extname(csvFilePath),
             );
+
+            // Simplify filename: lowercase, replace spaces/special chars with underscores, remove duplicates
+            let simplifiedName = csvName
+              .toLowerCase()
+              .replace(/[^a-z0-9]+/g, "_") // Replace non-alphanumeric with underscores
+              .replace(/_+/g, "_") // Replace multiple underscores with single
+              .replace(/^_|_$/g, ""); // Remove leading/trailing underscores
+
+            // Remove duplicate patterns (like "1_rp_home_invasion_1_rp_home_invasion")
+            const segments = simplifiedName.split("_");
+            const halfLength = Math.floor(segments.length / 2);
+
+            // Check if first half equals second half
+            if (segments.length > 2 && segments.length % 2 === 0) {
+              const firstHalf = segments.slice(0, halfLength).join("_");
+              const secondHalf = segments.slice(halfLength).join("_");
+
+              if (firstHalf === secondHalf) {
+                simplifiedName = firstHalf;
+              }
+            }
+
             const outputDir = outputPath || path.join(csvDir, `../json`);
 
             if (!fs.existsSync(outputDir)) {
@@ -139,7 +171,7 @@ function csvToJson(
             }
 
             const jsonFilePath =
-              outputPath || path.join(outputDir, `${csvName}.json`);
+              outputPath || path.join(outputDir, `${simplifiedName}.json`);
 
             // Write JSON file
             fs.writeFileSync(
