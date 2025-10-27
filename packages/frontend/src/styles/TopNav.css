@@ -13,7 +13,7 @@
 }
 
 .search-section {
-  max-width: 28rem;
+  max-width: 35rem;
   margin-left: 1rem;
   margin-right: 1rem;
 }
@@ -59,7 +59,7 @@
   justify-content: right;
   padding: 0.5rem;
   gap: 1rem;
-  width: 15%;
+  width: 10%;
   background-color: var(--color-accent);
 }
 
