@@ -73,8 +73,14 @@ function SideNav() {
             <span>Premium</span>
           </a>
         </div>
-        <div className="sidebar-item">
-          <a href="#">
+        <div className={`sidebar-item ${isActive("/bank") ? "active" : ""}`}>
+          <a
+            href="#"
+            onClick={(e) => {
+              e.preventDefault();
+              navigate("/bank");
+            }}
+          >
             <div className="sidebar-icon">
               <img src={dollarIcon} alt="Bank" />
             </div>

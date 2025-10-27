@@ -5,6 +5,7 @@ import Stream from "./components/Stream";
 import Inbox from "./components/Inbox";
 import Admin from "./components/Admin";
 import Browse from "./components/Browse";
+import Bank from "./components/Bank";
 import SideNav from "./components/SideNav";
 
 import { Routes, Route } from "react-router-dom";
@@ -56,6 +57,14 @@ function App() {
         element={
           <MainLayout>
             <Inbox />
+          </MainLayout>
+        }
+      />
+      <Route
+        path="/bank"
+        element={
+          <MainLayout>
+            <Bank />
           </MainLayout>
         }
       />
