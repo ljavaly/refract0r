@@ -1,9 +1,22 @@
+import { useState } from "react";
 import "../styles/Bank.css";
 
 function Bank() {
+  const [showError, setShowError] = useState(false);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setShowError(true);
+  };
+
   return (
     <div className="bank-container">
-      <div className="credit-card-form">
+      <form className="credit-card-form" onSubmit={handleSubmit}>
+        {showError && (
+          <div className="error-message">
+            Must be a valid credit card number
+          </div>
+        )}
         <div className="form-group">
           <label htmlFor="cardNumber">Card Number:</label>
           <div className="card-input-container">
@@ -50,7 +63,7 @@ function Bank() {
             Submit
           </button>
         </div>
-      </div>
+      </form>
     </div>
   );
 }
