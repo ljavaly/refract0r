@@ -11,19 +11,19 @@
     cx="60"
     cy="30"
     r="30"
-    stroke="black"
+    stroke="#ffcb9e"
     stroke-width="14"
     fill="none"
   />
-  <circle cx="57" cy="30" r="10" fill="black" />
+  <circle cx="54" cy="33" r="10" fill="#ffcb9e" />
   <line
     x1="91"
     y1="30"
     x2="91"
     y2="107"
-    stroke="black"
+    stroke="#ffcb9e"
     stroke-width="12"
     stroke-linecap="round"
   />
-  <circle cx="91" cy="107" r="8" fill="black" />
+  <circle cx="91" cy="107" r="8" fill="#ffcb9e" />
 </svg>

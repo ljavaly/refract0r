@@ -1,6 +1,7 @@
 import "../styles/TopNav.css";
 import mailIcon from "../assets/mail-icon.svg";
 import gearIcon from "../assets/gear-icon.svg";
+import monocleIcon from "../assets/monocle.svg";
 import wsClient from "../api/ws";
 import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
@@ -72,43 +73,7 @@ function TopNav() {
     <>
       <header className="header-main">
         <div className="logo-icon flex">
-          <svg
-            width="120"
-            height="150"
-            viewBox="0 -10 120 160"
-            xmlns="http://www.w3.org/2000/svg"
-            role="img"
-            aria-labelledby="title desc"
-            preserveAspectRatio="xMidYMin meet"
-          >
-            <title id="title">
-              Monocle with Chain's Right Edge Aligned to Rim
-            </title>
-            <desc id="desc">
-              Monocle rim with the eye near center, and chain's right edge
-              aligned with the rim's outermost pixel.
-            </desc>
-            <rect x="0" y="-10" width="120" height="160" fill="none" />
-            <circle
-              cx="60"
-              cy="30"
-              r="30"
-              stroke="var(--color-highlight)"
-              strokeWidth="14"
-              fill="none"
-            />
-            <circle cx="57" cy="30" r="14" fill="var(--color-highlight)" />
-            <line
-              x1="91"
-              y1="30"
-              x2="91"
-              y2="110"
-              stroke="var(--color-highlight)"
-              strokeWidth="12"
-              strokeLinecap="round"
-            />
-            <circle cx="91" cy="110" r="8" fill="var(--color-highlight)" />{" "}
-          </svg>
+          <img src={monocleIcon} />
         </div>
         <div className="search-section flex-grow">
           <div className="search-input-container">
