@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "../styles/Admin.css";
 import AudienceChat from "./AudienceChat.jsx";
+import Conversation from "./Conversation.jsx";
 import apiClient from "../api/client.js";
 import wsClient from "../api/ws";
 
@@ -8,10 +9,54 @@ function Admin() {
   const [queuedComments, setQueuedComments] = useState([]);
   const [selectedScene, setSelectedScene] = useState("");
   const [activeTab, setActiveTab] = useState("audience-chat");
+  const [conversations, setConversations] = useState([]);
+  const [selectedConversation, setSelectedConversation] = useState("");
+  const [messages, setMessages] = useState([]);
+  const [users, setUsers] = useState({});
+  const [localMessages, setLocalMessages] = useState({});
+  const [showDropdown, setShowDropdown] = useState(false);
 
   useEffect(() => {
     wsClient.connectWebSocket();
+    loadConversations();
   }, []);
+
+  // Load conversation details when selected conversation changes
+  useEffect(() => {
+    if (selectedConversation) {
+      loadConversationDetails(selectedConversation);
+    }
+  }, [selectedConversation]);
+
+  const loadConversations = () => {
+    apiClient
+      .getConversations()
+      .then((data) => {
+        setConversations(data);
+      })
+      .catch((error) => {
+        console.log("Failed to load conversations:", error);
+        setConversations([]);
+      });
+  };
+
+  const loadConversationDetails = async (conversationId) => {
+    try {
+      const data = await apiClient.getConversation(conversationId);
+      const loadedMessages = data.messages || [];
+
+      // Merge loaded messages with any local messages for this conversation
+      const conversationLocalMessages = localMessages[conversationId] || [];
+      const allMessages = [...loadedMessages, ...conversationLocalMessages];
+
+      setMessages(allMessages);
+      setUsers(data.users || {});
+    } catch (error) {
+      console.error("Failed to load conversation details:", error);
+      setMessages([]);
+      setUsers({});
+    }
+  };
 
   const loadSceneComments = (scene) => {
     if (!scene) {
@@ -70,6 +115,43 @@ function Admin() {
         setQueuedComments([]);
       }
     }
+  };
+
+  const handleSendMessage = (messageData) => {
+    if (!selectedConversation) return;
+
+    // Create a new local message
+    const newMessage = {
+      id: `local-${Date.now()}`,
+      conversationId: selectedConversation,
+      sender: "user",
+      content: messageData.text || "",
+      timestamp: new Date().toISOString(),
+      type: messageData.type || "text",
+      ...messageData,
+    };
+
+    // Update local messages for this conversation
+    setLocalMessages((prev) => ({
+      ...prev,
+      [selectedConversation]: [
+        ...(prev[selectedConversation] || []),
+        newMessage,
+      ],
+    }));
+
+    // Add to messages immediately for UI feedback
+    setMessages((prev) => [...prev, newMessage]);
+
+    console.log("Message sent:", newMessage);
+  };
+
+  const handleDropdownToggle = () => {
+    setShowDropdown(!showDropdown);
+  };
+
+  const handleBlock = () => {
+    console.log("Block user functionality not implemented");
   };
 
   return (
@@ -138,6 +220,37 @@ function Admin() {
               Trigger "You have a new message"
             </button>
           </div>
+          <div className="conversation-picker-container">
+            <select
+              id="conversation-select"
+              value={selectedConversation}
+              onChange={(e) => setSelectedConversation(e.target.value)}
+              className="conversation-select-dropdown"
+            >
+              <option value="">Choose a conversation...</option>
+              {conversations.map((conversation) => (
+                <option key={conversation.id} value={conversation.id}>
+                  {conversation.name}
+                  {conversation.new ? " (New)" : ""}
+                </option>
+              ))}
+            </select>
+          </div>
+          {selectedConversation && (
+            <div className="admin-conversation-wrapper">
+              <Conversation
+                activeConversation={selectedConversation}
+                conversations={conversations}
+                messages={messages}
+                users={users}
+                localMessages={localMessages[selectedConversation] || []}
+                onSendMessage={handleSendMessage}
+                onDropdownToggle={handleDropdownToggle}
+                onBlock={handleBlock}
+                showDropdown={showDropdown}
+              />
+            </div>
+          )}
         </div>
       )}
     </div>
