@@ -4,40 +4,42 @@
     "name": "Cirno_tv",
     "lastMessage": "sounds good to me",
     "time": "5:45pm",
-    "new": false,
-    "status": "online"
+    "new": false
   },
   {
     "id": "xxluver69x",
     "name": "Xxluver69xX",
     "lastMessage": "Hey there stud 😜",
     "time": "5:44pm",
-    "new": true,
-    "status": "active"
+    "new": true
   },
   {
     "id": "omgisle",
     "name": "OMGEisIe",
     "lastMessage": "LOL",
     "time": "3:45pm",
-    "new": true,
-    "status": "away"
+    "new": true
   },
   {
     "id": "sharkboi",
     "name": "SharkBoi",
     "lastMessage": "Thanks buddy.",
     "time": "8:26am",
-    "new": false,
-    "status": "offline"
+    "new": false
   },
   {
     "id": "geoff",
     "name": "Geoff",
     "lastMessage": "hope to see you in the cast friend",
     "time": "yesterday",
-    "new": false,
-    "status": "offline"
+    "new": false
+  },
+  {
+    "id": "daddy_rich52",
+    "name": "Daddy_Rich52",
+    "lastMessage": "🍆",
+    "time": "5:44pm",
+    "new": false
   },
   {
     "id": "tehmorag",
@@ -45,23 +47,20 @@
     "lastMessage": "🔥🔥🔥",
     "time": "2:36pm",
     "unread": 1,
-    "new": true,
-    "status": "online"
+    "new": true
   },
   {
     "id": "thundercast",
     "name": "Thundercast",
     "lastMessage": "What's next on the agenda?",
     "time": "2:43pm",
-    "new": false,
-    "status": "away"
+    "new": false
   },
   {
     "id": "hjtanchi",
     "name": "HJTanchi",
     "lastMessage": "Loved ur last stream!",
     "time": "2:42pm",
-    "new": false,
-    "status": "offline"
+    "new": false
   }
 ]
