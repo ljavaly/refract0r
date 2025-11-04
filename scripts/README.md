@@ -19,10 +19,16 @@ Converts CSV files to JSON format with automatic type conversion.
 
 ```bash
 # Basic usage
-npm run csv-to-json /absolute/path/to/file.csv
+npm run csv-to-json /absolute/path/to/data.csv
 
 # With options
 npm run csv-to-json /path/to/data.csv --delimiter ";" --output ./output.json --skip-header
+
+# Process all CSV files in a specified directory
+npm run csv-to-json path/to/csv/directory
+
+# Process with recursive subdirectory scanning
+npm run csv-to-json /path/to/csv/directory --recursive
 ```
 
 #### Options
@@ -30,6 +36,7 @@ npm run csv-to-json /path/to/data.csv --delimiter ";" --output ./output.json --s
 - `--delimiter <char>`: CSV delimiter (default: comma)
 - `--skip-header`: Skip first row as header
 - `--output <path>`: Output JSON file path
+- `--recursive`: Recursively scan the provided directory path for CSV files to convert to JSON
 
 #### Examples
 

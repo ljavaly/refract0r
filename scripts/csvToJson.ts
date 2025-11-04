@@ -6,6 +6,7 @@ interface CsvToJsonOptions {
   delimiter?: string;
   skipHeader?: boolean;
   outputPath?: string;
+  recursive?: boolean;
 }
 
 // Helper function to detect if a value was quoted in the raw CSV line
@@ -52,6 +53,97 @@ function isValueQuotedInRawLine(
   }
 
   return false;
+}
+
+// Function to clean text by converting curly apostrophes to straight apostrophes
+function cleanText(text: string): string {
+  if (typeof text !== "string") return text;
+
+  // Replace all types of curly quotes with straight quotes using Unicode escape sequences
+  return text
+    .replace(/[\u2018\u2019]/g, "'") // Convert left (') and right (') single quotation marks to straight apostrophe
+    .replace(/[\u201C\u201D]/g, '"'); // Convert left (") and right (") double quotation marks to straight quotes
+}
+
+// Function to find all CSV files in a directory
+function findCsvFiles(dirPath: string, recursive: boolean = false): string[] {
+  const csvFiles: string[] = [];
+
+  if (!fs.existsSync(dirPath)) {
+    throw new Error(`Directory not found: ${dirPath}`);
+  }
+
+  const items = fs.readdirSync(dirPath);
+
+  for (const item of items) {
+    const fullPath = path.join(dirPath, item);
+    const stat = fs.statSync(fullPath);
+
+    if (stat.isDirectory() && recursive) {
+      // Recursively search subdirectories
+      csvFiles.push(...findCsvFiles(fullPath, recursive));
+    } else if (stat.isFile() && path.extname(item).toLowerCase() === ".csv") {
+      csvFiles.push(fullPath);
+    }
+  }
+
+  return csvFiles.sort(); // Sort for consistent ordering
+}
+
+// Function to process multiple CSV files
+async function processCsvDirectory(
+  dirPath: string,
+  options: CsvToJsonOptions = {},
+): Promise<void> {
+  const { recursive = false } = options;
+
+  console.log(`🔍 Scanning directory: ${dirPath}`);
+  console.log(`   Recursive: ${recursive ? "Yes" : "No"}`);
+
+  const csvFiles = findCsvFiles(dirPath, recursive);
+
+  if (csvFiles.length === 0) {
+    console.log(`⚠️  No CSV files found in directory: ${dirPath}`);
+    return;
+  }
+
+  console.log(`📁 Found ${csvFiles.length} CSV file(s):`);
+  csvFiles.forEach((file, index) => {
+    console.log(`   ${index + 1}. ${path.relative(dirPath, file)}`);
+  });
+  console.log("");
+
+  let successCount = 0;
+  let errorCount = 0;
+
+  for (let i = 0; i < csvFiles.length; i++) {
+    const csvFile = csvFiles[i];
+    const fileName = path.basename(csvFile);
+
+    try {
+      console.log(`📄 Processing (${i + 1}/${csvFiles.length}): ${fileName}`);
+      await csvToJson(csvFile, options);
+      successCount++;
+    } catch (error) {
+      console.error(
+        `❌ Error processing ${fileName}:`,
+        error instanceof Error ? error.message : error,
+      );
+      errorCount++;
+    }
+
+    // Add spacing between files (except after the last one)
+    if (i < csvFiles.length - 1) {
+      console.log("");
+    }
+  }
+
+  console.log("\n📊 Processing Summary:");
+  console.log(`   ✅ Successfully processed: ${successCount} files`);
+  if (errorCount > 0) {
+    console.log(`   ❌ Failed to process: ${errorCount} files`);
+  }
+  console.log(`   📁 Total files: ${csvFiles.length}`);
 }
 
 function csvToJson(
@@ -113,7 +205,7 @@ function csvToJson(
 
             // If the value was quoted, keep it as a string
             if (wasQuoted) {
-              processedRow[key] = value;
+              processedRow[key] = cleanText(value);
             } else {
               // Try to parse numbers only for unquoted values
               if (
@@ -127,7 +219,7 @@ function csvToJson(
               } else if (value.toLowerCase() === "false") {
                 processedRow[key] = false;
               } else {
-                processedRow[key] = value;
+                processedRow[key] = cleanText(value);
               }
             }
           });
@@ -176,7 +268,7 @@ function csvToJson(
             // Write JSON file
             fs.writeFileSync(
               jsonFilePath,
-              JSON.stringify(result, null, 2),
+              JSON.stringify(result, null, 2) + "\n",
               "utf-8",
             );
 
@@ -208,23 +300,31 @@ async function main() {
 📄 CSV to JSON Converter
 
 Usage:
-  npx ts-node scripts/csvToJson.ts <csv-file-path> [options]
+  npx ts-node scripts/csvToJson.ts <csv-file-or-directory-path> [options]
 
 Options:
   --delimiter <char>     CSV delimiter (default: comma)
-  --output <path>        Output JSON file path
+  --output <path>        Output JSON file path (for single files only)
+  --recursive            Process subdirectories recursively (for directories only)
   
 Note: The first row is always treated as headers and excluded from JSON output.
 
 Examples:
+  # Process a single CSV file
   npx ts-node scripts/csvToJson.ts /Users/john/data/users.csv
   npx ts-node scripts/csvToJson.ts ./data.csv --delimiter ";" --output ./output.json
-  npx ts-node scripts/csvToJson.ts /absolute/path/to/file.csv
+  
+  # Process all CSV files in a directory
+  npx ts-node scripts/csvToJson.ts ./scripts/files/csv/
+  npx ts-node scripts/csvToJson.ts /path/to/csv/directory --recursive
+  
+  # Process with custom delimiter
+  npx ts-node scripts/csvToJson.ts ./csv-files/ --delimiter ";" --recursive
     `);
     return;
   }
 
-  const csvPath = args[0];
+  const inputPath = args[0];
   const options: CsvToJsonOptions = {};
 
   // Parse arguments
@@ -239,19 +339,50 @@ Examples:
       case "--output":
         options.outputPath = args[++i];
         break;
+      case "--recursive":
+        options.recursive = true;
+        break;
     }
   }
 
   try {
-    await csvToJson(csvPath, options);
+    // Check if input path exists
+    if (!fs.existsSync(inputPath)) {
+      throw new Error(`Path not found: ${inputPath}`);
+    }
+
+    const stat = fs.statSync(inputPath);
+
+    if (stat.isDirectory()) {
+      // Process directory
+      if (options.outputPath) {
+        console.log(
+          "⚠️  Warning: --output option is ignored when processing directories",
+        );
+        delete options.outputPath;
+      }
+      await processCsvDirectory(inputPath, options);
+    } else if (stat.isFile()) {
+      // Process single file
+      if (options.recursive) {
+        console.log(
+          "⚠️  Warning: --recursive option is ignored when processing single files",
+        );
+      }
+      await csvToJson(inputPath, options);
+    } else {
+      throw new Error(
+        `Invalid path: ${inputPath} is neither a file nor a directory`,
+      );
+    }
   } catch (error) {
-    console.error("❌ Error converting CSV to JSON:", error);
+    console.error("❌ Error:", error instanceof Error ? error.message : error);
     process.exit(1);
   }
 }
 
 // Export for programmatic use
-export { csvToJson };
+export { csvToJson, processCsvDirectory, findCsvFiles };
 
 // Run if called directly (ES module way)
 if (import.meta.url === `file://${process.argv[1]}`) {
