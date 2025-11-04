@@ -50,6 +50,7 @@ function Conversation({
   onDropdownToggle,
   onBlock,
   showDropdown,
+  isBlocked = false,
 }) {
   const [messageText, setMessageText] = useState("");
   const [selectedPhoto, setSelectedPhoto] = useState(null);
@@ -143,7 +144,7 @@ function Conversation({
 
   // Send message (text, photo, or voice memo)
   const sendMessage = () => {
-    if (!activeConversation) return;
+    if (!activeConversation || isBlocked) return;
 
     const hasContent = messageText.trim() || selectedPhoto || recordedAudio;
     if (!hasContent) return;
@@ -396,7 +397,7 @@ function Conversation({
         )}
       </div>
 
-      <div className="message-input-area">
+      <div className={`message-input-area ${isBlocked ? "blocked" : ""}`}>
         {/* Photo Preview */}
         {selectedPhoto && (
           <div className="attachment-preview">
@@ -489,21 +490,32 @@ function Conversation({
         <div className="message-input-row">
           <textarea
             className="message-input"
-            placeholder="Enter a message..."
+            placeholder={
+              isBlocked ? "This conversation is blocked" : "Enter a message..."
+            }
             rows="1"
             value={messageText}
             onChange={(e) => setMessageText(e.target.value)}
             onInput={adjustMessageInputHeight}
             onKeyPress={handleKeyPress}
+            disabled={isBlocked}
           />
           <div className="message-input-buttons">
             {/* Photo Upload Button */}
-            <label className="message-input-button" title="Attach photo">
+            <label
+              className="message-input-button"
+              title="Attach photo"
+              style={{
+                opacity: isBlocked ? 0.4 : 1,
+                pointerEvents: isBlocked ? "none" : "auto",
+              }}
+            >
               <input
                 type="file"
                 accept="image/*"
                 onChange={handlePhotoSelect}
                 style={{ display: "none" }}
+                disabled={isBlocked}
               />
               <svg
                 className="message-input-icon"
@@ -521,11 +533,13 @@ function Conversation({
               className={`message-input-button ${isRecording ? "recording" : ""}`}
               title={isRecording ? "Stop recording" : "Record voice message"}
               onClick={isRecording ? stopRecording : startRecording}
+              disabled={isBlocked}
               style={{
                 backgroundColor: isRecording ? "#ff4444" : "transparent",
                 display: "flex",
                 alignItems: "center",
                 gap: "6px",
+                opacity: isBlocked ? 0.4 : 1,
               }}
             >
               {isRecording ? (
@@ -545,7 +559,12 @@ function Conversation({
             </button>
 
             {/* Video Call Button */}
-            <button className="message-input-button" title="Start video call">
+            <button
+              className="message-input-button"
+              title="Start video call"
+              disabled={isBlocked}
+              style={{ opacity: isBlocked ? 0.4 : 1 }}
+            >
               <svg
                 className="message-input-icon"
                 fill="currentColor"
@@ -561,10 +580,14 @@ function Conversation({
               className="message-input-button send-button"
               title="Send message"
               onClick={sendMessage}
-              disabled={!messageText.trim() && !selectedPhoto && !recordedAudio}
+              disabled={
+                isBlocked ||
+                (!messageText.trim() && !selectedPhoto && !recordedAudio)
+              }
               style={{
                 opacity:
-                  !messageText.trim() && !selectedPhoto && !recordedAudio
+                  isBlocked ||
+                  (!messageText.trim() && !selectedPhoto && !recordedAudio)
                     ? 0.5
                     : 1,
               }}

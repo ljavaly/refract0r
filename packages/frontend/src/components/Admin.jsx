@@ -24,12 +24,12 @@ function Admin() {
     const handleConversationMessage = (data) => {
       if (data.type === "conversation_message") {
         const { conversationId, message } = data;
-        
+
         // Check if this message already exists (to prevent duplicates from echo)
         const messageExists = (prevMessages) => {
-          return prevMessages.some(m => m.id === message.id);
+          return prevMessages.some((m) => m.id === message.id);
         };
-        
+
         // Update messages if this is the active conversation (and message doesn't already exist)
         if (conversationId === selectedConversation) {
           setMessages((prev) => {
@@ -43,18 +43,43 @@ function Admin() {
           ...prev,
           [conversationId]: (() => {
             const existing = prev[conversationId] || [];
-            if (existing.some(m => m.id === message.id)) return existing;
+            if (existing.some((m) => m.id === message.id)) return existing;
             return [...existing, message];
           })(),
         }));
       }
     };
 
-    wsClient.onWebSocketMessage("conversation_message", handleConversationMessage);
+    // Listen for block conversation messages
+    const handleBlockConversation = (data) => {
+      if (data.type === "block_conversation") {
+        const { conversationId } = data;
+
+        // Update conversation to show blocked status
+        setConversations((prevConversations) =>
+          prevConversations.map((conv) =>
+            conv.id === conversationId ? { ...conv, blocked: true } : conv,
+          ),
+        );
+      }
+    };
+
+    wsClient.onWebSocketMessage(
+      "conversation_message",
+      handleConversationMessage,
+    );
+    wsClient.onWebSocketMessage("block_conversation", handleBlockConversation);
 
     // Cleanup listener on unmount
     return () => {
-      wsClient.offWebSocketMessage("conversation_message", handleConversationMessage);
+      wsClient.offWebSocketMessage(
+        "conversation_message",
+        handleConversationMessage,
+      );
+      wsClient.offWebSocketMessage(
+        "block_conversation",
+        handleBlockConversation,
+      );
     };
   }, [selectedConversation]);
 
@@ -69,7 +94,18 @@ function Admin() {
     apiClient
       .getConversations()
       .then((data) => {
-        setConversations(data);
+        // Preserve blocked status from existing conversations
+        setConversations((prevConversations) => {
+          return data.map((newConv) => {
+            const existingConv = prevConversations.find(
+              (c) => c.id === newConv.id,
+            );
+            return {
+              ...newConv,
+              blocked: existingConv?.blocked || false,
+            };
+          });
+        });
       })
       .catch((error) => {
         console.log("Failed to load conversations:", error);
@@ -187,7 +223,7 @@ function Admin() {
     };
 
     const sent = wsClient.sendMessage(wsMessage);
-    
+
     if (sent) {
       console.log("Message sent via WebSocket:", newMessage);
     } else {
@@ -200,7 +236,37 @@ function Admin() {
   };
 
   const handleBlock = () => {
-    console.log("Block user functionality not implemented");
+    if (!selectedConversation) return;
+
+    const conversation = conversations.find(
+      (c) => c.id === selectedConversation,
+    );
+    if (!conversation) return;
+
+    const confirmed = window.confirm(
+      `Are you sure you want to block ${conversation.name}?`,
+    );
+
+    if (confirmed) {
+      // Send block message via WebSocket to all clients
+      const blockMessage = {
+        type: "block_conversation",
+        conversationId: selectedConversation,
+        conversationName: conversation.name,
+        timestamp: new Date().toISOString(),
+      };
+
+      const sent = wsClient.sendMessage(blockMessage);
+
+      if (sent) {
+        console.log("Block message sent via WebSocket:", blockMessage);
+      } else {
+        console.warn("WebSocket not available, block not sent");
+      }
+
+      // Close dropdown
+      setShowDropdown(false);
+    }
   };
 
   return (
@@ -232,13 +298,17 @@ function Admin() {
                   className="scene-select-dropdown"
                 >
                   <option value="">Choose a scene...</option>
-                  <option value="1_rp_home_invasion">1 - RP Home Invasion</option>
+                  <option value="1_rp_home_invasion">
+                    1 - RP Home Invasion
+                  </option>
                   <option value="2_grwm_big_brother_fresh_direct_1">
                     2 - GRWM Big Brother Fresh Direct 1
                   </option>
                   <option value="3_ama_louie_s">3 - AMA Louies</option>
                   <option value="4_grwm_survivor">4 - GRWM Survivor</option>
-                  <option value="5_ama_coney_island">5 - AMA Coney Island</option>
+                  <option value="5_ama_coney_island">
+                    5 - AMA Coney Island
+                  </option>
                   <option value="6_workout">6 - Workout</option>
                   <option value="7_angusxbeef">7 - Angus x Beef</option>
                   <option value="8_fresh_direct_2">8 - Fresh Direct 2</option>
@@ -296,6 +366,10 @@ function Admin() {
                 onDropdownToggle={handleDropdownToggle}
                 onBlock={handleBlock}
                 showDropdown={showDropdown}
+                isBlocked={
+                  conversations.find((c) => c.id === selectedConversation)
+                    ?.blocked || false
+                }
               />
             </div>
           )}

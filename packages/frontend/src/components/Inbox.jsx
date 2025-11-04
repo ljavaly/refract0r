@@ -34,12 +34,12 @@ function Inbox() {
     const handleConversationMessage = (data) => {
       if (data.type === "conversation_message") {
         const { conversationId, message } = data;
-        
+
         // Check if this message already exists (to prevent duplicates from echo)
         const messageExists = (prevMessages) => {
-          return prevMessages.some(m => m.id === message.id);
+          return prevMessages.some((m) => m.id === message.id);
         };
-        
+
         // Update messages if this is the active conversation (and message doesn't already exist)
         if (conversationId === activeConversation) {
           setMessages((prev) => {
@@ -53,31 +53,37 @@ function Inbox() {
           ...prev,
           [conversationId]: (() => {
             const existing = prev[conversationId] || [];
-            if (existing.some(m => m.id === message.id)) return existing;
+            if (existing.some((m) => m.id === message.id)) return existing;
             return [...existing, message];
           })(),
         }));
 
         // Update conversation list: move to top, show unread indicator, update last message
         setConversations((prevConversations) => {
-          const conversationIndex = prevConversations.findIndex(c => c.id === conversationId);
+          const conversationIndex = prevConversations.findIndex(
+            (c) => c.id === conversationId,
+          );
           if (conversationIndex === -1) return prevConversations;
 
           const updatedConversations = [...prevConversations];
           const conversation = { ...updatedConversations[conversationIndex] };
-          
+
           // Extract message text for preview
-          const messageText = message.text || message.content || 
+          const messageText =
+            message.text ||
+            message.content ||
             (message.photo ? "📷 Photo" : "") ||
             (message.audio ? "🎤 Voice message" : "Message");
-          
+
           // Update conversation properties
           conversation.lastMessage = messageText;
-          conversation.time = new Date().toLocaleTimeString('en-US', { 
-            hour: 'numeric', 
-            minute: '2-digit' 
-          }).toLowerCase();
-          
+          conversation.time = new Date()
+            .toLocaleTimeString("en-US", {
+              hour: "numeric",
+              minute: "2-digit",
+            })
+            .toLowerCase();
+
           // Only show unread indicator if this is NOT the active conversation
           if (conversationId !== activeConversation) {
             conversation.new = true;
@@ -85,18 +91,43 @@ function Inbox() {
 
           // Remove from current position
           updatedConversations.splice(conversationIndex, 1);
-          
+
           // Add to top
           return [conversation, ...updatedConversations];
         });
       }
     };
 
-    wsClient.onWebSocketMessage("conversation_message", handleConversationMessage);
+    // Listen for block conversation messages
+    const handleBlockConversation = (data) => {
+      if (data.type === "block_conversation") {
+        const { conversationId } = data;
+
+        // Update conversation to show blocked status
+        setConversations((prevConversations) =>
+          prevConversations.map((conv) =>
+            conv.id === conversationId ? { ...conv, blocked: true } : conv,
+          ),
+        );
+      }
+    };
+
+    wsClient.onWebSocketMessage(
+      "conversation_message",
+      handleConversationMessage,
+    );
+    wsClient.onWebSocketMessage("block_conversation", handleBlockConversation);
 
     // Cleanup listener on unmount
     return () => {
-      wsClient.offWebSocketMessage("conversation_message", handleConversationMessage);
+      wsClient.offWebSocketMessage(
+        "conversation_message",
+        handleConversationMessage,
+      );
+      wsClient.offWebSocketMessage(
+        "block_conversation",
+        handleBlockConversation,
+      );
     };
   }, [activeConversation]);
 
@@ -111,7 +142,20 @@ function Inbox() {
     try {
       setLoading(true);
       const data = await apiClient.getConversations();
-      setConversations(data);
+
+      // Preserve blocked status from existing conversations
+      setConversations((prevConversations) => {
+        const updatedConversations = data.map((newConv) => {
+          const existingConv = prevConversations.find(
+            (c) => c.id === newConv.id,
+          );
+          return {
+            ...newConv,
+            blocked: existingConv?.blocked || false,
+          };
+        });
+        return updatedConversations;
+      });
 
       // Set default active conversation if none is selected
       if (data.length > 0 && !activeConversation) {
@@ -207,10 +251,7 @@ function Inbox() {
     setMessages((prev) => [...prev, newMessage]);
     setLocalMessages((prev) => ({
       ...prev,
-      [activeConversation]: [
-        ...(prev[activeConversation] || []),
-        newMessage,
-      ],
+      [activeConversation]: [...(prev[activeConversation] || []), newMessage],
     }));
 
     // Send message via WebSocket to broadcast to all clients
@@ -222,7 +263,7 @@ function Inbox() {
     };
 
     const sent = wsClient.sendMessage(wsMessage);
-    
+
     if (sent) {
       console.log("Message sent via WebSocket:", newMessage);
     } else {
@@ -331,7 +372,13 @@ function Inbox() {
                 <div className="conversation-details">
                   <div className="conversation-name">{conv.name}</div>
                   <div className="conversation-last-message">
-                    {conv.lastMessage}
+                    {conv.blocked ? (
+                      <span style={{ color: "#999", fontStyle: "italic" }}>
+                        Blocked
+                      </span>
+                    ) : (
+                      conv.lastMessage
+                    )}
                   </div>
                 </div>
                 <div className="conversation-time">
@@ -378,6 +425,10 @@ function Inbox() {
           onDropdownToggle={handleDropdownToggle}
           onBlock={handleBlock}
           showDropdown={showDropdown}
+          isBlocked={
+            conversations.find((c) => c.id === activeConversation)?.blocked ||
+            false
+          }
         />
       </div>
     </>
