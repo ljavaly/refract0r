@@ -6,6 +6,48 @@
   background: darkblue;
 }
 
+/* Tab navigation */
+.admin-tabs {
+  display: flex;
+  gap: 20px;
+  padding: 1rem;
+  background: darkblue;
+  justify-content: center;
+  align-items: center;
+}
+
+.admin-tab {
+  background-color: #1e3a8a;
+  color: white;
+  border: none;
+  padding: 1rem 3rem;
+  border-radius: var(--border-radius) var(--border-radius) 0 0;
+  font-size: 1.125rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  border-bottom: 3px solid transparent;
+  flex: 1;
+  max-width: 48%;
+}
+
+.admin-tab:hover {
+  background-color: #2563eb;
+}
+
+.admin-tab.active {
+  background-color: #3b82f6;
+  color: white;
+  border-bottom: 3px solid white;
+}
+
+/* Inbox tab content */
+.admin-inbox-tab {
+  height: 90%;
+  padding: 2rem;
+  color: white;
+}
+
 .admin-cues-grid {
   height: 90%;
   gap: 2rem;

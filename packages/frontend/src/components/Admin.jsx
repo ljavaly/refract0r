@@ -7,6 +7,7 @@ import wsClient from "../api/ws";
 function Admin() {
   const [queuedComments, setQueuedComments] = useState([]);
   const [selectedScene, setSelectedScene] = useState("");
+  const [activeTab, setActiveTab] = useState("audience-chat");
 
   useEffect(() => {
     wsClient.connectWebSocket();
@@ -73,48 +74,72 @@ function Admin() {
 
   return (
     <div className="admin-cues-container">
-      <div className="admin-controls mb-4">
-        <button onClick={sendTestMessage} className="test-message-button">
-          Trigger "You have a new message"
+      <div className="admin-tabs">
+        <button
+          className={`admin-tab ${activeTab === "audience-chat" ? "active" : ""}`}
+          onClick={() => setActiveTab("audience-chat")}
+        >
+          Audience Chat
+        </button>
+        <button
+          className={`admin-tab ${activeTab === "inbox" ? "active" : ""}`}
+          onClick={() => setActiveTab("inbox")}
+        >
+          Inbox
         </button>
       </div>
-      <div className="grid grid-cols-5 justify-center admin-cues-grid items-center">
-        <section className="admin-cues-section grid col-span-2">
-          <div className="mb-4">
-            <select
-              id="scene-select"
-              value={selectedScene}
-              onChange={(e) => loadSceneComments(e.target.value)}
-              className="scene-select-dropdown"
-            >
-              <option value="">Choose a scene...</option>
-              <option value="1_rp_home_invasion">1 - RP Home Invasion</option>
-              <option value="2_grwm_big_brother_fresh_direct_1">
-                2 - GRWM Big Brother Fresh Direct 1
-              </option>
-              <option value="3_ama_louie_s">3 - AMA Louies</option>
-              <option value="4_grwm_survivor">4 - GRWM Survivor</option>
-              <option value="5_ama_coney_island">5 - AMA Coney Island</option>
-              <option value="6_workout">6 - Workout</option>
-              <option value="7_angusxbeef">7 - Angus x Beef</option>
-              <option value="8_fresh_direct_2">8 - Fresh Direct 2</option>
-              <option value="9_wolf">9 - Wolf</option>
-              <option value="10_rick_morty">10 - Rick and Morty</option>
-              <option value="11_mirror_test">11 - Mirror Test</option>
-              <option value="12_grace">12 - Grace</option>
-            </select>
+
+      {activeTab === "audience-chat" && (
+        <>
+          <div className="grid grid-cols-5 justify-center admin-cues-grid items-center">
+            <section className="admin-cues-section grid col-span-2">
+              <div className="mb-4">
+                <select
+                  id="scene-select"
+                  value={selectedScene}
+                  onChange={(e) => loadSceneComments(e.target.value)}
+                  className="scene-select-dropdown"
+                >
+                  <option value="">Choose a scene...</option>
+                  <option value="1_rp_home_invasion">1 - RP Home Invasion</option>
+                  <option value="2_grwm_big_brother_fresh_direct_1">
+                    2 - GRWM Big Brother Fresh Direct 1
+                  </option>
+                  <option value="3_ama_louie_s">3 - AMA Louies</option>
+                  <option value="4_grwm_survivor">4 - GRWM Survivor</option>
+                  <option value="5_ama_coney_island">5 - AMA Coney Island</option>
+                  <option value="6_workout">6 - Workout</option>
+                  <option value="7_angusxbeef">7 - Angus x Beef</option>
+                  <option value="8_fresh_direct_2">8 - Fresh Direct 2</option>
+                  <option value="9_wolf">9 - Wolf</option>
+                  <option value="10_rick_morty">10 - Rick and Morty</option>
+                  <option value="11_mirror_test">11 - Mirror Test</option>
+                  <option value="12_grace">12 - Grace</option>
+                </select>
+              </div>
+              <AudienceChat initialComments={queuedComments} isAdmin={true} />
+            </section>
+            <div className="flex justify-center items-center col-span-1">
+              <button onClick={sendNextComment} className="test-message-button">
+                Send next ➡️
+              </button>
+            </div>
+            <section className="admin-cues-section grid col-span-2">
+              <AudienceChat />
+            </section>
           </div>
-          <AudienceChat initialComments={queuedComments} isAdmin={true} />
-        </section>
-        <div className="flex justify-center items-center col-span-1">
-          <button onClick={sendNextComment} className="test-message-button">
-            Send next ➡️
-          </button>
+        </>
+      )}
+
+      {activeTab === "inbox" && (
+        <div className="admin-inbox-tab">
+          <div className="admin-controls mb-4">
+            <button onClick={sendTestMessage} className="test-message-button">
+              Trigger "You have a new message"
+            </button>
+          </div>
         </div>
-        <section className="admin-cues-section grid col-span-2">
-          <AudienceChat />
-        </section>
-      </div>
+      )}
     </div>
   );
 }
