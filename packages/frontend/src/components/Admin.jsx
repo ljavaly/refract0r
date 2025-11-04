@@ -19,7 +19,44 @@ function Admin() {
   useEffect(() => {
     wsClient.connectWebSocket();
     loadConversations();
-  }, []);
+
+    // Listen for incoming conversation messages via WebSocket
+    const handleConversationMessage = (data) => {
+      if (data.type === "conversation_message") {
+        const { conversationId, message } = data;
+        
+        // Check if this message already exists (to prevent duplicates from echo)
+        const messageExists = (prevMessages) => {
+          return prevMessages.some(m => m.id === message.id);
+        };
+        
+        // Update messages if this is the active conversation (and message doesn't already exist)
+        if (conversationId === selectedConversation) {
+          setMessages((prev) => {
+            if (messageExists(prev)) return prev;
+            return [...prev, message];
+          });
+        }
+
+        // Also update local messages cache
+        setLocalMessages((prev) => ({
+          ...prev,
+          [conversationId]: (() => {
+            const existing = prev[conversationId] || [];
+            if (existing.some(m => m.id === message.id)) return existing;
+            return [...existing, message];
+          })(),
+        }));
+      }
+    };
+
+    wsClient.onWebSocketMessage("conversation_message", handleConversationMessage);
+
+    // Cleanup listener on unmount
+    return () => {
+      wsClient.offWebSocketMessage("conversation_message", handleConversationMessage);
+    };
+  }, [selectedConversation]);
 
   // Load conversation details when selected conversation changes
   useEffect(() => {
@@ -120,7 +157,7 @@ function Admin() {
   const handleSendMessage = (messageData) => {
     if (!selectedConversation) return;
 
-    // Create a new local message
+    // Create a new message object
     const newMessage = {
       id: `local-${Date.now()}`,
       conversationId: selectedConversation,
@@ -131,7 +168,8 @@ function Admin() {
       ...messageData,
     };
 
-    // Update local messages for this conversation
+    // Immediately add to local state for optimistic UI update
+    setMessages((prev) => [...prev, newMessage]);
     setLocalMessages((prev) => ({
       ...prev,
       [selectedConversation]: [
@@ -140,10 +178,21 @@ function Admin() {
       ],
     }));
 
-    // Add to messages immediately for UI feedback
-    setMessages((prev) => [...prev, newMessage]);
+    // Send message via WebSocket to broadcast to all clients
+    const wsMessage = {
+      type: "conversation_message",
+      conversationId: selectedConversation,
+      message: newMessage,
+      timestamp: new Date().toISOString(),
+    };
 
-    console.log("Message sent:", newMessage);
+    const sent = wsClient.sendMessage(wsMessage);
+    
+    if (sent) {
+      console.log("Message sent via WebSocket:", newMessage);
+    } else {
+      console.warn("WebSocket not available, message not sent");
+    }
   };
 
   const handleDropdownToggle = () => {
@@ -231,7 +280,6 @@ function Admin() {
               {conversations.map((conversation) => (
                 <option key={conversation.id} value={conversation.id}>
                   {conversation.name}
-                  {conversation.new ? " (New)" : ""}
                 </option>
               ))}
             </select>
