@@ -92,14 +92,14 @@ function Admin() {
               <option value="2_grwm_big_brother_fresh_direct_1">
                 2 - GRWM Big Brother Fresh Direct 1
               </option>
-              <option value="3_ama_louies">3 - AMA Louies</option>
+              <option value="3_ama_louie_s">3 - AMA Louies</option>
               <option value="4_grwm_survivor">4 - GRWM Survivor</option>
               <option value="5_ama_coney_island">5 - AMA Coney Island</option>
               <option value="6_workout">6 - Workout</option>
               <option value="7_angusxbeef">7 - Angus x Beef</option>
               <option value="8_fresh_direct_2">8 - Fresh Direct 2</option>
               <option value="9_wolf">9 - Wolf</option>
-              <option value="10_rick_and_morty">10 - Rick and Morty</option>
+              <option value="10_rick_morty">10 - Rick and Morty</option>
               <option value="11_mirror_test">11 - Mirror Test</option>
               <option value="12_grace">12 - Grace</option>
             </select>
