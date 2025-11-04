@@ -20,9 +20,6 @@ function Bank() {
         <div className="form-group">
           <label htmlFor="cardNumber">Card Number:</label>
           <div className="card-input-container">
-            <div className="card-brand">
-              <span>VISA</span>
-            </div>
             <input
               type="text"
               id="cardNumber"
