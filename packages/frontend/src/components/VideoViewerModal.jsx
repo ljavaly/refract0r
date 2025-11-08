@@ -36,8 +36,9 @@ const VideoPlayer = memo(
     handleVolumeChange,
     isMuted,
     volume,
+    shouldInitVideo,
   }) => {
-    console.log("VideoPlayer component rendering");
+    console.log("VideoPlayer component rendering", { shouldInitVideo });
 
     return (
       <div className="video-player-section">
@@ -65,15 +66,17 @@ const VideoPlayer = memo(
                 console.log("Video pause event");
                 // setIsPlaying handled in parent
               }}
-              preload="metadata"
+              preload="none"
               playsInline
               muted={false}
             />
 
             {/* Loading indicator */}
-            {isLoading && (
+            {(isLoading || !shouldInitVideo) && (
               <div className="loading-overlay">
-                <div className="loading-spinner">Loading...</div>
+                <div className="loading-spinner">
+                  {!shouldInitVideo ? "Loading comments..." : "Loading..."}
+                </div>
               </div>
             )}
 
@@ -229,17 +232,51 @@ function VideoViewerModal({ video, isOpen, onClose }) {
   const [volume, setVolume] = useState(1);
   const [isMuted, setIsMuted] = useState(false);
   const [videoViewerComments, setVideoViewerComments] = useState([]);
+  const [commentsLoaded, setCommentsLoaded] = useState(false);
+  const [shouldInitVideo, setShouldInitVideo] = useState(false);
 
   // Format time to MM:SS
-  const formatTime = (seconds) => {
+  const formatTime = useCallback((seconds) => {
     const mins = Math.floor(seconds / 60);
     const secs = Math.floor(seconds % 60);
     return `${mins}:${secs.toString().padStart(2, "0")}`;
-  };
+  }, []);
 
-  // Fetch video data when modal opens with a video ID
+  // Use fetched video data if available, otherwise fall back to prop data
+  // MUST be defined early to be used in effects below
+  const displayVideo = useMemo(() => videoData || video, [videoData, video]);
+
+  // Fetch comments first when modal opens
   useEffect(() => {
-    if (isOpen && video?.id) {
+    if (isOpen) {
+      setCommentsLoaded(false);
+      setShouldInitVideo(false);
+      setVideoViewerComments([]);
+      
+      const loadComments = async () => {
+        try {
+          const data = await apiClient.getComments();
+          setVideoViewerComments(data);
+          setCommentsLoaded(true);
+          console.log("Comments loaded, ready to initialize video");
+        } catch (error) {
+          console.error("Failed to fetch comments:", error);
+          setVideoViewerComments([]);
+          setCommentsLoaded(true); // Still proceed even if comments fail
+        }
+      };
+
+      loadComments();
+    } else {
+      setVideoViewerComments([]);
+      setCommentsLoaded(false);
+      setShouldInitVideo(false);
+    }
+  }, [isOpen]);
+
+  // After comments are loaded, fetch video data
+  useEffect(() => {
+    if (isOpen && video?.id && commentsLoaded) {
       setIsLoading(true);
       setVideoData(null);
 
@@ -248,45 +285,28 @@ function VideoViewerModal({ video, isOpen, onClose }) {
         .then((data) => {
           setVideoData(data);
           setIsLoading(false);
+          // Small delay before initializing video element
+          setTimeout(() => setShouldInitVideo(true), 100);
         })
         .catch((error) => {
           console.error("Failed to fetch video data:", error);
           setIsLoading(false);
+          setShouldInitVideo(true); // Initialize anyway to show error state
         });
     }
-  }, [isOpen, video?.id]);
+  }, [isOpen, video?.id, commentsLoaded]);
 
+  // Initialize video element when ref becomes available and set poster
   useEffect(() => {
-    // Fetch comments when modal opens
-    if (isOpen) {
-      const loadComments = async () => {
-        try {
-          const data = await apiClient.getComments();
-          setVideoViewerComments(data);
-        } catch (error) {
-          console.error("Failed to fetch comments:", error);
-          setVideoViewerComments([]);
-        }
-      };
-
-      // Delay to ensure video setup completes first
-      const timeoutId = setTimeout(loadComments, 2000);
-      return () => clearTimeout(timeoutId);
-    } else {
-      setVideoViewerComments([]);
-    }
-  }, [isOpen]);
-
-  // Initialize video element when ref becomes available
-  useEffect(() => {
-    if (videoRef.current) {
-      console.log("Video element initialized");
+    if (videoRef.current && displayVideo?.thumbnail) {
+      console.log("Video element initialized with poster:", displayVideo.thumbnail);
       const video = videoRef.current;
 
       // Set default properties
       video.controls = false;
       video.playsInline = true;
-      video.preload = "metadata";
+      video.preload = "none"; // Don't preload until we're ready
+      video.poster = displayVideo.thumbnail; // Ensure poster is set
 
       return () => {
         console.log("Video element cleanup");
@@ -297,18 +317,19 @@ function VideoViewerModal({ video, isOpen, onClose }) {
         }
       };
     }
-  }, []);
+  }, [displayVideo?.thumbnail]);
 
-  // Update video source when video data changes
+  // Update video source when video data changes and video should be initialized
   useEffect(() => {
     console.log("Video data effect triggered:", {
       videoData: !!videoData,
       hasVideoRef: !!videoRef.current,
       videoUrl: videoData?.videoUrl,
+      shouldInitVideo,
     });
 
-    if (!videoData?.videoUrl || !videoRef.current) {
-      console.log("Missing video data or ref, skipping video setup");
+    if (!videoData?.videoUrl || !videoRef.current || !shouldInitVideo) {
+      console.log("Missing video data, ref, or not ready to init video, skipping video setup");
       return;
     }
 
@@ -330,7 +351,7 @@ function VideoViewerModal({ video, isOpen, onClose }) {
     video.load();
 
     console.log("Video setup complete, waiting for load events");
-  }, [videoData?.videoUrl, volume]);
+  }, [videoData?.videoUrl, volume, shouldInitVideo]);
 
   // Video event handlers - wrapped in useCallback to prevent re-renders
   const handleVideoLoadedMetadata = useCallback(() => {
@@ -400,7 +421,7 @@ function VideoViewerModal({ video, isOpen, onClose }) {
     };
   }, [isOpen, onClose]);
 
-  const togglePlay = async () => {
+  const togglePlay = useCallback(async () => {
     if (!videoRef.current) return;
 
     try {
@@ -414,9 +435,9 @@ function VideoViewerModal({ video, isOpen, onClose }) {
     } catch (error) {
       console.error("Video playback error:", error);
     }
-  };
+  }, [isPlaying]);
 
-  const handleProgressClick = (e) => {
+  const handleProgressClick = useCallback((e) => {
     if (!videoRef.current) return;
 
     const progressBar = e.currentTarget;
@@ -426,16 +447,16 @@ function VideoViewerModal({ video, isOpen, onClose }) {
 
     videoRef.current.currentTime = newTime;
     setCurrentTime(newTime);
-  };
+  }, [duration]);
 
-  const toggleMute = () => {
+  const toggleMute = useCallback(() => {
     if (!videoRef.current) return;
 
     videoRef.current.muted = !videoRef.current.muted;
     setIsMuted(videoRef.current.muted);
-  };
+  }, []);
 
-  const handleVolumeChange = (e) => {
+  const handleVolumeChange = useCallback((e) => {
     if (!videoRef.current) return;
 
     const newVolume = e.target.value / 100;
@@ -447,11 +468,7 @@ function VideoViewerModal({ video, isOpen, onClose }) {
       videoRef.current.muted = false;
       setIsMuted(false);
     }
-  };
-
-  // Use fetched video data if available, otherwise fall back to prop data
-  // MUST be before early return to avoid Rules of Hooks violation
-  const displayVideo = useMemo(() => videoData || video, [videoData, video]);
+  }, []);
 
   if (!isOpen || !video) return null;
 
@@ -460,6 +477,8 @@ function VideoViewerModal({ video, isOpen, onClose }) {
     commentsLength: videoViewerComments.length,
     hasVideoData: !!videoData,
     isLoading,
+    commentsLoaded,
+    shouldInitVideo,
   });
 
   return (
@@ -501,12 +520,13 @@ function VideoViewerModal({ video, isOpen, onClose }) {
             handleVolumeChange={handleVolumeChange}
             isMuted={isMuted}
             volume={volume}
+            shouldInitVideo={shouldInitVideo}
           />
 
           {/* Chat section */}
           <div className="video-chat-section">
             <AudienceChat
-              //   initialComments={videoViewerComments}
+                initialComments={videoViewerComments}
               key="audience-chat"
             />
           </div>
