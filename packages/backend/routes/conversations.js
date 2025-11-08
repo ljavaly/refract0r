@@ -5,6 +5,9 @@ const router = express.Router();
 // GET /api/conversations - Get all conversations
 router.get("/", async (req, res) => {
   const conversations = await loadJsonFile("inbox/conversations.json");
+  conversations.forEach((conv) => {
+    conv.name = conv.name.toUpperCase();
+  });
   res.json(conversations);
 });
 
@@ -26,8 +29,13 @@ router.get("/:id", async (req, res) => {
     });
   }
 
+  conversation.name = conversation.name.toUpperCase();
+
   // Get messages for this conversation
   const messages = messagesByConversation[conversationId] || [];
+  messages.forEach((message) => {
+    message.user = message.user.toUpperCase();
+  });
 
   // Return conversation details with messages
   res.json({
