@@ -10,7 +10,7 @@ function Admin() {
   const [selectedScene, setSelectedScene] = useState("");
   const [activeTab, setActiveTab] = useState("audience-chat");
   const [conversations, setConversations] = useState([]);
-  const [selectedConversation, setSelectedConversation] = useState("");
+  const [selectedConversationId, setSelectedConversation] = useState("");
   const [messages, setMessages] = useState([]);
   const [users, setUsers] = useState({});
   const [localMessages, setLocalMessages] = useState({});
@@ -31,7 +31,7 @@ function Admin() {
         };
 
         // Update messages if this is the active conversation (and message doesn't already exist)
-        if (conversationId === selectedConversation) {
+        if (conversationId === selectedConversationId) {
           setMessages((prev) => {
             if (messageExists(prev)) return prev;
             return [...prev, message];
@@ -81,14 +81,14 @@ function Admin() {
         handleBlockConversation,
       );
     };
-  }, [selectedConversation]);
+  }, [selectedConversationId]);
 
   // Load conversation details when selected conversation changes
   useEffect(() => {
-    if (selectedConversation) {
-      loadConversationDetails(selectedConversation);
+    if (selectedConversationId) {
+      loadConversationDetails(selectedConversationId);
     }
-  }, [selectedConversation]);
+  }, [selectedConversationId]);
 
   const loadConversations = () => {
     apiClient
@@ -191,12 +191,12 @@ function Admin() {
   };
 
   const handleSendMessage = (messageData) => {
-    if (!selectedConversation) return;
+    if (!selectedConversationId) return;
 
     // Create a new message object
     const newMessage = {
       id: `local-${Date.now()}`,
-      conversationId: selectedConversation,
+      conversationId: selectedConversationId,
       sender: "user",
       content: messageData.text || "",
       timestamp: new Date().toISOString(),
@@ -208,8 +208,8 @@ function Admin() {
     setMessages((prev) => [...prev, newMessage]);
     setLocalMessages((prev) => ({
       ...prev,
-      [selectedConversation]: [
-        ...(prev[selectedConversation] || []),
+      [selectedConversationId]: [
+        ...(prev[selectedConversationId] || []),
         newMessage,
       ],
     }));
@@ -217,7 +217,7 @@ function Admin() {
     // Send message via WebSocket to broadcast to all clients
     const wsMessage = {
       type: "conversation_message",
-      conversationId: selectedConversation,
+      conversationId: selectedConversationId,
       message: newMessage,
       timestamp: new Date().toISOString(),
     };
@@ -236,10 +236,10 @@ function Admin() {
   };
 
   const handleBlock = () => {
-    if (!selectedConversation) return;
+    if (!selectedConversationId) return;
 
     const conversation = conversations.find(
-      (c) => c.id === selectedConversation,
+      (c) => c.id === selectedConversationId,
     );
     if (!conversation) return;
 
@@ -251,7 +251,7 @@ function Admin() {
       // Send block message via WebSocket to all clients
       const blockMessage = {
         type: "block_conversation",
-        conversationId: selectedConversation,
+        conversationId: selectedConversationId,
         conversationName: conversation.name,
         timestamp: new Date().toISOString(),
       };
@@ -344,7 +344,7 @@ function Admin() {
           <div className="conversation-picker-container">
             <select
               id="conversation-select"
-              value={selectedConversation}
+              value={selectedConversationId}
               onChange={(e) => setSelectedConversation(e.target.value)}
               className="conversation-select-dropdown"
             >
@@ -356,21 +356,24 @@ function Admin() {
               ))}
             </select>
           </div>
-          {selectedConversation && (
+          {selectedConversationId && (
             <div className="admin-conversation-wrapper">
               <Conversation
-                activeConversation={selectedConversation}
+                activeConversation={selectedConversationId}
                 conversations={conversations}
                 messages={messages}
                 users={users}
-                localMessages={localMessages[selectedConversation] || []}
                 onSendMessage={handleSendMessage}
                 onDropdownToggle={handleDropdownToggle}
                 onBlock={handleBlock}
                 showDropdown={showDropdown}
                 isBlocked={
-                  conversations.find((c) => c.id === selectedConversation)
+                  conversations.find((c) => c.id === selectedConversationId)
                     ?.blocked || false
+                }
+                username={
+                  conversations.find((c) => c.id === selectedConversationId)
+                    ?.name
                 }
               />
             </div>

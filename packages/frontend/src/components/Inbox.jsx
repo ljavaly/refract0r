@@ -425,7 +425,6 @@ function Inbox() {
           conversations={conversations}
           messages={messages}
           users={users}
-          localMessages={localMessages}
           onSendMessage={handleSendMessage}
           onDropdownToggle={handleDropdownToggle}
           onBlock={handleBlock}

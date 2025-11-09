@@ -45,12 +45,12 @@ function Conversation({
   conversations,
   messages,
   users,
-  localMessages,
   onSendMessage,
   onDropdownToggle,
   onBlock,
   showDropdown,
   isBlocked = false,
+  username = "TRENT4YOU",
 }) {
   const [messageText, setMessageText] = useState("");
   const [selectedPhoto, setSelectedPhoto] = useState(null);
@@ -152,7 +152,7 @@ function Conversation({
     // Create message object
     const message = {
       id: Date.now().toString(),
-      user: "Trent4you", // hardcoded protagonist's username
+      user: username,
       timestamp: new Date().toISOString(),
       type: "message",
     };
