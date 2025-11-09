@@ -16,7 +16,7 @@ function Inbox() {
   const [showDropdown, setShowDropdown] = useState(false);
   const [localMessages, setLocalMessages] = useState({}); // Store locally sent messages by conversation ID
 
-  // On component mount, load conversations and clear unread message
+  // On component mount, load conversations and clear unread message (only once)
   useEffect(() => {
     loadConversations();
     wsClient.connectWebSocket();
@@ -29,7 +29,10 @@ function Inbox() {
       .catch((error) => {
         console.warn("Failed to clear unread message:", error);
       });
+  }, []); // Empty dependency array - only run once on mount
 
+  // Set up WebSocket listeners that depend on activeConversation
+  useEffect(() => {
     // Listen for incoming conversation messages via WebSocket
     const handleConversationMessage = (data) => {
       if (data.type === "conversation_message") {
@@ -143,7 +146,7 @@ function Inbox() {
       setLoading(true);
       const data = await apiClient.getConversations();
 
-      // Preserve blocked status from existing conversations
+      // Preserve blocked and unread status from existing conversations
       setConversations((prevConversations) => {
         const updatedConversations = data.map((newConv) => {
           const existingConv = prevConversations.find(
@@ -152,6 +155,8 @@ function Inbox() {
           return {
             ...newConv,
             blocked: existingConv?.blocked || false,
+            // Preserve the local unread status if it was cleared
+            new: existingConv ? existingConv.new : newConv.new,
           };
         });
         return updatedConversations;
