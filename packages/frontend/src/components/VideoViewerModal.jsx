@@ -252,7 +252,7 @@ function VideoViewerModal({ video, isOpen, onClose }) {
       setCommentsLoaded(false);
       setShouldInitVideo(false);
       setVideoViewerComments([]);
-      
+
       const loadComments = async () => {
         try {
           const data = await apiClient.getComments();
@@ -299,7 +299,10 @@ function VideoViewerModal({ video, isOpen, onClose }) {
   // Initialize video element when ref becomes available and set poster
   useEffect(() => {
     if (videoRef.current && displayVideo?.thumbnail) {
-      console.log("Video element initialized with poster:", displayVideo.thumbnail);
+      console.log(
+        "Video element initialized with poster:",
+        displayVideo.thumbnail,
+      );
       const video = videoRef.current;
 
       // Set default properties
@@ -329,7 +332,9 @@ function VideoViewerModal({ video, isOpen, onClose }) {
     });
 
     if (!videoData?.videoUrl || !videoRef.current || !shouldInitVideo) {
-      console.log("Missing video data, ref, or not ready to init video, skipping video setup");
+      console.log(
+        "Missing video data, ref, or not ready to init video, skipping video setup",
+      );
       return;
     }
 
@@ -437,17 +442,20 @@ function VideoViewerModal({ video, isOpen, onClose }) {
     }
   }, [isPlaying]);
 
-  const handleProgressClick = useCallback((e) => {
-    if (!videoRef.current) return;
+  const handleProgressClick = useCallback(
+    (e) => {
+      if (!videoRef.current) return;
 
-    const progressBar = e.currentTarget;
-    const clickX = e.clientX - progressBar.getBoundingClientRect().left;
-    const progressWidth = progressBar.offsetWidth;
-    const newTime = (clickX / progressWidth) * duration;
+      const progressBar = e.currentTarget;
+      const clickX = e.clientX - progressBar.getBoundingClientRect().left;
+      const progressWidth = progressBar.offsetWidth;
+      const newTime = (clickX / progressWidth) * duration;
 
-    videoRef.current.currentTime = newTime;
-    setCurrentTime(newTime);
-  }, [duration]);
+      videoRef.current.currentTime = newTime;
+      setCurrentTime(newTime);
+    },
+    [duration],
+  );
 
   const toggleMute = useCallback(() => {
     if (!videoRef.current) return;
@@ -526,7 +534,7 @@ function VideoViewerModal({ video, isOpen, onClose }) {
           {/* Chat section */}
           <div className="video-chat-section">
             <AudienceChat
-                initialComments={videoViewerComments}
+              initialComments={videoViewerComments}
               key="audience-chat"
             />
           </div>
