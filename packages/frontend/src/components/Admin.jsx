@@ -304,7 +304,9 @@ function Admin() {
                   <option value="2_grwm_big_brother_fresh_direct_1">
                     2 - GRWM Big Brother Fresh Direct 1
                   </option>
-                  <option value="3_ama_louie_s">3 - AMA Louies</option>
+                  <option value="3_ama_carlucci_brothers">
+                    3 - AMA Carlucci Brothers
+                  </option>
                   <option value="4_grwm_survivor">4 - GRWM Survivor</option>
                   <option value="5_ama_coney_island">
                     5 - AMA Coney Island
