@@ -1,5 +1,5 @@
 import "../styles/Conversation.css";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 // Soundwave animation component
 function SoundwaveAnimation({ isActive, size = "small" }) {
@@ -58,6 +58,7 @@ function Conversation({
   const [mediaRecorder, setMediaRecorder] = useState(null);
   const [recordedAudio, setRecordedAudio] = useState(null);
   const [playingAudio, setPlayingAudio] = useState(null);
+  const messagesEndRef = useRef(null);
 
   // Handle photo selection
   const handlePhotoSelect = (event) => {
@@ -229,6 +230,13 @@ function Conversation({
     };
   }, [activeConversation]);
 
+  // Scroll to bottom when messages change
+  useEffect(() => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [messages]);
+
   if (!activeConversation) {
     return (
       <div className="main-content">
@@ -395,6 +403,7 @@ function Conversation({
             </div>
           ),
         )}
+        <div ref={messagesEndRef} />
       </div>
 
       <div className={`message-input-area ${isBlocked ? "blocked" : ""}`}>
