@@ -278,6 +278,11 @@ function Admin() {
 
   return (
     <div className="admin-cues-container">
+      <div className="admin-controls mb-4">
+        <button onClick={sendTestMessage} className="test-message-button">
+          Trigger "You have a new message"
+        </button>
+      </div>
       <div className="admin-tabs">
         <button
           className={`admin-tab ${activeTab === "audience-chat" ? "active" : ""}`}
@@ -343,11 +348,6 @@ function Admin() {
 
       {activeTab === "inbox" && (
         <div className="admin-inbox-tab">
-          <div className="admin-controls mb-4">
-            <button onClick={sendTestMessage} className="test-message-button">
-              Trigger "You have a new message"
-            </button>
-          </div>
           <div className="conversation-picker-container">
             <select
               id="conversation-select"
