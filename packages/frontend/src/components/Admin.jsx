@@ -193,13 +193,20 @@ function Admin() {
   const handleSendMessage = (messageData) => {
     if (!selectedConversationId) return;
 
-    // Create a new message object
+    // Create a new message object with current time
+    const now = new Date();
     const newMessage = {
       id: `local-${Date.now()}`,
       conversationId: selectedConversationId,
       sender: "user",
       content: messageData.text || "",
-      timestamp: new Date().toISOString(),
+      timestamp: now.toISOString(),
+      time: now
+        .toLocaleTimeString("en-US", {
+          hour: "numeric",
+          minute: "2-digit",
+        })
+        .toLowerCase(),
       type: messageData.type || "text",
       ...messageData,
     };

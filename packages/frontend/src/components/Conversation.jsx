@@ -150,11 +150,18 @@ function Conversation({
     const hasContent = messageText.trim() || selectedPhoto || recordedAudio;
     if (!hasContent) return;
 
-    // Create message object
+    // Create message object with current time
+    const now = new Date();
     const message = {
       id: Date.now().toString(),
       user: username,
-      timestamp: new Date().toISOString(),
+      timestamp: now.toISOString(),
+      time: now
+        .toLocaleTimeString("en-US", {
+          hour: "numeric",
+          minute: "2-digit",
+        })
+        .toLowerCase(),
       type: "message",
     };
 
