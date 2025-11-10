@@ -19,15 +19,11 @@ export function useConversationMessages(activeConversationId) {
       const data = await apiClient.getConversation(conversationId);
       const loadedMessages = data.messages || [];
 
-      // Merge loaded messages with any local messages for this conversation
-      const conversationLocalMessages = localMessages[conversationId] || [];
-      const allMessages = [...loadedMessages, ...conversationLocalMessages];
-
-      setMessages(allMessages);
+      setMessages(loadedMessages);
       setUsers(data.users || {});
       
       // Track the initial message count (excluding date separators and block notifications)
-      const regularMessageCount = allMessages.filter(
+      const regularMessageCount = loadedMessages.filter(
         m => m.type !== "date" && m.type !== "block_notification"
       ).length;
       setInitialMessageCount(prev => ({ ...prev, [conversationId]: regularMessageCount }));
@@ -35,14 +31,14 @@ export function useConversationMessages(activeConversationId) {
       // Reset the "Today" separator flag for this conversation
       setTodaySeparatorAdded(prev => ({ ...prev, [conversationId]: false }));
 
-      return { messages: allMessages, users: data.users || {} };
+      return { messages: loadedMessages, users: data.users || {} };
     } catch (error) {
       console.error("Failed to load conversation details:", error);
       setMessages([]);
       setUsers({});
       return { messages: [], users: {} };
     }
-  }, [localMessages]);
+  }, []);
 
   // Add a message with "Today" separator if needed
   const addMessageWithSeparator = (conversationId, newMessage) => {
