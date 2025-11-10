@@ -53,7 +53,7 @@ function Admin() {
     // Listen for block conversation messages
     const handleBlockConversation = (data) => {
       if (data.type === "block_conversation") {
-        const { conversationId } = data;
+        const { conversationId, message } = data;
 
         // Update conversation to show blocked status
         setConversations((prevConversations) =>
@@ -61,6 +61,32 @@ function Admin() {
             conv.id === conversationId ? { ...conv, blocked: true } : conv,
           ),
         );
+
+        // Add block notification message to the conversation
+        if (message) {
+          // Check if this message already exists
+          const messageExists = (prevMessages) => {
+            return prevMessages.some((m) => m.id === message.id);
+          };
+
+          // Update messages if this is the active conversation
+          if (conversationId === selectedConversationId) {
+            setMessages((prev) => {
+              if (messageExists(prev)) return prev;
+              return [...prev, message];
+            });
+          }
+
+          // Also update local messages cache
+          setLocalMessages((prev) => ({
+            ...prev,
+            [conversationId]: (() => {
+              const existing = prev[conversationId] || [];
+              if (existing.some((m) => m.id === message.id)) return existing;
+              return [...existing, message];
+            })(),
+          }));
+        }
       }
     };
 
@@ -255,12 +281,27 @@ function Admin() {
     );
 
     if (confirmed) {
-      // Send block message via WebSocket to all clients
+      // Send consolidated block message via WebSocket to all clients
+      const now = new Date();
       const blockMessage = {
         type: "block_conversation",
         conversationId: selectedConversationId,
         conversationName: conversation.name,
-        timestamp: new Date().toISOString(),
+        timestamp: now.toISOString(),
+        message: {
+          id: `block-notification-${Date.now()}`,
+          conversationId: selectedConversationId,
+          user: "system",
+          content: `You have been blocked by ${conversation.name}`,
+          timestamp: now.toISOString(),
+          time: now
+            .toLocaleTimeString("en-US", {
+              hour: "numeric",
+              minute: "2-digit",
+            })
+            .toLowerCase(),
+          type: "block_notification",
+        },
       };
 
       const sent = wsClient.sendMessage(blockMessage);

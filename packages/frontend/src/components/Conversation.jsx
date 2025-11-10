@@ -297,6 +297,10 @@ function Conversation({
             <div key={message.id} className="date-separator">
               {message.date}
             </div>
+          ) : message.type === "block_notification" ? (
+            <div key={message.id} className="block-notification">
+              {message.content || message.text}
+            </div>
           ) : (
             <div key={message.id} className="message-item">
               {(() => {
@@ -507,7 +511,7 @@ function Conversation({
           <textarea
             className="message-input"
             placeholder={
-              isBlocked ? "This conversation is blocked" : "Enter a message..."
+              isBlocked ? "" : "Enter a message..."
             }
             rows="1"
             value={messageText}
