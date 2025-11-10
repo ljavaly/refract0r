@@ -66,8 +66,9 @@ const VideoPlayer = memo(
                 console.log("Video pause event");
                 // setIsPlaying handled in parent
               }}
-              preload="none"
+              preload="metadata"
               playsInline
+              controls={false}
               muted={false}
             />
 
