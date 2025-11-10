@@ -58,7 +58,7 @@ function Conversation({
   const [mediaRecorder, setMediaRecorder] = useState(null);
   const [recordedAudio, setRecordedAudio] = useState(null);
   const [playingAudio, setPlayingAudio] = useState(null);
-  const messagesEndRef = useRef(null);
+  const chatMessagesRef = useRef(null);
 
   // Handle photo selection
   const handlePhotoSelect = (event) => {
@@ -239,8 +239,10 @@ function Conversation({
 
   // Scroll to bottom when messages change
   useEffect(() => {
-    if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+    if (chatMessagesRef.current) {
+      // Manually scroll the container instead of using scrollIntoView
+      // This prevents scrolling parent elements
+      chatMessagesRef.current.scrollTop = chatMessagesRef.current.scrollHeight;
     }
   }, [messages]);
 
@@ -291,7 +293,7 @@ function Conversation({
         </div>
       </div>
 
-      <div className="chat-messages">
+      <div className="chat-messages" ref={chatMessagesRef}>
         {messages.map((message) =>
           message.type === "date" ? (
             <div key={message.id} className="date-separator">
@@ -414,7 +416,6 @@ function Conversation({
             </div>
           ),
         )}
-        <div ref={messagesEndRef} />
       </div>
 
       <div className={`message-input-area ${isBlocked ? "blocked" : ""}`}>
