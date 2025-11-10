@@ -15,6 +15,8 @@ function Admin() {
   const [users, setUsers] = useState({});
   const [localMessages, setLocalMessages] = useState({});
   const [showDropdown, setShowDropdown] = useState(false);
+  const [initialMessageCount, setInitialMessageCount] = useState({}); // Track initial message count per conversation
+  const [todaySeparatorAdded, setTodaySeparatorAdded] = useState({}); // Track if "Today" separator was added per conversation
 
   useEffect(() => {
     wsClient.connectWebSocket();
@@ -34,6 +36,29 @@ function Admin() {
         if (conversationId === selectedConversationId) {
           setMessages((prev) => {
             if (messageExists(prev)) return prev;
+            
+            const currentRegularCount = prev.filter(
+              m => m.type !== "date" && m.type !== "block_notification"
+            ).length;
+            const initialCount = initialMessageCount[selectedConversationId] || 0;
+            const needsSeparator = !todaySeparatorAdded[selectedConversationId] && currentRegularCount >= initialCount;
+
+            if (needsSeparator) {
+              // Mark that we've added the separator for this conversation
+              setTodaySeparatorAdded(p => ({ ...p, [selectedConversationId]: true }));
+              
+              // Add "Today" separator before the new message
+              return [
+                ...prev,
+                {
+                  id: `date-today-${Date.now()}`,
+                  type: "date",
+                  date: "Today",
+                },
+                message
+              ];
+            }
+            
             return [...prev, message];
           });
         }
@@ -107,7 +132,7 @@ function Admin() {
         handleBlockConversation,
       );
     };
-  }, [selectedConversationId]);
+  }, [selectedConversationId, initialMessageCount, todaySeparatorAdded]);
 
   // Load conversation details when selected conversation changes
   useEffect(() => {
@@ -150,6 +175,15 @@ function Admin() {
 
       setMessages(allMessages);
       setUsers(data.users || {});
+      
+      // Track the initial message count (excluding date separators and block notifications)
+      const regularMessageCount = allMessages.filter(
+        m => m.type !== "date" && m.type !== "block_notification"
+      ).length;
+      setInitialMessageCount(prev => ({ ...prev, [conversationId]: regularMessageCount }));
+      
+      // Reset the "Today" separator flag for this conversation
+      setTodaySeparatorAdded(prev => ({ ...prev, [conversationId]: false }));
     } catch (error) {
       console.error("Failed to load conversation details:", error);
       setMessages([]);
@@ -238,7 +272,32 @@ function Admin() {
     };
 
     // Immediately add to local state for optimistic UI update
-    setMessages((prev) => [...prev, newMessage]);
+    setMessages((prev) => {
+      const currentRegularCount = prev.filter(
+        m => m.type !== "date" && m.type !== "block_notification"
+      ).length;
+      const initialCount = initialMessageCount[selectedConversationId] || 0;
+      const needsSeparator = !todaySeparatorAdded[selectedConversationId] && currentRegularCount >= initialCount;
+
+      if (needsSeparator) {
+        // Mark that we've added the separator for this conversation
+        setTodaySeparatorAdded(p => ({ ...p, [selectedConversationId]: true }));
+        
+        // Add "Today" separator before the new message
+        return [
+          ...prev,
+          {
+            id: `date-today-${Date.now()}`,
+            type: "date",
+            date: "Today",
+          },
+          newMessage
+        ];
+      }
+      
+      return [...prev, newMessage];
+    });
+    
     setLocalMessages((prev) => ({
       ...prev,
       [selectedConversationId]: [

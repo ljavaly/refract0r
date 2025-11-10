@@ -295,7 +295,7 @@ function Conversation({
         {messages.map((message) =>
           message.type === "date" ? (
             <div key={message.id} className="date-separator">
-              {message.date}
+              <span style={{ backgroundColor: "white" }}>{message.date}</span>
             </div>
           ) : message.type === "block_notification" ? (
             <div key={message.id} className="block-notification">
