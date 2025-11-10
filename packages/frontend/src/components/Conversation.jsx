@@ -511,9 +511,7 @@ function Conversation({
         <div className="message-input-row">
           <textarea
             className="message-input"
-            placeholder={
-              isBlocked ? "" : "Enter a message..."
-            }
+            placeholder={isBlocked ? "" : "Enter a message..."}
             rows="1"
             value={messageText}
             onChange={(e) => setMessageText(e.target.value)}

@@ -21,15 +21,18 @@ export function useConversationMessages(activeConversationId) {
 
       setMessages(loadedMessages);
       setUsers(data.users || {});
-      
+
       // Track the initial message count (excluding date separators and block notifications)
       const regularMessageCount = loadedMessages.filter(
-        m => m.type !== "date" && m.type !== "block_notification"
+        (m) => m.type !== "date" && m.type !== "block_notification",
       ).length;
-      setInitialMessageCount(prev => ({ ...prev, [conversationId]: regularMessageCount }));
-      
+      setInitialMessageCount((prev) => ({
+        ...prev,
+        [conversationId]: regularMessageCount,
+      }));
+
       // Reset the "Today" separator flag for this conversation
-      setTodaySeparatorAdded(prev => ({ ...prev, [conversationId]: false }));
+      setTodaySeparatorAdded((prev) => ({ ...prev, [conversationId]: false }));
 
       return { messages: loadedMessages, users: data.users || {} };
     } catch (error) {
@@ -44,15 +47,17 @@ export function useConversationMessages(activeConversationId) {
   const addMessageWithSeparator = (conversationId, newMessage) => {
     setMessages((prev) => {
       const currentRegularCount = prev.filter(
-        m => m.type !== "date" && m.type !== "block_notification"
+        (m) => m.type !== "date" && m.type !== "block_notification",
       ).length;
       const initialCount = initialMessageCount[conversationId] || 0;
-      const needsSeparator = !todaySeparatorAdded[conversationId] && currentRegularCount >= initialCount;
+      const needsSeparator =
+        !todaySeparatorAdded[conversationId] &&
+        currentRegularCount >= initialCount;
 
       if (needsSeparator) {
         // Mark that we've added the separator for this conversation
-        setTodaySeparatorAdded(p => ({ ...p, [conversationId]: true }));
-        
+        setTodaySeparatorAdded((p) => ({ ...p, [conversationId]: true }));
+
         // Add "Today" separator before the new message
         return [
           ...prev,
@@ -61,10 +66,10 @@ export function useConversationMessages(activeConversationId) {
             type: "date",
             date: "Today",
           },
-          newMessage
+          newMessage,
         ];
       }
-      
+
       return [...prev, newMessage];
     });
 
@@ -93,17 +98,22 @@ export function useConversationMessages(activeConversationId) {
         if (conversationId === activeConversationId) {
           setMessages((prev) => {
             if (messageExists(prev)) return prev;
-            
+
             const currentRegularCount = prev.filter(
-              m => m.type !== "date" && m.type !== "block_notification"
+              (m) => m.type !== "date" && m.type !== "block_notification",
             ).length;
             const initialCount = initialMessageCount[activeConversationId] || 0;
-            const needsSeparator = !todaySeparatorAdded[activeConversationId] && currentRegularCount >= initialCount;
+            const needsSeparator =
+              !todaySeparatorAdded[activeConversationId] &&
+              currentRegularCount >= initialCount;
 
             if (needsSeparator) {
               // Mark that we've added the separator for this conversation
-              setTodaySeparatorAdded(p => ({ ...p, [activeConversationId]: true }));
-              
+              setTodaySeparatorAdded((p) => ({
+                ...p,
+                [activeConversationId]: true,
+              }));
+
               // Add "Today" separator before the new message
               return [
                 ...prev,
@@ -112,10 +122,10 @@ export function useConversationMessages(activeConversationId) {
                   type: "date",
                   date: "Today",
                 },
-                message
+                message,
               ];
             }
-            
+
             return [...prev, message];
           });
         }
@@ -164,13 +174,22 @@ export function useConversationMessages(activeConversationId) {
       }
     };
 
-    wsClient.onWebSocketMessage("conversation_message", handleConversationMessage);
+    wsClient.onWebSocketMessage(
+      "conversation_message",
+      handleConversationMessage,
+    );
     wsClient.onWebSocketMessage("block_conversation", handleBlockConversation);
 
     // Cleanup listener on unmount
     return () => {
-      wsClient.offWebSocketMessage("conversation_message", handleConversationMessage);
-      wsClient.offWebSocketMessage("block_conversation", handleBlockConversation);
+      wsClient.offWebSocketMessage(
+        "conversation_message",
+        handleConversationMessage,
+      );
+      wsClient.offWebSocketMessage(
+        "block_conversation",
+        handleBlockConversation,
+      );
     };
   }, [activeConversationId, initialMessageCount, todaySeparatorAdded]);
 
@@ -195,4 +214,3 @@ export function useConversationMessages(activeConversationId) {
     addMessageWithSeparator,
   };
 }
-

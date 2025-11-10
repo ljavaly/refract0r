@@ -159,7 +159,6 @@ function Inbox() {
     }
   };
 
-
   const handleDropdownToggle = () => {
     setShowDropdown(!showDropdown);
   };

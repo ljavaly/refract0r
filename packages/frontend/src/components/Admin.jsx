@@ -81,7 +81,6 @@ function Admin() {
       });
   };
 
-
   const loadSceneComments = (scene) => {
     if (!scene) {
       // Clear comments when no scene is selected
