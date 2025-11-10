@@ -3,8 +3,8 @@ import { loadJsonFile } from "../utils/static.js";
 import { getThumbnails } from "../utils/gcp.js";
 
 // Function to load fresh data each time (prevents caching)
-const getVideos = async () => {
-  return await loadJsonFile("videos.json");
+const getVideoMetadata = async () => {
+  return await loadJsonFile("browse/metadata.json");
 };
 
 const router = express.Router();
@@ -20,7 +20,7 @@ router.get("/", async (req, res) => {
       return [];
     });
 
-  const videos = await getVideos();
+  const videos = await getVideoMetadata();
   const videoData = videos.map((video, index) => ({
     id: index + 1,
     title: video.title,
@@ -46,7 +46,7 @@ router.get("/:id", async (req, res) => {
       return [];
     });
 
-  const videos = await getVideos();
+  const videos = await getVideoMetadata();
   const video = videos.find((video) => video.id === videoId);
 
   if (!video) {

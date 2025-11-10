@@ -5,7 +5,7 @@ const router = express.Router();
 
 // GET /api/comments - Get video viewer modal comments
 router.get("/", async (req, res) => {
-  const comments = await loadJsonFile("videoViewerComments.json");
+  const comments = await loadJsonFile("browse/videoViewerComments.json");
   const commentsData = formatComments(comments);
   res.json(commentsData);
 });
