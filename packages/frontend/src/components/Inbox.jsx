@@ -2,6 +2,7 @@ import "../styles/Inbox.css";
 import apiClient from "../api/client.js";
 import wsClient from "../api/ws";
 import Conversation from "./Conversation.jsx";
+import { useConversationMessages } from "../hooks/useConversationMessages.js";
 
 import React, { useState, useEffect } from "react";
 
@@ -9,14 +10,17 @@ function Inbox() {
   const [activeTab, setActiveTab] = useState("inbox");
   const [activeConversation, setActiveConversation] = useState(null);
   const [conversations, setConversations] = useState([]);
-  const [messages, setMessages] = useState([]);
-  const [users, setUsers] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showDropdown, setShowDropdown] = useState(false);
-  const [localMessages, setLocalMessages] = useState({}); // Store locally sent messages by conversation ID
-  const [initialMessageCount, setInitialMessageCount] = useState({}); // Track initial message count per conversation
-  const [todaySeparatorAdded, setTodaySeparatorAdded] = useState({}); // Track if "Today" separator was added per conversation
+
+  // Use custom hook for conversation messages
+  const {
+    messages,
+    users,
+    loadConversationDetails: loadConversationDetailsFromHook,
+    addMessageWithSeparator,
+  } = useConversationMessages(activeConversation);
 
   // On component mount, load conversations and clear unread message (only once)
   useEffect(() => {
@@ -33,58 +37,12 @@ function Inbox() {
       });
   }, []); // Empty dependency array - only run once on mount
 
-  // Set up WebSocket listeners that depend on activeConversation
+  // Set up WebSocket listeners for conversation list updates
   useEffect(() => {
-    // Listen for incoming conversation messages via WebSocket
+    // Listen for incoming conversation messages to update conversation list
     const handleConversationMessage = (data) => {
       if (data.type === "conversation_message") {
         const { conversationId, message } = data;
-
-        // Check if this message already exists (to prevent duplicates from echo)
-        const messageExists = (prevMessages) => {
-          return prevMessages.some((m) => m.id === message.id);
-        };
-
-        // Update messages if this is the active conversation (and message doesn't already exist)
-        if (conversationId === activeConversation) {
-          setMessages((prev) => {
-            if (messageExists(prev)) return prev;
-            
-            const currentRegularCount = prev.filter(
-              m => m.type !== "date" && m.type !== "block_notification"
-            ).length;
-            const initialCount = initialMessageCount[activeConversation] || 0;
-            const needsSeparator = !todaySeparatorAdded[activeConversation] && currentRegularCount >= initialCount;
-
-            if (needsSeparator) {
-              // Mark that we've added the separator for this conversation
-              setTodaySeparatorAdded(p => ({ ...p, [activeConversation]: true }));
-              
-              // Add "Today" separator before the new message
-              return [
-                ...prev,
-                {
-                  id: `date-today-${Date.now()}`,
-                  type: "date",
-                  date: "Today",
-                },
-                message
-              ];
-            }
-            
-            return [...prev, message];
-          });
-        }
-
-        // Also update local messages cache
-        setLocalMessages((prev) => ({
-          ...prev,
-          [conversationId]: (() => {
-            const existing = prev[conversationId] || [];
-            if (existing.some((m) => m.id === message.id)) return existing;
-            return [...existing, message];
-          })(),
-        }));
 
         // Update conversation list: move to top, show unread indicator, update last message
         setConversations((prevConversations) => {
@@ -129,7 +87,7 @@ function Inbox() {
     // Listen for block conversation messages
     const handleBlockConversation = (data) => {
       if (data.type === "block_conversation") {
-        const { conversationId, message } = data;
+        const { conversationId } = data;
 
         // Update conversation to show blocked status
         setConversations((prevConversations) =>
@@ -137,32 +95,6 @@ function Inbox() {
             conv.id === conversationId ? { ...conv, blocked: true } : conv,
           ),
         );
-
-        // Add block notification message to the conversation
-        if (message) {
-          // Check if this message already exists
-          const messageExists = (prevMessages) => {
-            return prevMessages.some((m) => m.id === message.id);
-          };
-
-          // Update messages if this is the active conversation
-          if (conversationId === activeConversation) {
-            setMessages((prev) => {
-              if (messageExists(prev)) return prev;
-              return [...prev, message];
-            });
-          }
-
-          // Also update local messages cache
-          setLocalMessages((prev) => ({
-            ...prev,
-            [conversationId]: (() => {
-              const existing = prev[conversationId] || [];
-              if (existing.some((m) => m.id === message.id)) return existing;
-              return [...existing, message];
-            })(),
-          }));
-        }
       }
     };
 
@@ -183,14 +115,16 @@ function Inbox() {
         handleBlockConversation,
       );
     };
-  }, [activeConversation, initialMessageCount, todaySeparatorAdded]);
+  }, [activeConversation]);
 
   // Load conversation details when active conversation changes
   useEffect(() => {
     if (activeConversation) {
-      loadConversationDetails(activeConversation);
+      loadConversationDetailsFromHook(activeConversation).then(() => {
+        setLoading(false);
+      });
     }
-  }, [activeConversation]);
+  }, [activeConversation, loadConversationDetailsFromHook]);
 
   const loadConversations = async () => {
     try {
@@ -225,34 +159,6 @@ function Inbox() {
     }
   };
 
-  const loadConversationDetails = async (conversationId) => {
-    try {
-      setLoading(true);
-      const data = await apiClient.getConversation(conversationId);
-      const loadedMessages = data.messages || [];
-
-      // Merge loaded messages with any local messages for this conversation
-      const conversationLocalMessages = localMessages[conversationId] || [];
-      const allMessages = [...loadedMessages, ...conversationLocalMessages];
-
-      setMessages(allMessages);
-      setUsers(data.users || {});
-      
-      // Track the initial message count (excluding date separators and block notifications)
-      const regularMessageCount = allMessages.filter(
-        m => m.type !== "date" && m.type !== "block_notification"
-      ).length;
-      setInitialMessageCount(prev => ({ ...prev, [conversationId]: regularMessageCount }));
-      
-      // Reset the "Today" separator flag for this conversation
-      setTodaySeparatorAdded(prev => ({ ...prev, [conversationId]: false }));
-    } catch (err) {
-      console.error("Failed to load conversation details:", err);
-      setError("Failed to load conversation details");
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handleDropdownToggle = () => {
     setShowDropdown(!showDropdown);
@@ -320,7 +226,6 @@ function Inbox() {
           // Clear active conversation if it was the blocked one
           if (activeConversation === conversation.id) {
             setActiveConversation(null);
-            setMessages([]);
           }
         }
       }
@@ -350,37 +255,8 @@ function Inbox() {
       ...messageData,
     };
 
-    // Immediately add to local state for optimistic UI update
-    setMessages((prev) => {
-      const currentRegularCount = prev.filter(
-        m => m.type !== "date" && m.type !== "block_notification"
-      ).length;
-      const initialCount = initialMessageCount[activeConversation] || 0;
-      const needsSeparator = !todaySeparatorAdded[activeConversation] && currentRegularCount >= initialCount;
-
-      if (needsSeparator) {
-        // Mark that we've added the separator for this conversation
-        setTodaySeparatorAdded(p => ({ ...p, [activeConversation]: true }));
-        
-        // Add "Today" separator before the new message
-        return [
-          ...prev,
-          {
-            id: `date-today-${Date.now()}`,
-            type: "date",
-            date: "Today",
-          },
-          newMessage
-        ];
-      }
-      
-      return [...prev, newMessage];
-    });
-    
-    setLocalMessages((prev) => ({
-      ...prev,
-      [activeConversation]: [...(prev[activeConversation] || []), newMessage],
-    }));
+    // Add message with "Today" separator if needed
+    addMessageWithSeparator(activeConversation, newMessage);
 
     // Send message via WebSocket to broadcast to all clients
     const wsMessage = {
@@ -412,20 +288,6 @@ function Inbox() {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [showDropdown]);
-
-  // Cleanup audio URLs when component unmounts
-  useEffect(() => {
-    return () => {
-      // Clean up audio URLs in local messages
-      Object.values(localMessages)
-        .flat()
-        .forEach((message) => {
-          if (message.audio && message.audio.url) {
-            URL.revokeObjectURL(message.audio.url);
-          }
-        });
-    };
-  }, []); // Empty dependency array means this runs only on unmount
 
   // Show loading state
   if (loading && conversations.length === 0) {

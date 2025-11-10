@@ -4,6 +4,7 @@ import AudienceChat from "./AudienceChat.jsx";
 import Conversation from "./Conversation.jsx";
 import apiClient from "../api/client.js";
 import wsClient from "../api/ws";
+import { useConversationMessages } from "../hooks/useConversationMessages.js";
 
 function Admin() {
   const [queuedComments, setQueuedComments] = useState([]);
@@ -11,74 +12,24 @@ function Admin() {
   const [activeTab, setActiveTab] = useState("audience-chat");
   const [conversations, setConversations] = useState([]);
   const [selectedConversationId, setSelectedConversation] = useState("");
-  const [messages, setMessages] = useState([]);
-  const [users, setUsers] = useState({});
-  const [localMessages, setLocalMessages] = useState({});
   const [showDropdown, setShowDropdown] = useState(false);
-  const [initialMessageCount, setInitialMessageCount] = useState({}); // Track initial message count per conversation
-  const [todaySeparatorAdded, setTodaySeparatorAdded] = useState({}); // Track if "Today" separator was added per conversation
+
+  // Use custom hook for conversation messages
+  const {
+    messages,
+    users,
+    loadConversationDetails: loadConversationDetailsFromHook,
+    addMessageWithSeparator,
+  } = useConversationMessages(selectedConversationId);
 
   useEffect(() => {
     wsClient.connectWebSocket();
     loadConversations();
 
-    // Listen for incoming conversation messages via WebSocket
-    const handleConversationMessage = (data) => {
-      if (data.type === "conversation_message") {
-        const { conversationId, message } = data;
-
-        // Check if this message already exists (to prevent duplicates from echo)
-        const messageExists = (prevMessages) => {
-          return prevMessages.some((m) => m.id === message.id);
-        };
-
-        // Update messages if this is the active conversation (and message doesn't already exist)
-        if (conversationId === selectedConversationId) {
-          setMessages((prev) => {
-            if (messageExists(prev)) return prev;
-            
-            const currentRegularCount = prev.filter(
-              m => m.type !== "date" && m.type !== "block_notification"
-            ).length;
-            const initialCount = initialMessageCount[selectedConversationId] || 0;
-            const needsSeparator = !todaySeparatorAdded[selectedConversationId] && currentRegularCount >= initialCount;
-
-            if (needsSeparator) {
-              // Mark that we've added the separator for this conversation
-              setTodaySeparatorAdded(p => ({ ...p, [selectedConversationId]: true }));
-              
-              // Add "Today" separator before the new message
-              return [
-                ...prev,
-                {
-                  id: `date-today-${Date.now()}`,
-                  type: "date",
-                  date: "Today",
-                },
-                message
-              ];
-            }
-            
-            return [...prev, message];
-          });
-        }
-
-        // Also update local messages cache
-        setLocalMessages((prev) => ({
-          ...prev,
-          [conversationId]: (() => {
-            const existing = prev[conversationId] || [];
-            if (existing.some((m) => m.id === message.id)) return existing;
-            return [...existing, message];
-          })(),
-        }));
-      }
-    };
-
-    // Listen for block conversation messages
+    // Listen for block conversation messages to update conversation list
     const handleBlockConversation = (data) => {
       if (data.type === "block_conversation") {
-        const { conversationId, message } = data;
+        const { conversationId } = data;
 
         // Update conversation to show blocked status
         setConversations((prevConversations) =>
@@ -86,60 +37,26 @@ function Admin() {
             conv.id === conversationId ? { ...conv, blocked: true } : conv,
           ),
         );
-
-        // Add block notification message to the conversation
-        if (message) {
-          // Check if this message already exists
-          const messageExists = (prevMessages) => {
-            return prevMessages.some((m) => m.id === message.id);
-          };
-
-          // Update messages if this is the active conversation
-          if (conversationId === selectedConversationId) {
-            setMessages((prev) => {
-              if (messageExists(prev)) return prev;
-              return [...prev, message];
-            });
-          }
-
-          // Also update local messages cache
-          setLocalMessages((prev) => ({
-            ...prev,
-            [conversationId]: (() => {
-              const existing = prev[conversationId] || [];
-              if (existing.some((m) => m.id === message.id)) return existing;
-              return [...existing, message];
-            })(),
-          }));
-        }
       }
     };
 
-    wsClient.onWebSocketMessage(
-      "conversation_message",
-      handleConversationMessage,
-    );
     wsClient.onWebSocketMessage("block_conversation", handleBlockConversation);
 
     // Cleanup listener on unmount
     return () => {
       wsClient.offWebSocketMessage(
-        "conversation_message",
-        handleConversationMessage,
-      );
-      wsClient.offWebSocketMessage(
         "block_conversation",
         handleBlockConversation,
       );
     };
-  }, [selectedConversationId, initialMessageCount, todaySeparatorAdded]);
+  }, []);
 
   // Load conversation details when selected conversation changes
   useEffect(() => {
     if (selectedConversationId) {
-      loadConversationDetails(selectedConversationId);
+      loadConversationDetailsFromHook(selectedConversationId);
     }
-  }, [selectedConversationId]);
+  }, [selectedConversationId, loadConversationDetailsFromHook]);
 
   const loadConversations = () => {
     apiClient
@@ -164,32 +81,6 @@ function Admin() {
       });
   };
 
-  const loadConversationDetails = async (conversationId) => {
-    try {
-      const data = await apiClient.getConversation(conversationId);
-      const loadedMessages = data.messages || [];
-
-      // Merge loaded messages with any local messages for this conversation
-      const conversationLocalMessages = localMessages[conversationId] || [];
-      const allMessages = [...loadedMessages, ...conversationLocalMessages];
-
-      setMessages(allMessages);
-      setUsers(data.users || {});
-      
-      // Track the initial message count (excluding date separators and block notifications)
-      const regularMessageCount = allMessages.filter(
-        m => m.type !== "date" && m.type !== "block_notification"
-      ).length;
-      setInitialMessageCount(prev => ({ ...prev, [conversationId]: regularMessageCount }));
-      
-      // Reset the "Today" separator flag for this conversation
-      setTodaySeparatorAdded(prev => ({ ...prev, [conversationId]: false }));
-    } catch (error) {
-      console.error("Failed to load conversation details:", error);
-      setMessages([]);
-      setUsers({});
-    }
-  };
 
   const loadSceneComments = (scene) => {
     if (!scene) {
@@ -271,40 +162,8 @@ function Admin() {
       ...messageData,
     };
 
-    // Immediately add to local state for optimistic UI update
-    setMessages((prev) => {
-      const currentRegularCount = prev.filter(
-        m => m.type !== "date" && m.type !== "block_notification"
-      ).length;
-      const initialCount = initialMessageCount[selectedConversationId] || 0;
-      const needsSeparator = !todaySeparatorAdded[selectedConversationId] && currentRegularCount >= initialCount;
-
-      if (needsSeparator) {
-        // Mark that we've added the separator for this conversation
-        setTodaySeparatorAdded(p => ({ ...p, [selectedConversationId]: true }));
-        
-        // Add "Today" separator before the new message
-        return [
-          ...prev,
-          {
-            id: `date-today-${Date.now()}`,
-            type: "date",
-            date: "Today",
-          },
-          newMessage
-        ];
-      }
-      
-      return [...prev, newMessage];
-    });
-    
-    setLocalMessages((prev) => ({
-      ...prev,
-      [selectedConversationId]: [
-        ...(prev[selectedConversationId] || []),
-        newMessage,
-      ],
-    }));
+    // Add message with "Today" separator if needed
+    addMessageWithSeparator(selectedConversationId, newMessage);
 
     // Send message via WebSocket to broadcast to all clients
     const wsMessage = {
