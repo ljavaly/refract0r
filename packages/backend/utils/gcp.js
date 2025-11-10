@@ -18,7 +18,7 @@ async function getThumbnails() {
       });
 
       // Filter out the folder itself and get only image files
-      const thumbnailUrls = files
+      const thumbnails = files
         .filter((file) => {
           const fileName = file.name;
           // Skip the folder itself and only include image files
@@ -28,13 +28,26 @@ async function getThumbnails() {
           );
         })
         .map((file) => {
+          const fileName = file.name.split(THUMBNAILS_PREFIX)[1].split(".")[0];
+          let fileId = null;
+
+          try {
+            fileId = parseInt(fileName.split("thumbnail_")[1]);
+          }
+          catch (error) {
+            console.error("Failed to parse ID from file name:", fileName);
+          }
+
           // Generate public URL for each file
-          return `${ASSET_BASE_URL}/${file.name}`;
+          return {
+            id: fileId,
+            url: `${ASSET_BASE_URL}/${file.name}`,
+          };
         });
 
       resolve({
-        thumbnailUrls: thumbnailUrls,
-        count: thumbnailUrls.length,
+        thumbnails: thumbnails,
+        count: thumbnails.length,
       });
     } catch (error) {
       console.error("Error fetching thumbnails from GCS:", error);

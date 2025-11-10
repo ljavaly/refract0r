@@ -13,38 +13,42 @@ const router = express.Router();
 router.get("/", async (req, res) => {
   const thumbnails = await getThumbnails()
     .then((result) => {
-      return result.thumbnailUrls;
+      // console.log("Retrieved", result.count, "thumbnails:", result.thumbnails);
+      return result.thumbnails;
     })
     .catch((error) => {
       console.error("Error fetching thumbnails:", error);
       return [];
     });
 
-  const videos = await getVideoMetadata();
-  const videoData = videos.map((video, index) => ({
-    id: index + 1,
-    title: video.title,
-    thumbnail: thumbnails[index] || thumbnails[0],
-    views: video.views,
-    duration: video.duration,
-    uploadDate: video.date,
-  }));
+  const metadata = await getVideoMetadata();
+  const videos = metadata.map((video) => {
+    const thumbnail = thumbnails.find((thumbnail) => thumbnail.id === video.id);
+    return {
+      id: video.id,
+      title: video.title,
+      thumbnail: thumbnail?.url,
+      views: video.views,
+      duration: video.duration,
+      uploadDate: video.date,
+    };
+  });
 
-  res.json(videoData);
+  res.json(videos);
 });
 
 // GET /api/videos/:id - Get video by ID
 router.get("/:id", async (req, res) => {
   const videoId = parseInt(req.params.id);
 
-  const thumbnails = await getThumbnails()
-    .then((result) => {
-      return result.thumbnailUrls;
-    })
-    .catch((error) => {
-      console.error("Error fetching thumbnails:", error);
-      return [];
-    });
+  const thumbnail = await getThumbnails()
+  .then((result) => {
+    return result.thumbnails.find((thumbnail) => thumbnail.id === videoId);
+  })
+  .catch((error) => {
+    console.error("Error fetching thumbnail:", error);
+    return null;
+  });
 
   const videos = await getVideoMetadata();
   const video = videos.find((video) => video.id === videoId);
@@ -56,7 +60,7 @@ router.get("/:id", async (req, res) => {
   const videoData = {
     id: videoId,
     title: video.title,
-    thumbnail: thumbnails[videoId - 1] || thumbnails[0],
+    thumbnail: thumbnail?.url,
     views: video.views,
     duration: video.duration,
     uploadDate: video.date,
