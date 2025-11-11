@@ -38,7 +38,6 @@ const VideoPlayer = memo(
     volume,
     shouldInitVideo,
   }) => {
-    console.log("VideoPlayer component rendering", { shouldInitVideo });
 
     return (
       <div className="video-player-section">
@@ -259,7 +258,6 @@ function VideoViewerModal({ video, isOpen, onClose }) {
           const data = await apiClient.getComments();
           setVideoViewerComments(data);
           setCommentsLoaded(true);
-          console.log("Comments loaded, ready to initialize video");
         } catch (error) {
           console.error("Failed to fetch comments:", error);
           setVideoViewerComments([]);
@@ -300,10 +298,6 @@ function VideoViewerModal({ video, isOpen, onClose }) {
   // Initialize video element when ref becomes available and set poster
   useEffect(() => {
     if (videoRef.current && displayVideo?.thumbnail) {
-      console.log(
-        "Video element initialized with poster:",
-        displayVideo.thumbnail,
-      );
       const video = videoRef.current;
 
       // Set default properties
@@ -313,7 +307,6 @@ function VideoViewerModal({ video, isOpen, onClose }) {
       video.poster = displayVideo.thumbnail; // Ensure poster is set
 
       return () => {
-        console.log("Video element cleanup");
         if (video) {
           video.pause();
           video.src = "";
@@ -355,8 +348,6 @@ function VideoViewerModal({ video, isOpen, onClose }) {
 
     // Force load
     video.load();
-
-    console.log("Video setup complete, waiting for load events");
   }, [videoData?.videoUrl, volume, shouldInitVideo]);
 
   // Video event handlers - wrapped in useCallback to prevent re-renders
@@ -375,7 +366,6 @@ function VideoViewerModal({ video, isOpen, onClose }) {
   }, []);
 
   const handleVideoEnded = useCallback(() => {
-    console.log("Video ended");
     setIsPlaying(false);
     setCurrentTime(0);
     if (videoRef.current) {
@@ -480,15 +470,6 @@ function VideoViewerModal({ video, isOpen, onClose }) {
   }, []);
 
   if (!isOpen || !video) return null;
-
-  // Debug logging for re-renders
-  console.log("VideoViewerModal rendering", {
-    commentsLength: videoViewerComments.length,
-    hasVideoData: !!videoData,
-    isLoading,
-    commentsLoaded,
-    shouldInitVideo,
-  });
 
   return (
     <div className="video-modal-overlay" onClick={onClose}>
