@@ -64,7 +64,7 @@ router.get("/:id", async (req, res) => {
     views: video.views,
     duration: video.duration,
     uploadDate: video.date,
-    videoUrl: "https://storage.googleapis.com/refract0r-assets/IMG_9906.mov",
+    videoUrl: "https://storage.googleapis.com/refract0r-assets/DANCE00558018.mov",
   };
 
   res.json(videoData);
