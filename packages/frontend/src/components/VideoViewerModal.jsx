@@ -38,7 +38,6 @@ const VideoPlayer = memo(
     volume,
     shouldInitVideo,
   }) => {
-
     return (
       <div className="video-player-section">
         <div className="video-player-wrapper">

@@ -33,8 +33,7 @@ async function getThumbnails() {
 
           try {
             fileId = parseInt(fileName.split("Thumbnail_")[1]);
-          }
-          catch (error) {
+          } catch (error) {
             console.error("Failed to parse ID from file name:", fileName);
           }
 

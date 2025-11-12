@@ -42,13 +42,13 @@ router.get("/:id", async (req, res) => {
   const videoId = parseInt(req.params.id);
 
   const thumbnail = await getThumbnails()
-  .then((result) => {
-    return result.thumbnails.find((thumbnail) => thumbnail.id === videoId);
-  })
-  .catch((error) => {
-    console.error("Error fetching thumbnail:", error);
-    return null;
-  });
+    .then((result) => {
+      return result.thumbnails.find((thumbnail) => thumbnail.id === videoId);
+    })
+    .catch((error) => {
+      console.error("Error fetching thumbnail:", error);
+      return null;
+    });
 
   const videos = await getVideoMetadata();
   const video = videos.find((video) => video.id === videoId);
@@ -64,7 +64,8 @@ router.get("/:id", async (req, res) => {
     views: video.views,
     duration: video.duration,
     uploadDate: video.date,
-    videoUrl: "https://storage.googleapis.com/refract0r-assets/DANCE00558018.mov",
+    videoUrl:
+      "https://storage.googleapis.com/refract0r-assets/DANCE00558018.mov",
   };
 
   res.json(videoData);
