@@ -22,17 +22,22 @@ router.get("/", async (req, res) => {
     });
 
   const metadata = await getVideoMetadata();
-  const videos = metadata.map((video) => {
-    const thumbnail = thumbnails.find((thumbnail) => thumbnail.id === video.id);
-    return {
-      id: video.id,
-      title: video.title,
-      thumbnail: thumbnail?.url,
-      views: video.views,
-      duration: video.duration,
-      uploadDate: video.date,
-    };
-  });
+  const videos = thumbnails
+    .map((thumbnail) => {
+      const video = metadata.find((video) => thumbnail.id === video.id);
+      if (!video) {
+        return null;
+      }
+      return {
+        id: video.id,
+        title: video.title,
+        thumbnail: thumbnail?.url,
+        views: video.views,
+        duration: video.duration,
+        uploadDate: video.date,
+      };
+    })
+    .filter((video) => !!video);
 
   res.json(videos);
 });
