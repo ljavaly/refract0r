@@ -1,4 +1,5 @@
 import "../styles/TopNav.css";
+import avatar from "../assets/avatar.jpg";
 import mailIcon from "../assets/mail-icon.svg";
 import gearIcon from "../assets/gear-icon.svg";
 import monocleIcon from "../assets/monocle.svg";
@@ -134,7 +135,10 @@ function TopNav() {
                 navigate("/admin");
               }}
             >
-              TR
+              <img
+                src={avatar}
+                className="w-full h-full rounded-full object-cover"
+              />
             </a>
           </div>
         </div>
