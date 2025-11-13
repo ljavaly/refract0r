@@ -62,5 +62,12 @@
     "lastMessage": "Loved ur last stream!",
     "time": "2:42pm",
     "new": false
+  },
+  {
+    "id": "hello1",
+    "name": "HELLO1",
+    "lastMessage": "",
+    "time": "12:00pm",
+    "new": false
   }
 ]
