@@ -69,5 +69,12 @@
     "lastMessage": "",
     "time": "12:00pm",
     "new": false
+  },
+  {
+    "id": "hello2",
+    "name": "HELLO2",
+    "lastMessage": "",
+    "time": "12:01pm",
+    "new": false
   }
 ]
